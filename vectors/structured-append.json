@@ -1,0 +1,565 @@
+{
+  "version": 1,
+  "id": "structured-append",
+  "name": "Structured Append vectors",
+  "description": "SpecQR の Structured Append helper と merge validation を published package から外部検証する vector。",
+  "category": "structured-append",
+  "vectors": [
+    {
+      "id": "structured-append.generate.alphanumeric-two-symbol",
+      "title": "2-symbol alphanumeric split",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "input": {
+        "text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "alphanumeric",
+        "output": "matrix",
+        "diagnostics": true
+      },
+      "expect": {
+        "structuredAppend": {
+          "total": 2,
+          "parity": 65,
+          "byteLength": 31,
+          "inputLength": 31,
+          "diagnosticsSubset": {
+            "version": 1,
+            "errorCorrectionLevel": "L",
+            "splitStrategy": "greedy-largest-fitting",
+            "symbols": [
+              {
+                "index": 1,
+                "total": 2,
+                "parity": 65,
+                "sequenceIndicator": 1,
+                "inputLength": 21,
+                "byteLength": 21
+              },
+              {
+                "index": 2,
+                "total": 2,
+                "parity": 65,
+                "sequenceIndicator": 17,
+                "inputLength": 10,
+                "byteLength": 10
+              }
+            ]
+          },
+          "symbolsSubset": [
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "enabled": true,
+                  "index": 1,
+                  "total": 2,
+                  "parity": 65,
+                  "sequenceIndicator": 1
+                },
+                "mode": "alphanumeric",
+                "version": 1
+              }
+            },
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "enabled": true,
+                  "index": 2,
+                  "total": 2,
+                  "parity": 65,
+                  "sequenceIndicator": 17
+                },
+                "mode": "alphanumeric",
+                "version": 1
+              }
+            }
+          ]
+        }
+      },
+      "tags": ["structured-append", "alphanumeric", "positive"]
+    },
+    {
+      "id": "structured-append.generate.alphanumeric-three-symbol",
+      "title": "3-symbol alphanumeric split",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "input": {
+        "text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "alphanumeric",
+        "output": "matrix",
+        "diagnostics": true
+      },
+      "expect": {
+        "structuredAppend": {
+          "total": 3,
+          "parity": 0,
+          "byteLength": 60,
+          "inputLength": 60,
+          "diagnosticsSubset": {
+            "version": 1,
+            "errorCorrectionLevel": "L",
+            "splitStrategy": "greedy-largest-fitting",
+            "symbols": [
+              {
+                "index": 1,
+                "total": 3,
+                "parity": 0,
+                "sequenceIndicator": 2,
+                "inputLength": 21
+              },
+              {
+                "index": 2,
+                "total": 3,
+                "parity": 0,
+                "sequenceIndicator": 18,
+                "inputLength": 21
+              },
+              {
+                "index": 3,
+                "total": 3,
+                "parity": 0,
+                "sequenceIndicator": 34,
+                "inputLength": 18
+              }
+            ]
+          }
+        }
+      },
+      "tags": ["structured-append", "alphanumeric", "positive"]
+    },
+    {
+      "id": "structured-append.generate.binary-three-symbol",
+      "title": "Binary input split",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "input": {
+        "binaryHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "byte",
+        "output": "matrix",
+        "diagnostics": true
+      },
+      "expect": {
+        "structuredAppend": {
+          "total": 3,
+          "parity": 31,
+          "byteLength": 31,
+          "inputLength": 31,
+          "diagnosticsSubset": {
+            "splitStrategy": "greedy-largest-fitting",
+            "symbols": [
+              {
+                "index": 1,
+                "byteLength": 15
+              },
+              {
+                "index": 2,
+                "byteLength": 15
+              },
+              {
+                "index": 3,
+                "byteLength": 1
+              }
+            ]
+          },
+          "symbolsSubset": [
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "index": 1,
+                  "total": 3,
+                  "parity": 31
+                },
+                "mode": "byte"
+              }
+            },
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "index": 2,
+                  "total": 3,
+                  "parity": 31
+                },
+                "mode": "byte"
+              }
+            },
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "index": 3,
+                  "total": 3,
+                  "parity": 31
+                },
+                "mode": "byte"
+              }
+            }
+          ]
+        }
+      },
+      "tags": ["structured-append", "binary", "positive"],
+      "notes": "parity 31 は logical input bytes の XOR と一致する。"
+    },
+    {
+      "id": "structured-append.generate-segments.segment-boundary",
+      "title": "Manual segment split at segment boundary",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "alphanumeric",
+            "data": "ABCDEFGHIJKLMNOPQRSTU"
+          },
+          {
+            "mode": "numeric",
+            "data": "12345678901234567890"
+          }
+        ]
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "output": "matrix",
+        "diagnostics": true
+      },
+      "expect": {
+        "structuredAppend": {
+          "total": 2,
+          "parity": 65,
+          "byteLength": 41,
+          "inputLength": 2,
+          "diagnosticsSubset": {
+            "segmentCount": 2,
+            "splitStrategy": "segment-boundary-byte-chunk",
+            "symbols": [
+              {
+                "index": 1,
+                "byteLength": 21
+              },
+              {
+                "index": 2,
+                "byteLength": 20
+              }
+            ]
+          },
+          "symbolsSubset": [
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "index": 1,
+                  "total": 2,
+                  "parity": 65
+                },
+                "mode": "alphanumeric"
+              }
+            },
+            {
+              "diagnostics": {
+                "structuredAppend": {
+                  "index": 2,
+                  "total": 2,
+                  "parity": 65
+                },
+                "mode": "numeric"
+              }
+            }
+          ]
+        }
+      },
+      "tags": ["structured-append", "manual-segments", "positive"]
+    },
+    {
+      "id": "structured-append.generate-segments.byte-chunk",
+      "title": "Byte segment chunk split",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "byte",
+            "binaryHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e"
+          }
+        ]
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "output": "matrix",
+        "diagnostics": true
+      },
+      "expect": {
+        "structuredAppend": {
+          "total": 3,
+          "parity": 31,
+          "byteLength": 31,
+          "inputLength": 1,
+          "diagnosticsSubset": {
+            "segmentCount": 1,
+            "splitStrategy": "segment-boundary-byte-chunk",
+            "symbols": [
+              {
+                "index": 1,
+                "byteLength": 15
+              },
+              {
+                "index": 2,
+                "byteLength": 15
+              },
+              {
+                "index": 3,
+                "byteLength": 1
+              }
+            ]
+          }
+        }
+      },
+      "tags": ["structured-append", "manual-segments", "binary", "positive"]
+    },
+    {
+      "id": "structured-append.generate.parity-helper-consistency",
+      "title": "Parity helper consistency for binary input",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "input": {
+        "binaryHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "byte",
+        "output": "matrix",
+        "diagnostics": true
+      },
+      "expect": {
+        "structuredAppend": {
+          "total": 3,
+          "parity": 31,
+          "diagnosticsSubset": {
+            "parity": 31,
+            "byteLength": 31
+          }
+        }
+      },
+      "tags": ["structured-append", "parity", "positive"],
+      "notes": "parity 31 は calculateStructuredAppendParity() と同じ logical byte XOR policy に基づく。"
+    },
+    {
+      "id": "structured-append.merge-parts.valid-string",
+      "title": "Merge valid decoded parts",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "input": {
+        "parts": [
+          {
+            "index": 2,
+            "total": 2,
+            "parity": 65,
+            "data": "AAAAAAAAAA"
+          },
+          {
+            "index": 1,
+            "total": 2,
+            "parity": 65,
+            "data": "AAAAAAAAAAAAAAAAAAAAA"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "structuredAppend": {
+          "total": 2,
+          "parity": 65,
+          "mergedSubset": {
+            "data": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "diagnostics": {
+              "partCount": 2,
+              "total": 2,
+              "parity": 65,
+              "dataType": "string",
+              "byteLength": 31,
+              "parityCheck": {
+                "expected": 65,
+                "actual": 65,
+                "matches": true
+              }
+            },
+            "parts": [
+              {
+                "index": 1,
+                "total": 2,
+                "parity": 65,
+                "dataType": "string",
+                "byteLength": 21
+              },
+              {
+                "index": 2,
+                "total": 2,
+                "parity": 65,
+                "dataType": "string",
+                "byteLength": 10
+              }
+            ]
+          }
+        }
+      },
+      "tags": ["structured-append", "merge", "positive"],
+      "notes": "decoder が Structured Append metadata を返した後の merge helper だけを検証する。"
+    },
+    {
+      "id": "structured-append.merge-parts.missing-part-reject",
+      "title": "Reject missing Structured Append part",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "input": {
+        "parts": [
+          {
+            "index": 1,
+            "total": 2,
+            "parity": 65,
+            "data": "AAAAAAAAAAAAAAAAAAAAA"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "rejects": {
+          "code": "INVALID_INPUT",
+          "messageIncludes": "missing index"
+        }
+      },
+      "tags": ["structured-append", "merge", "negative", "reject"]
+    },
+    {
+      "id": "structured-append.merge-parts.duplicate-part-reject",
+      "title": "Reject duplicate Structured Append part",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "input": {
+        "parts": [
+          {
+            "index": 1,
+            "total": 2,
+            "parity": 0,
+            "data": "A"
+          },
+          {
+            "index": 1,
+            "total": 2,
+            "parity": 0,
+            "data": "B"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "rejects": {
+          "code": "INVALID_INPUT",
+          "messageIncludes": "duplicate index"
+        }
+      },
+      "tags": ["structured-append", "merge", "negative", "reject"]
+    },
+    {
+      "id": "structured-append.merge-parts.total-mismatch-reject",
+      "title": "Reject Structured Append total mismatch",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "input": {
+        "parts": [
+          {
+            "index": 1,
+            "total": 2,
+            "parity": 65,
+            "data": "A"
+          },
+          {
+            "index": 2,
+            "total": 3,
+            "parity": 65,
+            "data": "B"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "rejects": {
+          "code": "INVALID_INPUT",
+          "messageIncludes": "total mismatch"
+        }
+      },
+      "tags": ["structured-append", "merge", "negative", "reject"]
+    },
+    {
+      "id": "structured-append.merge-parts.parity-mismatch-reject",
+      "title": "Reject Structured Append parity mismatch",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "input": {
+        "parts": [
+          {
+            "index": 1,
+            "total": 2,
+            "parity": 65,
+            "data": "A"
+          },
+          {
+            "index": 2,
+            "total": 2,
+            "parity": 64,
+            "data": "B"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "rejects": {
+          "code": "INVALID_INPUT",
+          "messageIncludes": "parity mismatch"
+        }
+      },
+      "tags": ["structured-append", "merge", "negative", "reject"]
+    },
+    {
+      "id": "structured-append.generate-segments.invalid-low-level-header-reject",
+      "title": "Reject invalid low-level Structured Append header segment",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "structured-append",
+            "index": 0,
+            "total": 2,
+            "parity": 65
+          },
+          {
+            "mode": "byte",
+            "data": "ABC"
+          }
+        ]
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "output": "matrix"
+      },
+      "expect": {
+        "rejects": {
+          "code": "INVALID_MODE",
+          "messageIncludes": "index must be an integer"
+        }
+      },
+      "tags": ["structured-append", "manual-segments", "negative", "reject"]
+    }
+  ]
+}

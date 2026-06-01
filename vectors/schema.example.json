@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "id": "schema-example",
+  "name": "Schema example",
+  "description": "SpecQR Conformance Lab vector schema v1 の最小例。",
+  "category": "example",
+  "vectors": [
+    {
+      "id": "example.generate.byte-text",
+      "title": "Byte text generation example",
+      "category": "example",
+      "operation": "generate",
+      "input": {
+        "text": "HELLO SPECQR"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "decode": {
+          "text": "HELLO SPECQR"
+        },
+        "diagnostics": {
+          "subset": {
+            "errorCorrectionLevel": "M"
+          }
+        }
+      },
+      "tags": [
+        "example",
+        "byte"
+      ],
+      "notes": "schema v1 の必須 field と代表的な decode / diagnostics expectation を示す。"
+    }
+  ]
+}

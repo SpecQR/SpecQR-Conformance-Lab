@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpecQR Conformance Lab Report</title>
+  <style>
+    body { color: #1f2933; font-family: system-ui, sans-serif; line-height: 1.5; margin: 2rem; max-width: 72rem; }
+    h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.2rem; margin-top: 1.75rem; }
+    h3 { font-size: 1rem; margin-top: 1.25rem; }
+    table { border-collapse: collapse; margin-top: 1rem; width: 100%; }
+    th, td { border: 1px solid #d9e2ec; padding: 0.5rem; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; }
+    code { background: #f0f4f8; padding: 0.1rem 0.25rem; }
+    ul { padding-left: 1.25rem; }
+    .status-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin-top: 1rem; }
+    .status-band { border-left: 0.5rem solid #9fb3c8; background: #f8fafc; padding: 0.9rem 1rem; }
+    .status-band h2 { font-size: 1rem; margin: 0; }
+    .status-band p { margin: 0.25rem 0 0.75rem; }
+    .status-band strong { display: inline-block; margin-bottom: 0.5rem; }
+    .status-band dl { display: grid; gap: 0.35rem; grid-template-columns: repeat(5, minmax(3rem, 1fr)); margin: 0; }
+    .status-band div { min-width: 0; }
+    .status-band dt { color: #52606d; font-size: 0.8rem; }
+    .status-band dd { font-weight: 700; margin: 0; }
+    .status-green { border-color: #2f855a; }
+    .status-yellow { border-color: #b7791f; }
+    .status-red { border-color: #c53030; }
+    .scope-note { background: #fffbea; border: 1px solid #f7d070; padding: 0.75rem 1rem; }
+    @media (max-width: 40rem) {
+      body { margin: 1rem; }
+      .status-band dl { grid-template-columns: repeat(3, minmax(3rem, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <h1>SpecQR Conformance Lab レポート</h1>
+  <p>状態: <code>executed</code></p>
+  <p>対象: <code>specqr@2.4.0</code> from <code>npm</code></p>
+  <div class="status-grid">
+    <section class="status-band status-green">
+      <div>
+        <h2>Overall</h2>
+        <p>全 vector / adapter 結果</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>68</dd></div>
+        <div><dt>成功</dt><dd>68</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>121</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-green">
+      <div>
+        <h2>SpecQR</h2>
+        <p>published npm package の generation / helper / planning</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>57</dd></div>
+        <div><dt>成功</dt><dd>57</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>6</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-green">
+      <div>
+        <h2>jsQR decode readability</h2>
+        <p>SpecQR 生成 PNG の text / raw byte decode readability</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>5</dd></div>
+        <div><dt>成功</dt><dd>5</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>58</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-green">
+      <div>
+        <h2>Nayuki reference matrix</h2>
+        <p>固定 Version/ECC/mask の matrix exact match</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>6</dd></div>
+        <div><dt>成功</dt><dd>6</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>57</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-green">
+      <div>
+        <h2>GS1 / Digital Link</h2>
+        <p>SpecQR がサポートする GS1 helper subset</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>15</dd></div>
+        <div><dt>成功</dt><dd>15</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>30</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-green">
+      <div>
+        <h2>Structured Append</h2>
+        <p>generation と merge helper の scope</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>12</dd></div>
+        <div><dt>成功</dt><dd>12</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>24</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-green">
+      <div>
+        <h2>Planning / Diagnostics</h2>
+        <p>estimate / analyzeSegments / getCapacity と warnings</p>
+      </div>
+      <strong>成功</strong>
+      <dl>
+        <div><dt>実行</dt><dd>23</dd></div>
+        <div><dt>成功</dt><dd>23</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>46</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+  </div>
+  <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip は、失敗やエラーとは別に扱います。</p>
+  <h2>何を検証していないか</h2>
+  <ul>
+    <li>Micro QR</li>
+    <li>rMQR</li>
+    <li>full GS1 catalog</li>
+    <li>full QR reader</li>
+    <li>scanner metadata merge support</li>
+    <li>logo/styled QR</li>
+  </ul>
+  <h2>概要</h2>
+  <table>
+    <tbody>
+      <tr><th>Suites</th><td>6</td></tr>
+      <tr><th>Total vectors</th><td>63</td></tr>
+      <tr><th>Total results</th><td>189</td></tr>
+      <tr><th>実行</th><td>68</td></tr>
+      <tr><th>成功</th><td>68</td></tr>
+      <tr><th>失敗</th><td>0</td></tr>
+      <tr><th>スキップ</th><td>121</td></tr>
+      <tr><th>エラー</th><td>0</td></tr>
+    </tbody>
+  </table>
+  <h2>実行メタデータ</h2>
+  <table>
+    <tbody>
+      <tr><th>generatedAt</th><td>2026-06-01T17:11:54.713Z</td></tr>
+      <tr><th>Node</th><td>v25.9.0</td></tr>
+      <tr><th>platform</th><td>darwin</td></tr>
+      <tr><th>arch</th><td>arm64</td></tr>
+      <tr><th>specqr</th><td>2.4.0</td></tr>
+      <tr><th>jsqr</th><td>1.4.0</td></tr>
+      <tr><th>nayuki-qr-code-generator</th><td>1.8.0</td></tr>
+    </tbody>
+  </table>
+  <h2>Adapter 集計</h2>
+  <table>
+    <thead>
+      <tr><th>Adapter</th><th>状態</th><th>実行</th><th>成功</th><th>失敗</th><th>スキップ</th><th>エラー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>specqr</td><td>active</td><td>57</td><td>57</td><td>0</td><td>6</td><td>0</td></tr>
+      <tr><td>jsqr</td><td>active</td><td>5</td><td>5</td><td>0</td><td>58</td><td>0</td></tr>
+      <tr><td>nayuki</td><td>active</td><td>6</td><td>6</td><td>0</td><td>57</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <h2>GS1 / Digital Link 集計</h2>
+  <p>この集計は SpecQR がサポートする GS1 AI subset と Digital Link helper の確認であり、GS1 full catalog conformance は主張しません。</p>
+  <table>
+    <tbody>
+      <tr><th>Vectors</th><td>15</td></tr>
+      <tr><th>Results</th><td>45</td></tr>
+      <tr><th>実行</th><td>15</td></tr>
+      <tr><th>成功</th><td>15</td></tr>
+      <tr><th>失敗</th><td>0</td></tr>
+      <tr><th>スキップ</th><td>30</td></tr>
+      <tr><th>エラー</th><td>0</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr><th>Adapter</th><th>実行</th><th>成功</th><th>失敗</th><th>スキップ</th><th>エラー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>specqr</td><td>15</td><td>15</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>jsqr</td><td>0</td><td>0</td><td>0</td><td>15</td><td>0</td></tr>
+      <tr><td>nayuki</td><td>0</td><td>0</td><td>0</td><td>15</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <h3>GS1 / Digital Link categories</h3>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Vectors</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>gs1</td><td>8</td></tr>
+      <tr><td>gs1-digital-link</td><td>7</td></tr>
+    </tbody>
+  </table>
+  <h2>Structured Append 集計</h2>
+  <p>この集計は SpecQR の Structured Append generation と merge helper を確認します。jsQR decode readability は Structured Append metadata validation ではなく、decoder merge support も主張しません。Nayuki lane も Structured Append scope は対象外です。</p>
+  <table>
+    <tbody>
+      <tr><th>Vectors</th><td>12</td></tr>
+      <tr><th>Results</th><td>36</td></tr>
+      <tr><th>実行</th><td>12</td></tr>
+      <tr><th>成功</th><td>12</td></tr>
+      <tr><th>失敗</th><td>0</td></tr>
+      <tr><th>スキップ</th><td>24</td></tr>
+      <tr><th>エラー</th><td>0</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr><th>Adapter</th><th>実行</th><th>成功</th><th>失敗</th><th>スキップ</th><th>エラー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>specqr</td><td>12</td><td>12</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>jsqr</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td></tr>
+      <tr><td>nayuki</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <h3>Structured Append categories</h3>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Vectors</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>structured-append</td><td>12</td></tr>
+    </tbody>
+  </table>
+  <h2>Planning / Diagnostics 集計</h2>
+  <p>この集計は SpecQR 2.4.0 の estimate / analyzeSegments / getCapacity と planning diagnostics warning surface を確認します。jsQR と Nayuki は Planning API を実行しません。</p>
+  <table>
+    <tbody>
+      <tr><th>Vectors</th><td>23</td></tr>
+      <tr><th>Results</th><td>69</td></tr>
+      <tr><th>実行</th><td>23</td></tr>
+      <tr><th>成功</th><td>23</td></tr>
+      <tr><th>失敗</th><td>0</td></tr>
+      <tr><th>スキップ</th><td>46</td></tr>
+      <tr><th>エラー</th><td>0</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr><th>Adapter</th><th>実行</th><th>成功</th><th>失敗</th><th>スキップ</th><th>エラー</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>specqr</td><td>23</td><td>23</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>jsqr</td><td>0</td><td>0</td><td>0</td><td>23</td><td>0</td></tr>
+      <tr><td>nayuki</td><td>0</td><td>0</td><td>0</td><td>23</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <h3>Planning / Diagnostics categories</h3>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Vectors</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>planning-diagnostics</td><td>23</td></tr>
+    </tbody>
+  </table>
+  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append checks</h2>
+  <table>
+    <thead>
+      <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core.generate.byte-text</td><td>generate</td><td>passed</td><td>decode: skipped, diagnostics.subset: passed</td><td></td></tr>
+      <tr><td>core.generate.numeric-fixed-version-ecc-mask</td><td>generate</td><td>passed</td><td>decode: skipped, diagnostics.subset: passed</td><td></td></tr>
+      <tr><td>core.generate-segments.manual-mixed</td><td>generateSegments</td><td>passed</td><td>decode: skipped, diagnostics.subset: passed</td><td></td></tr>
+      <tr><td>core.generate.binary-00-ff</td><td>generate</td><td>passed</td><td>decode: skipped, diagnostics.subset: passed</td><td></td></tr>
+      <tr><td>core.estimate.byte-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>core.estimate.data-too-long-reject</td><td>estimate</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+      <tr><td>gs1.create-element-string.gtin-01</td><td>gs1.createElementString</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.create-element-string.sscc-00</td><td>gs1.createElementString</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.create-element-string.lot-separator-before-date</td><td>gs1.createElementString</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.create-element-string.expiration-date-17</td><td>gs1.createElementString</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.validate-element-string.success</td><td>gs1.validateElementString</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.create-digital-link.primary-gtin</td><td>gs1.createDigitalLink</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.validate-digital-link.success</td><td>gs1.validateDigitalLink</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.normalize-digital-link.deterministic</td><td>gs1.normalizeDigitalLink</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-preserve</td><td>gs1.validateDigitalLink</td><td>passed</td><td>gs1: passed</td><td></td></tr>
+      <tr><td>gs1.validate-element-string.missing-separator-reject</td><td>gs1.validateElementString</td><td>passed</td><td>validation: passed</td><td></td></tr>
+      <tr><td>gs1.validate-element-string.invalid-gtin-reject</td><td>gs1.validateElementString</td><td>passed</td><td>validation: passed</td><td></td></tr>
+      <tr><td>gs1.validate-element-string.unsupported-ai-reject</td><td>gs1.validateElementString</td><td>passed</td><td>validation: passed</td><td></td></tr>
+      <tr><td>gs1.validate-digital-link.duplicate-ai-reject</td><td>gs1.validateDigitalLink</td><td>passed</td><td>validation: passed</td><td></td></tr>
+      <tr><td>gs1.validate-digital-link.invalid-placement-reject</td><td>gs1.validateDigitalLink</td><td>passed</td><td>validation: passed</td><td></td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-reject</td><td>gs1.validateDigitalLink</td><td>passed</td><td>validation: passed</td><td></td></tr>
+      <tr><td>planning.estimate.byte-simple-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.numeric-v1-l-boundary</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.binary-hex-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.kanji-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.gs1-raw-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.fnc1-second-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.structured-append-low-level-success</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.analyze-segments.mixed-manual</td><td>analyzeSegments</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.analyze-segments.eci-byte-numeric</td><td>analyzeSegments</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.analyze-segments.fnc1-second-manual</td><td>analyzeSegments</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.analyze-segments.structured-append-manual</td><td>analyzeSegments</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.get-capacity.v1-l-table</td><td>getCapacity</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.get-capacity.v1-l-byte-control</td><td>getCapacity</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.get-capacity.v10-m-numeric</td><td>getCapacity</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.get-capacity.v27-q-alphanumeric</td><td>getCapacity</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.get-capacity.v40-h-kanji</td><td>getCapacity</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.estimate.data-too-long-v1-h</td><td>estimate</td><td>passed</td><td>rejects: passed, planning: passed</td><td></td></tr>
+      <tr><td>planning.analyze-segments.data-too-long-v1-h</td><td>analyzeSegments</td><td>passed</td><td>rejects: passed, planning: passed</td><td></td></tr>
+      <tr><td>planning.get-capacity.invalid-version-reject</td><td>getCapacity</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+      <tr><td>planning.diagnostics.warning.quiet-zone-too-small</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.diagnostics.warning.low-contrast</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.diagnostics.warning.print-module-too-small</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>planning.diagnostics.warning.capacity-near-limit</td><td>estimate</td><td>passed</td><td>planning: passed</td><td></td></tr>
+      <tr><td>reference.nayuki.numeric.v1-l-mask0</td><td>generate</td><td>skipped</td><td>expectation: skipped</td><td></td></tr>
+      <tr><td>reference.nayuki.alphanumeric.v1-m-mask1</td><td>generate</td><td>skipped</td><td>expectation: skipped</td><td></td></tr>
+      <tr><td>reference.nayuki.byte-utf8.v2-q-mask2</td><td>generate</td><td>skipped</td><td>expectation: skipped</td><td></td></tr>
+      <tr><td>reference.nayuki.manual-mixed.v3-q-mask5</td><td>generateSegments</td><td>skipped</td><td>expectation: skipped</td><td></td></tr>
+      <tr><td>reference.nayuki.eci-utf8-byte.v2-q-mask6</td><td>generate</td><td>skipped</td><td>expectation: skipped</td><td></td></tr>
+      <tr><td>reference.nayuki.binary-0041ff4200.v1-q-mask7</td><td>generate</td><td>skipped</td><td>expectation: skipped</td><td></td></tr>
+      <tr><td>example.generate.byte-text</td><td>generate</td><td>passed</td><td>decode: skipped, diagnostics.subset: passed</td><td></td></tr>
+      <tr><td>structured-append.generate.alphanumeric-two-symbol</td><td>structuredAppend.generate</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.generate.alphanumeric-three-symbol</td><td>structuredAppend.generate</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.generate.binary-three-symbol</td><td>structuredAppend.generate</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.generate-segments.segment-boundary</td><td>structuredAppend.generateSegments</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.generate-segments.byte-chunk</td><td>structuredAppend.generateSegments</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.generate.parity-helper-consistency</td><td>structuredAppend.generate</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.merge-parts.valid-string</td><td>structuredAppend.mergeParts</td><td>passed</td><td>structuredAppend: passed</td><td></td></tr>
+      <tr><td>structured-append.merge-parts.missing-part-reject</td><td>structuredAppend.mergeParts</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+      <tr><td>structured-append.merge-parts.duplicate-part-reject</td><td>structuredAppend.mergeParts</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+      <tr><td>structured-append.merge-parts.total-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+      <tr><td>structured-append.merge-parts.parity-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+      <tr><td>structured-append.generate-segments.invalid-low-level-header-reject</td><td>structuredAppend.generateSegments</td><td>passed</td><td>rejects: passed</td><td></td></tr>
+    </tbody>
+  </table>
+  <h2>jsQR decode readability checks</h2>
+  <table>
+    <thead>
+      <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core.generate.byte-text</td><td>generate</td><td>passed</td><td>decode.text: passed</td><td></td></tr>
+      <tr><td>core.generate.numeric-fixed-version-ecc-mask</td><td>generate</td><td>passed</td><td>decode.text: passed</td><td></td></tr>
+      <tr><td>core.generate-segments.manual-mixed</td><td>generateSegments</td><td>passed</td><td>decode.text: passed</td><td></td></tr>
+      <tr><td>core.generate.binary-00-ff</td><td>generate</td><td>passed</td><td>decode.binaryHex: passed</td><td></td></tr>
+      <tr><td>core.estimate.byte-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>core.estimate.data-too-long-reject</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>gs1.create-element-string.gtin-01</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.sscc-00</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.lot-separator-before-date</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.expiration-date-17</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.validate-element-string.success</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.create-digital-link.primary-gtin</td><td>gs1.createDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.createDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.success</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.normalize-digital-link.deterministic</td><td>gs1.normalizeDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.normalizeDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-preserve</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-element-string.missing-separator-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.invalid-gtin-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.unsupported-ai-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-digital-link.duplicate-ai-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.invalid-placement-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>planning.estimate.byte-simple-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.estimate.numeric-v1-l-boundary</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.estimate.binary-hex-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.estimate.kanji-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.estimate.gs1-raw-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.estimate.fnc1-second-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.estimate.structured-append-low-level-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.mixed-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.eci-byte-numeric</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.fnc1-second-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.structured-append-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.v1-l-table</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v1-l-byte-control</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v10-m-numeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v27-q-alphanumeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v40-h-kanji</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: getCapacity</td></tr>
+      <tr><td>planning.estimate.data-too-long-v1-h</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.data-too-long-v1-h</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.invalid-version-reject</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: getCapacity</td></tr>
+      <tr><td>planning.diagnostics.warning.quiet-zone-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.low-contrast</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.print-module-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.capacity-near-limit</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for jsQR lane: estimate</td></tr>
+      <tr><td>reference.nayuki.numeric.v1-l-mask0</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.alphanumeric.v1-m-mask1</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.byte-utf8.v2-q-mask2</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.manual-mixed.v3-q-mask5</td><td>generateSegments</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.eci-utf8-byte.v2-q-mask6</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.binary-0041ff4200.v1-q-mask7</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>example.generate.byte-text</td><td>generate</td><td>passed</td><td>decode.text: passed</td><td></td></tr>
+      <tr><td>structured-append.generate.alphanumeric-two-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.binary-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate-segments.segment-boundary</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate-segments.byte-chunk</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate.parity-helper-consistency</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.merge-parts.valid-string</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.missing-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.duplicate-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.total-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.parity-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.generate-segments.invalid-low-level-header-reject</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside jsQR decode-readability scope: structuredAppend.generateSegments</td></tr>
+    </tbody>
+  </table>
+  <p>jsQR lane は readable text と raw byte payload を確認します。jsQR が raw byte を公開できない場合は、binary decode check だけを制限としてスキップします。現在の raw byte skip 件数: <code>0</code></p>
+  <h2>Nayuki reference matrix checks</h2>
+  <table>
+    <thead>
+      <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core.generate.byte-text</td><td>generate</td><td>skipped</td><td>referenceMatrix: skipped</td><td>No Nayuki referenceMatrix expectation</td></tr>
+      <tr><td>core.generate.numeric-fixed-version-ecc-mask</td><td>generate</td><td>skipped</td><td>referenceMatrix: skipped</td><td>No Nayuki referenceMatrix expectation</td></tr>
+      <tr><td>core.generate-segments.manual-mixed</td><td>generateSegments</td><td>skipped</td><td>referenceMatrix: skipped</td><td>No Nayuki referenceMatrix expectation</td></tr>
+      <tr><td>core.generate.binary-00-ff</td><td>generate</td><td>skipped</td><td>referenceMatrix: skipped</td><td>No Nayuki referenceMatrix expectation</td></tr>
+      <tr><td>core.estimate.byte-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>core.estimate.data-too-long-reject</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>gs1.create-element-string.gtin-01</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.sscc-00</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.lot-separator-before-date</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.expiration-date-17</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.validate-element-string.success</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.create-digital-link.primary-gtin</td><td>gs1.createDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.createDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.success</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.normalize-digital-link.deterministic</td><td>gs1.normalizeDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.normalizeDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-preserve</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-element-string.missing-separator-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.invalid-gtin-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.unsupported-ai-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-digital-link.duplicate-ai-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.invalid-placement-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>planning.estimate.byte-simple-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.estimate.numeric-v1-l-boundary</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.estimate.binary-hex-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.estimate.kanji-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.estimate.gs1-raw-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.estimate.fnc1-second-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.estimate.structured-append-low-level-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.mixed-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.eci-byte-numeric</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.fnc1-second-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.structured-append-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.v1-l-table</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v1-l-byte-control</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v10-m-numeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v27-q-alphanumeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v40-h-kanji</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: getCapacity</td></tr>
+      <tr><td>planning.estimate.data-too-long-v1-h</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.data-too-long-v1-h</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.invalid-version-reject</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: getCapacity</td></tr>
+      <tr><td>planning.diagnostics.warning.quiet-zone-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.low-contrast</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.print-module-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.capacity-near-limit</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for Nayuki lane: estimate</td></tr>
+      <tr><td>reference.nayuki.numeric.v1-l-mask0</td><td>generate</td><td>passed</td><td>referenceMatrix.exact: passed</td><td></td></tr>
+      <tr><td>reference.nayuki.alphanumeric.v1-m-mask1</td><td>generate</td><td>passed</td><td>referenceMatrix.exact: passed</td><td></td></tr>
+      <tr><td>reference.nayuki.byte-utf8.v2-q-mask2</td><td>generate</td><td>passed</td><td>referenceMatrix.exact: passed</td><td></td></tr>
+      <tr><td>reference.nayuki.manual-mixed.v3-q-mask5</td><td>generateSegments</td><td>passed</td><td>referenceMatrix.exact: passed</td><td></td></tr>
+      <tr><td>reference.nayuki.eci-utf8-byte.v2-q-mask6</td><td>generate</td><td>passed</td><td>referenceMatrix.exact: passed</td><td></td></tr>
+      <tr><td>reference.nayuki.binary-0041ff4200.v1-q-mask7</td><td>generate</td><td>passed</td><td>referenceMatrix.exact: passed</td><td></td></tr>
+      <tr><td>example.generate.byte-text</td><td>generate</td><td>skipped</td><td>referenceMatrix: skipped</td><td>No Nayuki referenceMatrix expectation</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-two-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.binary-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate-segments.segment-boundary</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate-segments.byte-chunk</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate.parity-helper-consistency</td><td>structuredAppend.generate</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.merge-parts.valid-string</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.missing-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.duplicate-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.total-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.parity-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.generate-segments.invalid-low-level-header-reject</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>referenceMatrix.scope: skipped</td><td>Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generateSegments</td></tr>
+    </tbody>
+  </table>
+  <p>Nayuki lane は固定 Version/ECC/mask の matrix exact match だけを確認します。GS1、Kanji、Structured Append、renderer output、auto segmentation の同等性は主張しません。</p>
+  <h2>Suites</h2>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Category</th><th>Vectors</th><th>File</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core</td><td>core</td><td>6</td><td>vectors/core.json</td></tr>
+      <tr><td>gs1-digital-link</td><td>gs1-digital-link</td><td>15</td><td>vectors/gs1-digital-link.json</td></tr>
+      <tr><td>planning-diagnostics</td><td>planning-diagnostics</td><td>23</td><td>vectors/planning-diagnostics.json</td></tr>
+      <tr><td>reference-nayuki</td><td>reference-matrix</td><td>6</td><td>vectors/reference-nayuki.json</td></tr>
+      <tr><td>schema-example</td><td>example</td><td>1</td><td>vectors/schema.example.json</td></tr>
+      <tr><td>structured-append</td><td>structured-append</td><td>12</td><td>vectors/structured-append.json</td></tr>
+    </tbody>
+  </table>
+  <h2>Categories</h2>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Vectors</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core</td><td>3</td></tr>
+      <tr><td>example</td><td>1</td></tr>
+      <tr><td>gs1</td><td>8</td></tr>
+      <tr><td>gs1-digital-link</td><td>7</td></tr>
+      <tr><td>negative</td><td>1</td></tr>
+      <tr><td>planning</td><td>1</td></tr>
+      <tr><td>planning-diagnostics</td><td>23</td></tr>
+      <tr><td>reference-matrix</td><td>6</td></tr>
+      <tr><td>segments</td><td>1</td></tr>
+      <tr><td>structured-append</td><td>12</td></tr>
+    </tbody>
+  </table>
+  <h2>Operations</h2>
+  <table>
+    <thead>
+      <tr><th>Operation</th><th>Vectors</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>analyzeSegments</td><td>5</td></tr>
+      <tr><td>estimate</td><td>14</td></tr>
+      <tr><td>generate</td><td>9</td></tr>
+      <tr><td>generateSegments</td><td>2</td></tr>
+      <tr><td>getCapacity</td><td>6</td></tr>
+      <tr><td>gs1.createDigitalLink</td><td>1</td></tr>
+      <tr><td>gs1.createElementString</td><td>4</td></tr>
+      <tr><td>gs1.normalizeDigitalLink</td><td>1</td></tr>
+      <tr><td>gs1.validateDigitalLink</td><td>5</td></tr>
+      <tr><td>gs1.validateElementString</td><td>4</td></tr>
+      <tr><td>structuredAppend.generate</td><td>4</td></tr>
+      <tr><td>structuredAppend.generateSegments</td><td>3</td></tr>
+      <tr><td>structuredAppend.mergeParts</td><td>5</td></tr>
+    </tbody>
+  </table>
+  <h2>Adapters</h2>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Name</th><th>Status</th><th>Package</th><th>Version</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>specqr</td><td>SpecQR</td><td>active</td><td>specqr</td><td>2.4.0</td></tr>
+      <tr><td>jsqr</td><td>jsQR</td><td>active</td><td>jsqr</td><td>1.4.0</td></tr>
+      <tr><td>nayuki</td><td>Nayuki QR Code generator</td><td>active</td><td>nayuki-qr-code-generator</td><td>1.8.0</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

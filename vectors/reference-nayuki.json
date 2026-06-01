@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "id": "reference-nayuki",
+  "name": "Nayuki fixed matrix reference vectors",
+  "description": "Nayuki と固定 Version/ECC/mask 条件で matrix exact match を確認する代表 vector。",
+  "category": "reference-matrix",
+  "vectors": [
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask0",
+      "title": "Numeric fixed Version 1-L mask 0",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 0,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric"
+      ]
+    },
+    {
+      "id": "reference.nayuki.alphanumeric.v1-m-mask1",
+      "title": "Alphanumeric fixed Version 1-M mask 1",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "HELLO WORLD"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 1,
+        "mode": "alphanumeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "alphanumeric"
+      ]
+    },
+    {
+      "id": "reference.nayuki.byte-utf8.v2-q-mask2",
+      "title": "UTF-8 byte fixed Version 2-Q mask 2",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "hello-世界"
+      },
+      "options": {
+        "version": 2,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 2,
+        "mode": "byte"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "byte",
+        "utf-8"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v3-q-mask5",
+      "title": "Manual mixed segments fixed Version 3-Q mask 5",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "12345"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR"
+          },
+          {
+            "mode": "byte",
+            "text": "ok"
+          }
+        ]
+      },
+      "options": {
+        "version": 3,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 5
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed"
+      ]
+    },
+    {
+      "id": "reference.nayuki.eci-utf8-byte.v2-q-mask6",
+      "title": "ECI UTF-8 byte fixed Version 2-Q mask 6",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "hello-世界"
+      },
+      "options": {
+        "version": 2,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 6,
+        "mode": "byte",
+        "eci": 26
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "eci",
+        "utf-8"
+      ]
+    },
+    {
+      "id": "reference.nayuki.binary-0041ff4200.v1-q-mask7",
+      "title": "Binary 0041ff4200 fixed Version 1-Q mask 7",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "0041ff4200"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 7
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "binary"
+      ]
+    }
+  ]
+}

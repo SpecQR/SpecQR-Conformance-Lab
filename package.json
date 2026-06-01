@@ -1,0 +1,39 @@
+{
+  "name": "@specqr/conformance-lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "External conformance, comparison, and report infrastructure for SpecQR.",
+  "type": "module",
+  "license": "MIT",
+  "homepage": "https://github.com/SpecQR/SpecQR-Conformance-Lab#readme",
+  "bugs": {
+    "url": "https://github.com/SpecQR/SpecQR-Conformance-Lab/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpecQR/SpecQR-Conformance-Lab.git"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node tools/test.js",
+    "validate:vectors": "node tools/validate-vectors.js",
+    "conformance": "node tools/run-conformance.js",
+    "report": "node tools/report.js",
+    "pages:build": "npm run conformance && npm run report && node tools/build-pages.js",
+    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report"
+  },
+  "keywords": [
+    "specqr",
+    "qr",
+    "qrcode",
+    "conformance",
+    "vectors"
+  ],
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "nayuki-qr-code-generator": "1.8.0",
+    "specqr": "2.4.0"
+  }
+}

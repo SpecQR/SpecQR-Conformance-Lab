@@ -1,0 +1,872 @@
+{
+  "version": 1,
+  "id": "planning-diagnostics",
+  "name": "Planning and Diagnostics API vectors",
+  "description": "SpecQR 2.4.0 の estimate / analyzeSegments / getCapacity と diagnostics warning surface を外部検証する vector。",
+  "category": "planning-diagnostics",
+  "vectors": [
+    {
+      "id": "planning.estimate.byte-simple-success",
+      "title": "Estimate simple byte text",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "HELLO SPECQR"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "mode": "byte"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "minVersion": 1,
+          "maxVersion": 40,
+          "errorCorrectionLevel": "M",
+          "mode": "byte",
+          "dataBitLength": 108,
+          "capacityBits": 128,
+          "remainingBits": 20,
+          "diagnostics": {
+            "subset": {
+              "phase": "planning",
+              "renderPlanned": false,
+              "maskEvaluated": false,
+              "codewordsBuilt": false,
+              "version": 1,
+              "mode": "byte",
+              "segments": [
+                {
+                  "mode": "byte",
+                  "characterCount": 12,
+                  "byteCount": 12,
+                  "bitLength": 108
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "byte"]
+    },
+    {
+      "id": "planning.estimate.numeric-v1-l-boundary",
+      "title": "Estimate numeric Version 1-L boundary",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "11111111111111111111111111111111111111111"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "numeric"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "L",
+          "mode": "numeric",
+          "dataBitLength": 151,
+          "capacityBits": 152,
+          "remainingBits": 1,
+          "warnings": [
+            {
+              "code": "CAPACITY_NEAR_LIMIT"
+            }
+          ],
+          "diagnostics": {
+            "subset": {
+              "versionSelection": "fixed",
+              "segments": [
+                {
+                  "mode": "numeric",
+                  "characterCount": 41,
+                  "bitLength": 151
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "numeric", "boundary"]
+    },
+    {
+      "id": "planning.estimate.binary-hex-success",
+      "title": "Estimate binary input via binaryHex",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "binaryHex": "00ff1020"
+      },
+      "options": {
+        "errorCorrectionLevel": "Q",
+        "mode": "byte"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "Q",
+          "mode": "byte",
+          "dataBitLength": 44,
+          "capacityBits": 104,
+          "remainingBits": 60,
+          "diagnostics": {
+            "subset": {
+              "segments": [
+                {
+                  "mode": "byte",
+                  "characterCount": 0,
+                  "byteCount": 4
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "binary"]
+    },
+    {
+      "id": "planning.estimate.kanji-success",
+      "title": "Estimate Kanji text",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "漢字"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "mode": "kanji"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "kanji",
+          "dataBitLength": 38,
+          "capacityBits": 128,
+          "remainingBits": 90,
+          "diagnostics": {
+            "subset": {
+              "segments": [
+                {
+                  "mode": "kanji",
+                  "characterCount": 2,
+                  "byteCount": 4
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "kanji"]
+    },
+    {
+      "id": "planning.estimate.gs1-raw-success",
+      "title": "Estimate GS1 raw element string",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "010491234567890410ABC123"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "gs1": true
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "mixed",
+          "dataBitLength": 124,
+          "capacityBits": 128,
+          "remainingBits": 4,
+          "warnings": [
+            {
+              "code": "CAPACITY_NEAR_LIMIT"
+            }
+          ],
+          "diagnostics": {
+            "subset": {
+              "fnc1": "first-position",
+              "gs1": true,
+              "gs1Validation": {
+                "enabled": true,
+                "elementCount": 2,
+                "ais": ["01", "10"],
+                "hasSeparators": false
+              },
+              "controlSegments": [
+                {
+                  "mode": "fnc1"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "gs1"]
+    },
+    {
+      "id": "planning.estimate.fnc1-second-success",
+      "title": "Estimate FNC1 second position",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "AA1234BBB112"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "mode": "alphanumeric",
+        "fnc1Second": "37"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "alphanumeric",
+          "dataBitLength": 91,
+          "capacityBits": 128,
+          "remainingBits": 37,
+          "diagnostics": {
+            "subset": {
+              "fnc1": "second-position",
+              "fnc1Second": {
+                "enabled": true,
+                "applicationIndicator": "37",
+                "applicationIndicatorCodeword": 37
+              },
+              "controlSegments": [
+                {
+                  "mode": "fnc1-second",
+                  "applicationIndicator": "37",
+                  "applicationIndicatorCodeword": 37
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "fnc1-second"]
+    },
+    {
+      "id": "planning.estimate.structured-append-low-level-success",
+      "title": "Estimate low-level Structured Append option",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "PART 1"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "mode": "alphanumeric",
+        "structuredAppend": {
+          "index": 1,
+          "total": 2,
+          "parity": 65
+        }
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "alphanumeric",
+          "dataBitLength": 66,
+          "capacityBits": 128,
+          "remainingBits": 62,
+          "diagnostics": {
+            "subset": {
+              "structuredAppend": {
+                "enabled": true,
+                "index": 1,
+                "total": 2,
+                "parity": 65,
+                "sequenceIndicator": 1
+              },
+              "controlSegments": [
+                {
+                  "mode": "structured-append",
+                  "index": 1,
+                  "total": 2,
+                  "parity": 65
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "structured-append"]
+    },
+    {
+      "id": "planning.analyze-segments.mixed-manual",
+      "title": "Analyze mixed manual segments",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "data": "12345"
+          },
+          {
+            "mode": "alphanumeric",
+            "data": "SPECQR"
+          },
+          {
+            "mode": "byte",
+            "data": "hello"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "Q"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 2,
+          "errorCorrectionLevel": "Q",
+          "mode": "mixed",
+          "dataBitLength": 129,
+          "capacityBits": 176,
+          "remainingBits": 47,
+          "diagnostics": {
+            "subset": {
+              "segments": [
+                {
+                  "mode": "numeric",
+                  "characterCount": 5
+                },
+                {
+                  "mode": "alphanumeric",
+                  "characterCount": 6
+                },
+                {
+                  "mode": "byte",
+                  "characterCount": 5
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "analyzeSegments", "manual-segments"]
+    },
+    {
+      "id": "planning.analyze-segments.eci-byte-numeric",
+      "title": "Analyze ECI + byte + numeric segments",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "eci",
+            "assignmentNumber": 26
+          },
+          {
+            "mode": "byte",
+            "data": "hello"
+          },
+          {
+            "mode": "numeric",
+            "data": "12345"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "mixed",
+          "dataBitLength": 95,
+          "capacityBits": 128,
+          "remainingBits": 33,
+          "diagnostics": {
+            "subset": {
+              "eciAssignmentNumber": 26,
+              "controlSegments": [
+                {
+                  "mode": "eci",
+                  "assignmentNumber": 26
+                }
+              ],
+              "segments": [
+                {
+                  "mode": "eci",
+                  "assignmentNumber": 26
+                },
+                {
+                  "mode": "byte",
+                  "characterCount": 5
+                },
+                {
+                  "mode": "numeric",
+                  "characterCount": 5
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "analyzeSegments", "eci"]
+    },
+    {
+      "id": "planning.analyze-segments.fnc1-second-manual",
+      "title": "Analyze FNC1 second manual segment",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "fnc1-second",
+            "applicationIndicator": "37"
+          },
+          {
+            "mode": "alphanumeric",
+            "data": "AA1234BBB112"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "alphanumeric",
+          "dataBitLength": 91,
+          "capacityBits": 128,
+          "remainingBits": 37,
+          "diagnostics": {
+            "subset": {
+              "fnc1": "second-position",
+              "fnc1Second": {
+                "enabled": true,
+                "applicationIndicator": "37",
+                "applicationIndicatorCodeword": 37
+              }
+            }
+          }
+        }
+      },
+      "tags": ["planning", "analyzeSegments", "fnc1-second"]
+    },
+    {
+      "id": "planning.analyze-segments.structured-append-manual",
+      "title": "Analyze low-level Structured Append manual segment",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "structured-append",
+            "index": 1,
+            "total": 2,
+            "parity": 65
+          },
+          {
+            "mode": "alphanumeric",
+            "data": "PART 1"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "M",
+          "mode": "alphanumeric",
+          "dataBitLength": 66,
+          "capacityBits": 128,
+          "remainingBits": 62,
+          "diagnostics": {
+            "subset": {
+              "structuredAppend": {
+                "enabled": true,
+                "index": 1,
+                "total": 2,
+                "parity": 65,
+                "sequenceIndicator": 1
+              }
+            }
+          }
+        }
+      },
+      "tags": ["planning", "analyzeSegments", "structured-append"]
+    },
+    {
+      "id": "planning.get-capacity.v1-l-table",
+      "title": "Version 1-L capacity table lookup",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "input": {
+        "version": 1,
+        "errorCorrectionLevel": "L"
+      },
+      "options": {},
+      "expect": {
+        "planning": {
+          "version": 1,
+          "errorCorrectionLevel": "L",
+          "size": 21,
+          "dataCodewords": 19,
+          "totalCodewords": 26,
+          "capacityBits": 152,
+          "mode": null,
+          "controlBits": 0
+        }
+      },
+      "tags": ["planning", "getCapacity", "capacity"]
+    },
+    {
+      "id": "planning.get-capacity.v1-l-byte-control",
+      "title": "Version 1-L byte capacity with controlBits",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "input": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "byte",
+        "controlBits": 20
+      },
+      "options": {},
+      "expect": {
+        "planning": {
+          "version": 1,
+          "errorCorrectionLevel": "L",
+          "mode": "byte",
+          "capacityBits": 152,
+          "characterCountBits": 8,
+          "modeIndicatorBits": 4,
+          "controlBits": 20,
+          "payloadBits": 120,
+          "maxBytes": 15
+        }
+      },
+      "tags": ["planning", "getCapacity", "capacity"]
+    },
+    {
+      "id": "planning.get-capacity.v10-m-numeric",
+      "title": "Version 10 numeric character count boundary",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "input": {
+        "version": 10,
+        "errorCorrectionLevel": "M",
+        "mode": "numeric"
+      },
+      "options": {},
+      "expect": {
+        "planning": {
+          "version": 10,
+          "errorCorrectionLevel": "M",
+          "size": 57,
+          "capacityBits": 1728,
+          "characterCountBits": 12,
+          "payloadBits": 1712,
+          "maxCharacters": 513
+        }
+      },
+      "tags": ["planning", "getCapacity", "capacity"]
+    },
+    {
+      "id": "planning.get-capacity.v27-q-alphanumeric",
+      "title": "Version 27 alphanumeric character count boundary",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "input": {
+        "version": 27,
+        "errorCorrectionLevel": "Q",
+        "mode": "alphanumeric"
+      },
+      "options": {},
+      "expect": {
+        "planning": {
+          "version": 27,
+          "errorCorrectionLevel": "Q",
+          "size": 125,
+          "capacityBits": 6464,
+          "characterCountBits": 13,
+          "payloadBits": 6447,
+          "maxCharacters": 1172
+        }
+      },
+      "tags": ["planning", "getCapacity", "capacity"]
+    },
+    {
+      "id": "planning.get-capacity.v40-h-kanji",
+      "title": "Version 40-H Kanji capacity",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "input": {
+        "version": 40,
+        "errorCorrectionLevel": "H",
+        "mode": "kanji"
+      },
+      "options": {},
+      "expect": {
+        "planning": {
+          "version": 40,
+          "errorCorrectionLevel": "H",
+          "size": 177,
+          "capacityBits": 10208,
+          "characterCountBits": 12,
+          "payloadBits": 10192,
+          "maxCharacters": 784
+        }
+      },
+      "tags": ["planning", "getCapacity", "capacity"]
+    },
+    {
+      "id": "planning.estimate.data-too-long-v1-h",
+      "title": "Estimate fixed Version 1-H data-too-long",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "mode": "byte"
+      },
+      "expect": {
+        "rejects": {
+          "code": "DATA_TOO_LONG",
+          "reason": "data-too-long"
+        },
+        "planning": {
+          "ok": false,
+          "reason": "data-too-long",
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "H",
+          "mode": "byte",
+          "dataBitLength": 412,
+          "capacityBits": 72,
+          "remainingBits": -340,
+          "overflowBits": 340,
+          "diagnostics": {
+            "subset": {
+              "version": 1,
+              "mode": "byte"
+            }
+          }
+        }
+      },
+      "tags": ["planning", "estimate", "negative", "reject"]
+    },
+    {
+      "id": "planning.analyze-segments.data-too-long-v1-h",
+      "title": "Analyze fixed Version 1-H data-too-long",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "byte",
+            "data": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+          }
+        ]
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H"
+      },
+      "expect": {
+        "rejects": {
+          "code": "DATA_TOO_LONG",
+          "reason": "data-too-long"
+        },
+        "planning": {
+          "ok": false,
+          "reason": "data-too-long",
+          "selectedVersion": 1,
+          "errorCorrectionLevel": "H",
+          "mode": "byte",
+          "dataBitLength": 412,
+          "capacityBits": 72,
+          "remainingBits": -340,
+          "overflowBits": 340
+        }
+      },
+      "tags": ["planning", "analyzeSegments", "negative", "reject"]
+    },
+    {
+      "id": "planning.get-capacity.invalid-version-reject",
+      "title": "Reject invalid getCapacity version",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "input": {
+        "version": 41,
+        "errorCorrectionLevel": "L"
+      },
+      "options": {},
+      "expect": {
+        "rejects": {
+          "code": "INVALID_VERSION",
+          "messageIncludes": "version must be an integer"
+        }
+      },
+      "tags": ["planning", "getCapacity", "negative", "reject"]
+    },
+    {
+      "id": "planning.diagnostics.warning.quiet-zone-too-small",
+      "title": "Quiet zone warning",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "HELLO"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "margin": 0
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "warnings": [
+            {
+              "code": "QUIET_ZONE_TOO_SMALL"
+            },
+            {
+              "code": "SCAN_RISK"
+            }
+          ],
+          "diagnostics": {
+            "subset": {
+              "quietZone": {
+                "modules": 0,
+                "isSufficient": false
+              }
+            }
+          }
+        }
+      },
+      "tags": ["planning", "diagnostics", "warning"]
+    },
+    {
+      "id": "planning.diagnostics.warning.low-contrast",
+      "title": "Low contrast warning",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "HELLO"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "foreground": "#777777",
+        "background": "#777777"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "warnings": [
+            {
+              "code": "COLOR_CONTRAST_LOW"
+            },
+            {
+              "code": "SCAN_RISK"
+            }
+          ],
+          "diagnostics": {
+            "subset": {
+              "colors": {
+                "ratio": 1,
+                "isSufficient": false
+              }
+            }
+          }
+        }
+      },
+      "tags": ["planning", "diagnostics", "warning"]
+    },
+    {
+      "id": "planning.diagnostics.warning.print-module-too-small",
+      "title": "Print module too small warning",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "HELLO"
+      },
+      "options": {
+        "errorCorrectionLevel": "M",
+        "scale": 1,
+        "printDpi": 300
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "warnings": [
+            {
+              "code": "PRINT_MODULE_TOO_SMALL"
+            },
+            {
+              "code": "SCAN_RISK"
+            }
+          ],
+          "diagnostics": {
+            "subset": {
+              "print": {
+                "dpi": 300,
+                "modulePixels": 1,
+                "isModuleSizeSufficient": false
+              }
+            }
+          }
+        }
+      },
+      "tags": ["planning", "diagnostics", "warning"]
+    },
+    {
+      "id": "planning.diagnostics.warning.capacity-near-limit",
+      "title": "Capacity near limit warning",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "input": {
+        "text": "11111111111111111111111111111111111111111"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "mode": "numeric"
+      },
+      "expect": {
+        "planning": {
+          "ok": true,
+          "remainingBits": 1,
+          "warnings": [
+            {
+              "code": "CAPACITY_NEAR_LIMIT"
+            }
+          ],
+          "diagnostics": {
+            "subset": {
+              "warnings": [
+                {
+                  "code": "CAPACITY_NEAR_LIMIT"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "tags": ["planning", "diagnostics", "warning"]
+    }
+  ]
+}

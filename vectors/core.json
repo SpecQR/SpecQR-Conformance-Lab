@@ -1,0 +1,180 @@
+{
+  "version": 1,
+  "id": "core",
+  "name": "Core QR vectors",
+  "description": "QR Code Model 2 の基本生成、manual segments、binary input、Planning API の代表 vector。",
+  "category": "core",
+  "vectors": [
+    {
+      "id": "core.generate.byte-text",
+      "title": "Byte text generation",
+      "category": "core",
+      "operation": "generate",
+      "input": {
+        "text": "HELLO SPECQR"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "decode": {
+          "text": "HELLO SPECQR"
+        },
+        "diagnostics": {
+          "subset": {
+            "errorCorrectionLevel": "M"
+          }
+        }
+      },
+      "tags": [
+        "byte",
+        "generation"
+      ]
+    },
+    {
+      "id": "core.generate.numeric-fixed-version-ecc-mask",
+      "title": "Numeric generation with fixed version, ECC, and mask",
+      "category": "core",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 3
+      },
+      "expect": {
+        "decode": {
+          "text": "01234567"
+        },
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "maskPattern": 3
+          }
+        }
+      },
+      "tags": [
+        "numeric",
+        "fixed-version",
+        "fixed-mask"
+      ]
+    },
+    {
+      "id": "core.generate-segments.manual-mixed",
+      "title": "Manual mixed segments",
+      "category": "segments",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "12345"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR"
+          },
+          {
+            "mode": "byte",
+            "text": "ok"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "Q"
+      },
+      "expect": {
+        "decode": {
+          "text": "12345SPECQRok"
+        },
+        "diagnostics": {
+          "subset": {
+            "errorCorrectionLevel": "Q"
+          }
+        }
+      },
+      "tags": [
+        "manual-segments",
+        "mixed"
+      ]
+    },
+    {
+      "id": "core.generate.binary-00-ff",
+      "title": "Binary byte payload 00 ff",
+      "category": "core",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "00ff"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "decode": {
+          "binaryHex": "00ff"
+        },
+        "diagnostics": {
+          "subset": {
+            "errorCorrectionLevel": "M"
+          }
+        }
+      },
+      "tags": [
+        "binary",
+        "byte"
+      ]
+    },
+    {
+      "id": "core.estimate.byte-success",
+      "title": "Estimate byte text success",
+      "category": "planning",
+      "operation": "estimate",
+      "input": {
+        "text": "HELLO SPECQR"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "planning": {
+          "fits": true,
+          "minimumVersion": 1,
+          "errorCorrectionLevel": "M"
+        }
+      },
+      "tags": [
+        "planning",
+        "success"
+      ]
+    },
+    {
+      "id": "core.estimate.data-too-long-reject",
+      "title": "Estimate rejects data that cannot fit fixed Version 1-H",
+      "category": "negative",
+      "operation": "estimate",
+      "input": {
+        "text": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "options": {
+        "version": 1,
+        "maxVersion": 1,
+        "errorCorrectionLevel": "H"
+      },
+      "expect": {
+        "rejects": {
+          "code": "DATA_TOO_LONG",
+          "reason": "data-too-long"
+        }
+      },
+      "tags": [
+        "planning",
+        "negative",
+        "reject"
+      ],
+      "notes": "Version 1-H の byte capacity を超える input として扱う。"
+    }
+  ]
+}

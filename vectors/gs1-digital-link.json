@@ -1,0 +1,385 @@
+{
+  "version": 1,
+  "id": "gs1-digital-link",
+  "name": "GS1 and Digital Link helper vectors",
+  "description": "SpecQR がサポートする GS1 AI subset と Digital Link helper の外部 conformance vector。",
+  "category": "gs1-digital-link",
+  "vectors": [
+    {
+      "id": "gs1.create-element-string.gtin-01",
+      "title": "AI 01 GTIN element string",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "input": {
+        "elements": [
+          {
+            "ai": "01",
+            "value": "04912345678904"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "elementString": "0104912345678904"
+        }
+      },
+      "tags": ["gs1", "ai-01", "gtin"]
+    },
+    {
+      "id": "gs1.create-element-string.sscc-00",
+      "title": "AI 00 SSCC element string",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "input": {
+        "elements": [
+          {
+            "ai": "00",
+            "value": "123456789012345675"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "elementString": "00123456789012345675"
+        }
+      },
+      "tags": ["gs1", "ai-00", "sscc"]
+    },
+    {
+      "id": "gs1.create-element-string.lot-separator-before-date",
+      "title": "AI 10 lot with separator before AI 17",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "input": {
+        "elements": [
+          {
+            "ai": "01",
+            "value": "04912345678904"
+          },
+          {
+            "ai": "10",
+            "value": "ABC123"
+          },
+          {
+            "ai": "17",
+            "value": "251231"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "elementString": "010491234567890410ABC123\u001d17251231"
+        }
+      },
+      "tags": ["gs1", "ai-10", "separator"]
+    },
+    {
+      "id": "gs1.create-element-string.expiration-date-17",
+      "title": "AI 17 expiration date element string",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "input": {
+        "elements": [
+          {
+            "ai": "01",
+            "value": "04912345678904"
+          },
+          {
+            "ai": "17",
+            "value": "251231"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "elementString": "010491234567890417251231"
+        }
+      },
+      "tags": ["gs1", "ai-17", "date"]
+    },
+    {
+      "id": "gs1.validate-element-string.success",
+      "title": "Validate GS1 element string with separator",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "input": {
+        "elementString": "010491234567890410ABC123\u001d17251231"
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "validationSubset": {
+            "ok": true,
+            "hasSeparators": true,
+            "elements": [
+              {
+                "ai": "01",
+                "value": "04912345678904"
+              },
+              {
+                "ai": "10",
+                "value": "ABC123"
+              },
+              {
+                "ai": "17",
+                "value": "251231"
+              }
+            ]
+          }
+        }
+      },
+      "tags": ["gs1", "validation"]
+    },
+    {
+      "id": "gs1.create-digital-link.primary-gtin",
+      "title": "Create Digital Link with primary GTIN",
+      "category": "gs1-digital-link",
+      "operation": "gs1.createDigitalLink",
+      "input": {
+        "elements": [
+          {
+            "ai": "01",
+            "value": "04912345678904"
+          },
+          {
+            "ai": "10",
+            "value": "ABC123"
+          },
+          {
+            "ai": "17",
+            "value": "251231"
+          }
+        ]
+      },
+      "options": {
+        "baseUrl": "https://id.gs1.org"
+      },
+      "expect": {
+        "gs1": {
+          "digitalLink": "https://id.gs1.org/01/04912345678904/10/ABC123?17=251231"
+        }
+      },
+      "tags": ["gs1", "digital-link", "ai-01"]
+    },
+    {
+      "id": "gs1.validate-digital-link.success",
+      "title": "Validate Digital Link with primary GTIN",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "input": {
+        "url": "https://id.gs1.org/01/04912345678904/10/ABC123?17=251231"
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "validationSubset": {
+            "ok": true,
+            "result": {
+              "primary": {
+                "ai": "01",
+                "value": "04912345678904"
+              },
+              "elements": [
+                {
+                  "ai": "01",
+                  "value": "04912345678904"
+                },
+                {
+                  "ai": "10",
+                  "value": "ABC123"
+                },
+                {
+                  "ai": "17",
+                  "value": "251231"
+                }
+              ],
+              "unknownQuery": []
+            }
+          }
+        }
+      },
+      "tags": ["gs1", "digital-link", "validation"]
+    },
+    {
+      "id": "gs1.normalize-digital-link.deterministic",
+      "title": "Normalize Digital Link host and query order",
+      "category": "gs1-digital-link",
+      "operation": "gs1.normalizeDigitalLink",
+      "input": {
+        "url": "https://ID.GS1.ORG/01/04912345678904/10/ABC123?linkType=all&17=251231"
+      },
+      "options": {},
+      "expect": {
+        "gs1": {
+          "normalized": "https://id.gs1.org/01/04912345678904/10/ABC123?17=251231&linkType=all"
+        }
+      },
+      "tags": ["gs1", "digital-link", "normalization"]
+    },
+    {
+      "id": "gs1.validate-digital-link.unknown-query-preserve",
+      "title": "Preserve unknown Digital Link query parameter",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "input": {
+        "url": "https://id.gs1.org/01/04912345678904/10/ABC123?17=251231&linkType=all"
+      },
+      "options": {
+        "unknownQuery": "preserve"
+      },
+      "expect": {
+        "gs1": {
+          "validationSubset": {
+            "ok": true,
+            "result": {
+              "unknownQuery": [
+                {
+                  "key": "linkType",
+                  "value": "all"
+                }
+              ]
+            },
+            "warnings": [
+              {
+                "code": "GS1_DIGITAL_LINK_UNKNOWN_QUERY_PRESERVED"
+              }
+            ]
+          }
+        }
+      },
+      "tags": ["gs1", "digital-link", "unknown-query"]
+    },
+    {
+      "id": "gs1.validate-element-string.missing-separator-reject",
+      "title": "Reject missing separator after variable-length AI",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "input": {
+        "elementString": "010491234567890410ABC12317251231"
+      },
+      "options": {},
+      "expect": {
+        "validation": {
+          "ok": false,
+          "errors": [
+            {
+              "code": "GS1_MISSING_SEPARATOR"
+            }
+          ]
+        }
+      },
+      "tags": ["gs1", "negative", "reject", "separator"]
+    },
+    {
+      "id": "gs1.validate-element-string.invalid-gtin-reject",
+      "title": "Reject invalid GTIN check digit",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "input": {
+        "elementString": "0104912345678905"
+      },
+      "options": {},
+      "expect": {
+        "validation": {
+          "ok": false,
+          "errors": [
+            {
+              "code": "GS1_INVALID_CHECK_DIGIT"
+            }
+          ]
+        }
+      },
+      "tags": ["gs1", "negative", "reject", "gtin"]
+    },
+    {
+      "id": "gs1.validate-element-string.unsupported-ai-reject",
+      "title": "Reject unsupported AI",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "input": {
+        "elementString": "250ABC"
+      },
+      "options": {},
+      "expect": {
+        "validation": {
+          "ok": false,
+          "errors": [
+            {
+              "code": "GS1_UNSUPPORTED_AI"
+            }
+          ]
+        }
+      },
+      "tags": ["gs1", "negative", "reject", "unsupported-ai"]
+    },
+    {
+      "id": "gs1.validate-digital-link.duplicate-ai-reject",
+      "title": "Reject duplicate Digital Link AI",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "input": {
+        "url": "https://id.gs1.org/01/04912345678904?01=04912345678904"
+      },
+      "options": {},
+      "expect": {
+        "validation": {
+          "ok": false,
+          "errors": [
+            {
+              "code": "GS1_DUPLICATE_AI"
+            }
+          ]
+        }
+      },
+      "tags": ["gs1", "digital-link", "negative", "reject", "duplicate-ai"]
+    },
+    {
+      "id": "gs1.validate-digital-link.invalid-placement-reject",
+      "title": "Reject Digital Link key qualifier in invalid placement",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "input": {
+        "url": "https://id.gs1.org/01/04912345678904/17/251231"
+      },
+      "options": {},
+      "expect": {
+        "validation": {
+          "ok": false,
+          "errors": [
+            {
+              "code": "GS1_INVALID_DIGITAL_LINK_PLACEMENT"
+            }
+          ]
+        }
+      },
+      "tags": ["gs1", "digital-link", "negative", "reject", "placement"]
+    },
+    {
+      "id": "gs1.validate-digital-link.unknown-query-reject",
+      "title": "Reject unknown Digital Link query parameter",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "input": {
+        "url": "https://id.gs1.org/01/04912345678904?linkType=all"
+      },
+      "options": {
+        "unknownQuery": "reject"
+      },
+      "expect": {
+        "validation": {
+          "ok": false,
+          "errors": [
+            {
+              "code": "GS1_DIGITAL_LINK_UNKNOWN_QUERY"
+            }
+          ]
+        }
+      },
+      "tags": ["gs1", "digital-link", "negative", "reject", "unknown-query"]
+    }
+  ]
+}
