@@ -3,6 +3,8 @@ export const badgeFileNames = [
   "specqr.json",
   "jsqr.json",
   "nayuki.json",
+  "zbarimg.json",
+  "zxing-cli.json",
   "gs1-digital-link.json",
   "structured-append.json",
   "planning-diagnostics.json"
@@ -72,6 +74,8 @@ export function createBadgeSet(summary = {}) {
     "specqr.json": createBadge("specqr", adapterSummary.specqr),
     "jsqr.json": createBadge("jsqr", adapterSummary.jsqr),
     "nayuki.json": createBadge("nayuki", adapterSummary.nayuki),
+    "zbarimg.json": createBadge("zbarimg", adapterSummary.zbarimg),
+    "zxing-cli.json": createBadge("zxing cli", adapterSummary["zxing-cli"]),
     "gs1-digital-link.json": createBadge("gs1 digital link", summary.gs1DigitalLink),
     "structured-append.json": createBadge("structured append", summary.structuredAppend),
     "planning-diagnostics.json": createBadge("planning diagnostics", summary.planningDiagnostics)

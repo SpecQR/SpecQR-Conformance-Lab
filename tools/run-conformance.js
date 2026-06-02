@@ -3,11 +3,28 @@ import path from "node:path";
 import jsqrAdapter from "../adapters/jsqr.js";
 import nayukiAdapter from "../adapters/nayuki.js";
 import specqrAdapter from "../adapters/specqr.js";
+import zbarAdapter from "../adapters/zbar.js";
+import zxingCliAdapter from "../adapters/zxing-cli.js";
 import { createReportMetadata } from "./report-metadata.js";
 
 const vectorsDir = path.resolve("vectors");
 const reportPath = path.resolve("reports/latest.json");
-const activeAdapters = [specqrAdapter, jsqrAdapter, nayukiAdapter];
+const activeAdapters = [specqrAdapter, jsqrAdapter, nayukiAdapter, zbarAdapter, zxingCliAdapter];
+
+const adapterReportDefaults = {
+  specqr: {
+    lane: "generation-planning",
+    required: true
+  },
+  jsqr: {
+    lane: "decode-readability",
+    required: true
+  },
+  nayuki: {
+    lane: "reference-matrix",
+    required: true
+  }
+};
 
 async function readSuites() {
   const entries = await readdir(vectorsDir, { withFileTypes: true });
@@ -158,6 +175,22 @@ const adapterSummary = Object.fromEntries(
 );
 const metadata = await createReportMetadata();
 
+function createAdapterReportMetadata(activeAdapter) {
+  const defaults = adapterReportDefaults[activeAdapter.id] ?? {};
+  const packageVersion = activeAdapter.packageName ? metadata.packages[activeAdapter.packageName] : activeAdapter.packageVersion;
+
+  return {
+    id: activeAdapter.id,
+    name: activeAdapter.name,
+    packageName: activeAdapter.packageName,
+    packageVersion,
+    status: activeAdapter.status,
+    lane: activeAdapter.lane ?? defaults.lane,
+    required: activeAdapter.required ?? defaults.required ?? true,
+    ...(Array.isArray(activeAdapter.commandCandidates) ? { commandCandidates: activeAdapter.commandCandidates } : {})
+  };
+}
+
 const report = {
   schemaVersion: 1,
   labVersion: "0.1.0",
@@ -168,32 +201,7 @@ const report = {
     version: metadata.packages.specqr,
     source: "npm"
   },
-  adapters: [
-    {
-      id: "specqr",
-      name: "SpecQR",
-      packageName: "specqr",
-      packageVersion: metadata.packages.specqr,
-      status: "active",
-      lane: "generation-planning"
-    },
-    {
-      id: "jsqr",
-      name: "jsQR",
-      packageName: "jsqr",
-      packageVersion: metadata.packages.jsqr,
-      status: "active",
-      lane: "decode-readability"
-    },
-    {
-      id: "nayuki",
-      name: "Nayuki QR Code generator",
-      packageName: "nayuki-qr-code-generator",
-      packageVersion: metadata.packages["nayuki-qr-code-generator"],
-      status: "active",
-      lane: "reference-matrix"
-    }
-  ],
+  adapters: activeAdapters.map(createAdapterReportMetadata),
   suites: suites.map((suite) => ({
     file: suite.file,
     id: suite.id,

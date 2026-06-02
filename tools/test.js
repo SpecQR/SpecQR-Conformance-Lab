@@ -5,6 +5,8 @@ import { generate } from "specqr";
 import jsqrAdapter from "../adapters/jsqr.js";
 import nayukiAdapter, { compareMatrixRows, matrixRows, matrixSha256 } from "../adapters/nayuki.js";
 import specqrAdapter, { binaryHexToBytes, deepSubsetMatch } from "../adapters/specqr.js";
+import zbarAdapter, { parseZbarOutput } from "../adapters/zbar.js";
+import zxingCliAdapter, { parseZxingOutput } from "../adapters/zxing-cli.js";
 import { buildPages } from "./build-pages.js";
 import { pngToRgba } from "./png-rgba.js";
 import { createReportMetadata } from "./report-metadata.js";
@@ -28,6 +30,9 @@ const requiredPaths = [
   "adapters/specqr.js",
   "adapters/jsqr.js",
   "adapters/nayuki.js",
+  "adapters/cli-decoder.js",
+  "adapters/zbar.js",
+  "adapters/zxing-cli.js",
   "tools/validate-vectors.js",
   "tools/run-conformance.js",
   "tools/report.js",
@@ -188,6 +193,9 @@ try {
     "SpecQR",
     "jsQR",
     "Nayuki",
+    "zbarimg",
+    "ZXing CLI",
+    "missing `zbarimg` / ZXing CLI は CI failure ではありません",
     "reports/latest.json",
     "reports/latest.html",
     "badges/overall.json",
@@ -206,7 +214,10 @@ try {
     "何を検証していないか: full GS1 catalog",
     "何を検証していないか: full QR reader",
     "何を検証していないか: scanner metadata merge support",
-    "何を検証していないか: logo/styled QR"
+    "何を検証していないか: logo/styled QR",
+    "zbarimg adapter",
+    "ZXing CLI adapter",
+    "output format"
   ]) {
     requireText(knownLimits, text, "docs/known-limits.md");
   }
@@ -316,7 +327,21 @@ try {
     adapterSummary: {
       specqr: passingCounts,
       jsqr: passingCounts,
-      nayuki: passingCounts
+      nayuki: passingCounts,
+      zbarimg: {
+        executed: 0,
+        passed: 0,
+        failed: 0,
+        skipped: 3,
+        error: 0
+      },
+      "zxing-cli": {
+        executed: 0,
+        passed: 0,
+        failed: 0,
+        skipped: 3,
+        error: 0
+      }
     },
     gs1DigitalLink: passingCounts,
     structuredAppend: {
@@ -333,6 +358,8 @@ try {
   }
   assert(badgeSet["overall.json"].color === "green", "overall badge with expected skips must stay green");
   assert(badgeSet["structured-append.json"].color === "yellow", "skipped-only scope badge must be yellow");
+  assert(badgeSet["zbarimg.json"].color === "yellow", "missing optional zbarimg lane badge must be yellow");
+  assert(badgeSet["zxing-cli.json"].color === "yellow", "missing optional ZXing lane badge must be yellow");
 
   const metadata = await createReportMetadata({ now: new Date("2026-01-01T00:00:00.000Z") });
   assert(metadata.generatedAt === "2026-01-01T00:00:00.000Z", "report metadata must include generatedAt");
@@ -624,6 +651,85 @@ try {
   assert(
     binaryCheck.status === "passed" || (binaryCheck.status === "skipped" && /raw byte|raw/i.test(binaryCheck.reason ?? "")),
     "jsQR binary decode must pass via raw bytes or skip with a raw byte limitation reason"
+  );
+
+  const optionalTextVector = {
+    id: "test.optional-cli.decode-text",
+    title: "Optional CLI decode text",
+    category: "test",
+    operation: "generate",
+    input: {
+      text: "HELLO OPTIONAL CLI"
+    },
+    options: {},
+    expect: {
+      decode: {
+        text: "HELLO OPTIONAL CLI"
+      }
+    }
+  };
+
+  for (const optionalAdapter of [zbarAdapter, zxingCliAdapter]) {
+    const unavailableResult = await optionalAdapter.run(optionalTextVector, {
+      discoverCommand: async () => null
+    });
+    assert(unavailableResult.status === "skipped", `${optionalAdapter.id} must skip when command is unavailable`);
+    assert(/not available/.test(unavailableResult.reason ?? ""), `${optionalAdapter.id} skip reason must mention availability`);
+    assert(
+      unavailableResult.checks.some((check) => check.name === "availability" && check.status === "skipped"),
+      `${optionalAdapter.id} unavailable result must include availability skip check`
+    );
+  }
+
+  assert(parseZbarOutput("SIMPLE PAYLOAD\n") === "SIMPLE PAYLOAD", "zbar parser must extract raw payload");
+  assert(parseZxingOutput("Text: \"SIMPLE PAYLOAD\"\nFormat: QRCode\n") === "SIMPLE PAYLOAD", "ZXing parser must extract labelled payload");
+  assert(parseZxingOutput("input.png: Text: \"SIMPLE PAYLOAD\"\n") === "SIMPLE PAYLOAD", "ZXing parser must extract filename-prefixed labelled payload");
+  assert(parseZxingOutput("Raw result:\nSIMPLE PAYLOAD\nParsed result:\nSIMPLE PAYLOAD\n") === "SIMPLE PAYLOAD", "ZXing parser must extract following-line payload");
+
+  const fakeAvailableRunner = async (command, args) => {
+    const isDecode = args.some((arg) => String(arg).endsWith(".png"));
+    return {
+      command,
+      args,
+      ok: true,
+      unavailable: false,
+      exitCode: 0,
+      signal: null,
+      stdout: isDecode ? "WRONG TEXT\n" : "fake cli\n",
+      stderr: "",
+      error: null
+    };
+  };
+  const optionalMismatchResult = await zbarAdapter.run(optionalTextVector, {
+    commandRunner: fakeAvailableRunner
+  });
+  assert(optionalMismatchResult.status === "failed", "available optional CLI text mismatch must fail");
+  assert(
+    optionalMismatchResult.checks.some((check) => check.name === "decode.text" && check.status === "failed"),
+    "available optional CLI mismatch must include failed decode.text check"
+  );
+
+  const optionalBinaryResult = await zxingCliAdapter.run({
+    id: "test.optional-cli.raw-binary",
+    title: "Optional CLI raw binary",
+    category: "test",
+    operation: "generate",
+    input: {
+      binaryHex: "00ff"
+    },
+    options: {},
+    expect: {
+      decode: {
+        binaryHex: "00ff"
+      }
+    }
+  }, {
+    commandRunner: fakeAvailableRunner
+  });
+  assert(optionalBinaryResult.status === "skipped", "optional CLI raw binary expectation must skip without reliable raw bytes");
+  assert(
+    optionalBinaryResult.checks.some((check) => check.name === "decode.binaryHex" && check.status === "skipped"),
+    "optional CLI raw binary result must include skipped decode.binaryHex check"
   );
 
   const matrix = [

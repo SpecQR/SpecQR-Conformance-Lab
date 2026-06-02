@@ -179,6 +179,9 @@ const adapterSummary = summary.adapterSummary ?? {};
 const gs1DigitalLink = summary.gs1DigitalLink ?? {};
 const structuredAppend = summary.structuredAppend ?? {};
 const planningDiagnostics = summary.planningDiagnostics ?? {};
+const optionalDecoderAdapters = adapters.filter((adapter) => {
+  return adapter.lane === "optional-decode-readability" || adapter.required === false;
+});
 const rawByteSkipped = results.flatMap((result) => {
   return (result.checks ?? [])
     .filter((check) => check.name === "decode.binaryHex" && check.status === "skipped")
@@ -190,14 +193,25 @@ const statusBands = [
   statusBand("SpecQR", "published npm package の generation / helper / planning", adapterSummary.specqr),
   statusBand("jsQR decode readability", "SpecQR 生成 PNG の text / raw byte decode readability", adapterSummary.jsqr),
   statusBand("Nayuki reference matrix", "固定 Version/ECC/mask の matrix exact match", adapterSummary.nayuki),
+  ...optionalDecoderAdapters.map((adapter) => {
+    return statusBand(
+      `${adapter.name} optional decode readability`,
+      "任意 CLI decoder。未導入の場合は expected skip として扱います",
+      adapterSummary[adapter.id]
+    );
+  }),
   statusBand("GS1 / Digital Link", "SpecQR がサポートする GS1 helper subset", gs1DigitalLink),
   statusBand("Structured Append", "generation と merge helper の scope", structuredAppend),
   statusBand("Planning / Diagnostics", "estimate / analyzeSegments / getCapacity と warnings", planningDiagnostics)
 ].join("\n");
 
+function commandCandidates(adapter) {
+  return Array.isArray(adapter.commandCandidates) ? adapter.commandCandidates.join(", ") : "";
+}
+
 const adapterRows = adapters
   .map(
-    (adapter) => `      <tr><td>${escapeHtml(adapter.id)}</td><td>${escapeHtml(adapter.name)}</td><td>${escapeHtml(adapter.status)}</td><td>${escapeHtml(adapter.packageName ?? "")}</td><td>${escapeHtml(adapter.packageVersion ?? "")}</td></tr>`
+    (adapter) => `      <tr><td>${escapeHtml(adapter.id)}</td><td>${escapeHtml(adapter.name)}</td><td>${escapeHtml(adapter.required === false ? "optional" : "required")}</td><td>${escapeHtml(adapter.status)}</td><td>${escapeHtml(adapter.lane ?? "")}</td><td>${escapeHtml(adapter.packageName ?? "")}</td><td>${escapeHtml(adapter.packageVersion ?? "")}</td><td>${escapeHtml(commandCandidates(adapter))}</td></tr>`
   )
   .join("\n");
 
@@ -217,6 +231,21 @@ const metadataRows = [
   ["nayuki-qr-code-generator", packages["nayuki-qr-code-generator"]]
 ]
   .map(([label, value]) => `      <tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`)
+  .join("\n");
+
+const optionalDecoderSections = optionalDecoderAdapters
+  .map((adapter) => {
+    return `  <h2>${escapeHtml(adapter.name)} optional decoder checks</h2>
+  <p>${escapeHtml(adapter.name)} lane は任意 CLI decoder の readability check です。command が見つからない環境では expected skip として記録し、CI failure にはしません。候補 command: <code>${escapeHtml(commandCandidates(adapter))}</code></p>
+  <table>
+    <thead>
+      <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+${renderAdapterResultRows(results, adapter.id)}
+    </tbody>
+  </table>`;
+  })
   .join("\n");
 
 const html = `<!doctype html>
@@ -261,7 +290,7 @@ const html = `<!doctype html>
   <div class="status-grid">
 ${statusBands}
   </div>
-  <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip は、失敗やエラーとは別に扱います。</p>
+  <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip と、任意 CLI decoder が未導入の expected skip は、失敗やエラーとは別に扱います。</p>
   <h2>何を検証していないか</h2>
   <ul>
     <li>Micro QR</li>
@@ -332,6 +361,7 @@ ${renderAdapterResultRows(results, "jsqr")}
     </tbody>
   </table>
   <p>jsQR lane は readable text と raw byte payload を確認します。jsQR が raw byte を公開できない場合は、binary decode check だけを制限としてスキップします。現在の raw byte skip 件数: <code>${escapeHtml(rawByteSkipped.length)}</code></p>
+${optionalDecoderSections}
   <h2>Nayuki reference matrix checks</h2>
   <table>
     <thead>
@@ -372,7 +402,7 @@ ${objectRows(summary.operations)}
   <h2>Adapters</h2>
   <table>
     <thead>
-      <tr><th>ID</th><th>Name</th><th>Status</th><th>Package</th><th>Version</th></tr>
+      <tr><th>ID</th><th>Name</th><th>Required</th><th>Status</th><th>Lane</th><th>Package</th><th>Version</th><th>Command candidates</th></tr>
     </thead>
     <tbody>
 ${adapterRows}

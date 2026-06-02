@@ -7,9 +7,12 @@
 - SpecQR adapter は published `specqr@2.4.0` の GS1 helper / Digital Link helper を実行する。ただし対象は SpecQR がサポートする AI subset であり、GS1 full catalog の conformance ではない。
 - SpecQR adapter は published `specqr@2.4.0` の Structured Append generation / manual segment splitting / merge helper を実行する。
 - jsQR adapter は `generate` / `generateSegments` vector の decode readability に対応している。
+- zbarimg adapter は local `zbarimg` command がある環境だけで `generate` / `generateSegments` vector の decode readability に対応する。command がない場合は expected skip であり、CI failure ではない。
+- ZXing CLI adapter は local `ZXingReader`, `zxing`, `zxing-cpp`, `zxingscan` のいずれかがある環境だけで `generate` / `generateSegments` vector の decode readability に対応する。command がない場合は expected skip であり、CI failure ではない。
 - Nayuki adapter は固定 Version/ECC/mask の `referenceMatrix` exact match にだけ対応している。
 - Nayuki lane は GS1、Kanji、Structured Append、renderer output、auto segmentation の同等性を主張しない。
 - jsQR は FNC1、Structured Append、ECI などの QR metadata をすべて露出するわけではない。Structured Append の header、sequence、parity、merge metadata validation は jsQR lane の対象外。
+- zbarimg / ZXing CLI の output format は command と version によって異なるため、optional CLI lane は conservative parser で text payload だけを確認する。format metadata、raw bytes、Structured Append metadata、scanner merge metadata の conformance は主張しない。
 - binary raw-byte validation は jsQR result の `binaryData` に依存する。raw bytes が得られない場合は `decode.binaryHex` check を制限として `skipped` にする。
 - validator は schema v1 の形、operation enum、`binaryHex`、negative expectation を検査するが、QR の数学的妥当性までは検査しない。
 - 対象は QR Code Model 2。

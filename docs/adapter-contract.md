@@ -89,6 +89,16 @@ decoder adapter は decode expectation がない vector、または対象外 ope
 
 jsQR lane の decode readability は Structured Append metadata validation ではありません。`structuredAppend.*` operation は header、sequence、parity、merge metadata の検証を必要とするため、jsQR lane は decoder merge support を主張せず `skipped` として扱います。
 
+## Optional CLI Decoder Adapter
+
+optional CLI decoder adapter は、local machine に外部 command がある場合だけ実行する decoder lane です。現在は `zbarimg` と ZXing CLI family (`ZXingReader`, `zxing`, `zxing-cpp`, `zxingscan`) を対象にします。これらの command は `package.json` の dependency ではなく、CI や contributor machine に必須ではありません。
+
+optional adapter は最初に command availability を確認します。command が見つからない、または実行可能ではない場合、vector ごとに `status: "skipped"` を返し、`checks` に `availability` skip reason を入れます。この skip は expected skip であり、overall badge や CI を red にしません。
+
+command が見つかった場合、adapter は SpecQR published package で PNG を生成し、CLI にその PNG path を渡します。`expect.decode.text` がある vector では、CLI から保守的に取り出した payload text と完全一致で比較します。payload が異なる、または command が decode できない場合は `failed` とします。
+
+CLI decoder output は tool と version によって形式が異なるため、parser は conservative にします。`expect.decode.binaryHex` は raw byte として信頼できる CLI output がない限り `decode.binaryHex` check を `skipped` にします。optional CLI decoder adapter は Structured Append metadata validation、scanner metadata exposure、decoder merge support を主張しません。
+
 ## Reference Matrix Adapter
 
 reference matrix adapter は、`expect.referenceMatrix` を持つ vector だけを対象にします。現在の Nayuki lane は `adapter: "nayuki"`, `exact: true`, `scope: "fixed-version-ecc-mask"` の expectation を読み、SpecQR と Nayuki の row-major matrix rows を完全一致で比較します。

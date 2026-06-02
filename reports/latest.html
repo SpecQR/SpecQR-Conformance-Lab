@@ -48,7 +48,7 @@
         <div><dt>実行</dt><dd>68</dd></div>
         <div><dt>成功</dt><dd>68</dd></div>
         <div><dt>失敗</dt><dd>0</dd></div>
-        <div><dt>スキップ</dt><dd>121</dd></div>
+        <div><dt>スキップ</dt><dd>247</dd></div>
         <div><dt>エラー</dt><dd>0</dd></div>
       </dl>
     </section>
@@ -94,6 +94,34 @@
         <div><dt>エラー</dt><dd>0</dd></div>
       </dl>
     </section>
+    <section class="status-band status-yellow">
+      <div>
+        <h2>zbarimg optional decode readability</h2>
+        <p>任意 CLI decoder。未導入の場合は expected skip として扱います</p>
+      </div>
+      <strong>スコープ外</strong>
+      <dl>
+        <div><dt>実行</dt><dd>0</dd></div>
+        <div><dt>成功</dt><dd>0</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>63</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
+    <section class="status-band status-yellow">
+      <div>
+        <h2>ZXing CLI optional decode readability</h2>
+        <p>任意 CLI decoder。未導入の場合は expected skip として扱います</p>
+      </div>
+      <strong>スコープ外</strong>
+      <dl>
+        <div><dt>実行</dt><dd>0</dd></div>
+        <div><dt>成功</dt><dd>0</dd></div>
+        <div><dt>失敗</dt><dd>0</dd></div>
+        <div><dt>スキップ</dt><dd>63</dd></div>
+        <div><dt>エラー</dt><dd>0</dd></div>
+      </dl>
+    </section>
     <section class="status-band status-green">
       <div>
         <h2>GS1 / Digital Link</h2>
@@ -104,7 +132,7 @@
         <div><dt>実行</dt><dd>15</dd></div>
         <div><dt>成功</dt><dd>15</dd></div>
         <div><dt>失敗</dt><dd>0</dd></div>
-        <div><dt>スキップ</dt><dd>30</dd></div>
+        <div><dt>スキップ</dt><dd>60</dd></div>
         <div><dt>エラー</dt><dd>0</dd></div>
       </dl>
     </section>
@@ -118,7 +146,7 @@
         <div><dt>実行</dt><dd>12</dd></div>
         <div><dt>成功</dt><dd>12</dd></div>
         <div><dt>失敗</dt><dd>0</dd></div>
-        <div><dt>スキップ</dt><dd>24</dd></div>
+        <div><dt>スキップ</dt><dd>48</dd></div>
         <div><dt>エラー</dt><dd>0</dd></div>
       </dl>
     </section>
@@ -132,12 +160,12 @@
         <div><dt>実行</dt><dd>23</dd></div>
         <div><dt>成功</dt><dd>23</dd></div>
         <div><dt>失敗</dt><dd>0</dd></div>
-        <div><dt>スキップ</dt><dd>46</dd></div>
+        <div><dt>スキップ</dt><dd>92</dd></div>
         <div><dt>エラー</dt><dd>0</dd></div>
       </dl>
     </section>
   </div>
-  <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip は、失敗やエラーとは別に扱います。</p>
+  <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip と、任意 CLI decoder が未導入の expected skip は、失敗やエラーとは別に扱います。</p>
   <h2>何を検証していないか</h2>
   <ul>
     <li>Micro QR</li>
@@ -152,18 +180,18 @@
     <tbody>
       <tr><th>Suites</th><td>6</td></tr>
       <tr><th>Total vectors</th><td>63</td></tr>
-      <tr><th>Total results</th><td>189</td></tr>
+      <tr><th>Total results</th><td>315</td></tr>
       <tr><th>実行</th><td>68</td></tr>
       <tr><th>成功</th><td>68</td></tr>
       <tr><th>失敗</th><td>0</td></tr>
-      <tr><th>スキップ</th><td>121</td></tr>
+      <tr><th>スキップ</th><td>247</td></tr>
       <tr><th>エラー</th><td>0</td></tr>
     </tbody>
   </table>
   <h2>実行メタデータ</h2>
   <table>
     <tbody>
-      <tr><th>generatedAt</th><td>2026-06-01T17:11:54.713Z</td></tr>
+      <tr><th>generatedAt</th><td>2026-06-02T18:34:14.081Z</td></tr>
       <tr><th>Node</th><td>v25.9.0</td></tr>
       <tr><th>platform</th><td>darwin</td></tr>
       <tr><th>arch</th><td>arm64</td></tr>
@@ -181,6 +209,8 @@
       <tr><td>specqr</td><td>active</td><td>57</td><td>57</td><td>0</td><td>6</td><td>0</td></tr>
       <tr><td>jsqr</td><td>active</td><td>5</td><td>5</td><td>0</td><td>58</td><td>0</td></tr>
       <tr><td>nayuki</td><td>active</td><td>6</td><td>6</td><td>0</td><td>57</td><td>0</td></tr>
+      <tr><td>zbarimg</td><td>optional</td><td>0</td><td>0</td><td>0</td><td>63</td><td>0</td></tr>
+      <tr><td>zxing-cli</td><td>optional</td><td>0</td><td>0</td><td>0</td><td>63</td><td>0</td></tr>
     </tbody>
   </table>
   <h2>GS1 / Digital Link 集計</h2>
@@ -188,11 +218,11 @@
   <table>
     <tbody>
       <tr><th>Vectors</th><td>15</td></tr>
-      <tr><th>Results</th><td>45</td></tr>
+      <tr><th>Results</th><td>75</td></tr>
       <tr><th>実行</th><td>15</td></tr>
       <tr><th>成功</th><td>15</td></tr>
       <tr><th>失敗</th><td>0</td></tr>
-      <tr><th>スキップ</th><td>30</td></tr>
+      <tr><th>スキップ</th><td>60</td></tr>
       <tr><th>エラー</th><td>0</td></tr>
     </tbody>
   </table>
@@ -204,6 +234,8 @@
       <tr><td>specqr</td><td>15</td><td>15</td><td>0</td><td>0</td><td>0</td></tr>
       <tr><td>jsqr</td><td>0</td><td>0</td><td>0</td><td>15</td><td>0</td></tr>
       <tr><td>nayuki</td><td>0</td><td>0</td><td>0</td><td>15</td><td>0</td></tr>
+      <tr><td>zbarimg</td><td>0</td><td>0</td><td>0</td><td>15</td><td>0</td></tr>
+      <tr><td>zxing-cli</td><td>0</td><td>0</td><td>0</td><td>15</td><td>0</td></tr>
     </tbody>
   </table>
   <h3>GS1 / Digital Link categories</h3>
@@ -221,11 +253,11 @@
   <table>
     <tbody>
       <tr><th>Vectors</th><td>12</td></tr>
-      <tr><th>Results</th><td>36</td></tr>
+      <tr><th>Results</th><td>60</td></tr>
       <tr><th>実行</th><td>12</td></tr>
       <tr><th>成功</th><td>12</td></tr>
       <tr><th>失敗</th><td>0</td></tr>
-      <tr><th>スキップ</th><td>24</td></tr>
+      <tr><th>スキップ</th><td>48</td></tr>
       <tr><th>エラー</th><td>0</td></tr>
     </tbody>
   </table>
@@ -237,6 +269,8 @@
       <tr><td>specqr</td><td>12</td><td>12</td><td>0</td><td>0</td><td>0</td></tr>
       <tr><td>jsqr</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td></tr>
       <tr><td>nayuki</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td></tr>
+      <tr><td>zbarimg</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td></tr>
+      <tr><td>zxing-cli</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td></tr>
     </tbody>
   </table>
   <h3>Structured Append categories</h3>
@@ -253,11 +287,11 @@
   <table>
     <tbody>
       <tr><th>Vectors</th><td>23</td></tr>
-      <tr><th>Results</th><td>69</td></tr>
+      <tr><th>Results</th><td>115</td></tr>
       <tr><th>実行</th><td>23</td></tr>
       <tr><th>成功</th><td>23</td></tr>
       <tr><th>失敗</th><td>0</td></tr>
-      <tr><th>スキップ</th><td>46</td></tr>
+      <tr><th>スキップ</th><td>92</td></tr>
       <tr><th>エラー</th><td>0</td></tr>
     </tbody>
   </table>
@@ -269,6 +303,8 @@
       <tr><td>specqr</td><td>23</td><td>23</td><td>0</td><td>0</td><td>0</td></tr>
       <tr><td>jsqr</td><td>0</td><td>0</td><td>0</td><td>23</td><td>0</td></tr>
       <tr><td>nayuki</td><td>0</td><td>0</td><td>0</td><td>23</td><td>0</td></tr>
+      <tr><td>zbarimg</td><td>0</td><td>0</td><td>0</td><td>23</td><td>0</td></tr>
+      <tr><td>zxing-cli</td><td>0</td><td>0</td><td>0</td><td>23</td><td>0</td></tr>
     </tbody>
   </table>
   <h3>Planning / Diagnostics categories</h3>
@@ -423,6 +459,150 @@
     </tbody>
   </table>
   <p>jsQR lane は readable text と raw byte payload を確認します。jsQR が raw byte を公開できない場合は、binary decode check だけを制限としてスキップします。現在の raw byte skip 件数: <code>0</code></p>
+  <h2>zbarimg optional decoder checks</h2>
+  <p>zbarimg lane は任意 CLI decoder の readability check です。command が見つからない環境では expected skip として記録し、CI failure にはしません。候補 command: <code>zbarimg</code></p>
+  <table>
+    <thead>
+      <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core.generate.byte-text</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>zbarimg command is not available; install one of zbarimg to enable this optional lane.</td></tr>
+      <tr><td>core.generate.numeric-fixed-version-ecc-mask</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>zbarimg command is not available; install one of zbarimg to enable this optional lane.</td></tr>
+      <tr><td>core.generate-segments.manual-mixed</td><td>generateSegments</td><td>skipped</td><td>availability: skipped</td><td>zbarimg command is not available; install one of zbarimg to enable this optional lane.</td></tr>
+      <tr><td>core.generate.binary-00-ff</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>zbarimg command is not available; install one of zbarimg to enable this optional lane.</td></tr>
+      <tr><td>core.estimate.byte-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>core.estimate.data-too-long-reject</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>gs1.create-element-string.gtin-01</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.sscc-00</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.lot-separator-before-date</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.expiration-date-17</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.validate-element-string.success</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.create-digital-link.primary-gtin</td><td>gs1.createDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.createDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.success</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.normalize-digital-link.deterministic</td><td>gs1.normalizeDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.normalizeDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-preserve</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-element-string.missing-separator-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.invalid-gtin-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.unsupported-ai-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-digital-link.duplicate-ai-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.invalid-placement-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>planning.estimate.byte-simple-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.estimate.numeric-v1-l-boundary</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.estimate.binary-hex-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.estimate.kanji-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.estimate.gs1-raw-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.estimate.fnc1-second-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.estimate.structured-append-low-level-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.mixed-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.eci-byte-numeric</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.fnc1-second-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.structured-append-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.v1-l-table</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v1-l-byte-control</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v10-m-numeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v27-q-alphanumeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v40-h-kanji</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: getCapacity</td></tr>
+      <tr><td>planning.estimate.data-too-long-v1-h</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.data-too-long-v1-h</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.invalid-version-reject</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: getCapacity</td></tr>
+      <tr><td>planning.diagnostics.warning.quiet-zone-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.low-contrast</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.print-module-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.capacity-near-limit</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zbarimg lane: estimate</td></tr>
+      <tr><td>reference.nayuki.numeric.v1-l-mask0</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.alphanumeric.v1-m-mask1</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.byte-utf8.v2-q-mask2</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.manual-mixed.v3-q-mask5</td><td>generateSegments</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.eci-utf8-byte.v2-q-mask6</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.binary-0041ff4200.v1-q-mask7</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>example.generate.byte-text</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>zbarimg command is not available; install one of zbarimg to enable this optional lane.</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-two-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.binary-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate-segments.segment-boundary</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate-segments.byte-chunk</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate.parity-helper-consistency</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.merge-parts.valid-string</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.missing-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.duplicate-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.total-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.parity-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.generate-segments.invalid-low-level-header-reject</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zbarimg scope: structuredAppend.generateSegments</td></tr>
+    </tbody>
+  </table>
+  <h2>ZXing CLI optional decoder checks</h2>
+  <p>ZXing CLI lane は任意 CLI decoder の readability check です。command が見つからない環境では expected skip として記録し、CI failure にはしません。候補 command: <code>ZXingReader, zxing, zxing-cpp, zxingscan</code></p>
+  <table>
+    <thead>
+      <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>core.generate.byte-text</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.</td></tr>
+      <tr><td>core.generate.numeric-fixed-version-ecc-mask</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.</td></tr>
+      <tr><td>core.generate-segments.manual-mixed</td><td>generateSegments</td><td>skipped</td><td>availability: skipped</td><td>ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.</td></tr>
+      <tr><td>core.generate.binary-00-ff</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.</td></tr>
+      <tr><td>core.estimate.byte-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>core.estimate.data-too-long-reject</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>gs1.create-element-string.gtin-01</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.sscc-00</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.lot-separator-before-date</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.create-element-string.expiration-date-17</td><td>gs1.createElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.createElementString</td></tr>
+      <tr><td>gs1.validate-element-string.success</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.create-digital-link.primary-gtin</td><td>gs1.createDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.createDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.success</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.normalize-digital-link.deterministic</td><td>gs1.normalizeDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.normalizeDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-preserve</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-element-string.missing-separator-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.invalid-gtin-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-element-string.unsupported-ai-reject</td><td>gs1.validateElementString</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateElementString</td></tr>
+      <tr><td>gs1.validate-digital-link.duplicate-ai-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.invalid-placement-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>gs1.validate-digital-link.unknown-query-reject</td><td>gs1.validateDigitalLink</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: gs1.validateDigitalLink</td></tr>
+      <tr><td>planning.estimate.byte-simple-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.estimate.numeric-v1-l-boundary</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.estimate.binary-hex-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.estimate.kanji-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.estimate.gs1-raw-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.estimate.fnc1-second-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.estimate.structured-append-low-level-success</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.mixed-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.eci-byte-numeric</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.fnc1-second-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: analyzeSegments</td></tr>
+      <tr><td>planning.analyze-segments.structured-append-manual</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.v1-l-table</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v1-l-byte-control</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v10-m-numeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v27-q-alphanumeric</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: getCapacity</td></tr>
+      <tr><td>planning.get-capacity.v40-h-kanji</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: getCapacity</td></tr>
+      <tr><td>planning.estimate.data-too-long-v1-h</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.analyze-segments.data-too-long-v1-h</td><td>analyzeSegments</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: analyzeSegments</td></tr>
+      <tr><td>planning.get-capacity.invalid-version-reject</td><td>getCapacity</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: getCapacity</td></tr>
+      <tr><td>planning.diagnostics.warning.quiet-zone-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.low-contrast</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.print-module-too-small</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>planning.diagnostics.warning.capacity-near-limit</td><td>estimate</td><td>skipped</td><td>operation: skipped</td><td>Unsupported operation for zxing-cli lane: estimate</td></tr>
+      <tr><td>reference.nayuki.numeric.v1-l-mask0</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.alphanumeric.v1-m-mask1</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.byte-utf8.v2-q-mask2</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.manual-mixed.v3-q-mask5</td><td>generateSegments</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.eci-utf8-byte.v2-q-mask6</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>reference.nayuki.binary-0041ff4200.v1-q-mask7</td><td>generate</td><td>skipped</td><td>decode: skipped</td><td>No decode expectation</td></tr>
+      <tr><td>example.generate.byte-text</td><td>generate</td><td>skipped</td><td>availability: skipped</td><td>ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-two-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.alphanumeric-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate.binary-three-symbol</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.generate-segments.segment-boundary</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate-segments.byte-chunk</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generateSegments</td></tr>
+      <tr><td>structured-append.generate.parity-helper-consistency</td><td>structuredAppend.generate</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generate</td></tr>
+      <tr><td>structured-append.merge-parts.valid-string</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.missing-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.duplicate-part-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.total-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.merge-parts.parity-mismatch-reject</td><td>structuredAppend.mergeParts</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts</td></tr>
+      <tr><td>structured-append.generate-segments.invalid-low-level-header-reject</td><td>structuredAppend.generateSegments</td><td>skipped</td><td>operation: skipped</td><td>Structured Append operation is outside zxing-cli scope: structuredAppend.generateSegments</td></tr>
+    </tbody>
+  </table>
   <h2>Nayuki reference matrix checks</h2>
   <table>
     <thead>
@@ -551,12 +731,14 @@
   <h2>Adapters</h2>
   <table>
     <thead>
-      <tr><th>ID</th><th>Name</th><th>Status</th><th>Package</th><th>Version</th></tr>
+      <tr><th>ID</th><th>Name</th><th>Required</th><th>Status</th><th>Lane</th><th>Package</th><th>Version</th><th>Command candidates</th></tr>
     </thead>
     <tbody>
-      <tr><td>specqr</td><td>SpecQR</td><td>active</td><td>specqr</td><td>2.4.0</td></tr>
-      <tr><td>jsqr</td><td>jsQR</td><td>active</td><td>jsqr</td><td>1.4.0</td></tr>
-      <tr><td>nayuki</td><td>Nayuki QR Code generator</td><td>active</td><td>nayuki-qr-code-generator</td><td>1.8.0</td></tr>
+      <tr><td>specqr</td><td>SpecQR</td><td>required</td><td>active</td><td>generation-planning</td><td>specqr</td><td>2.4.0</td><td></td></tr>
+      <tr><td>jsqr</td><td>jsQR</td><td>required</td><td>active</td><td>decode-readability</td><td>jsqr</td><td>1.4.0</td><td></td></tr>
+      <tr><td>nayuki</td><td>Nayuki QR Code generator</td><td>required</td><td>active</td><td>reference-matrix</td><td>nayuki-qr-code-generator</td><td>1.8.0</td><td></td></tr>
+      <tr><td>zbarimg</td><td>zbarimg</td><td>optional</td><td>optional</td><td>optional-decode-readability</td><td></td><td></td><td>zbarimg</td></tr>
+      <tr><td>zxing-cli</td><td>ZXing CLI</td><td>optional</td><td>optional</td><td>optional-decode-readability</td><td></td><td></td><td>ZXingReader, zxing, zxing-cpp, zxingscan</td></tr>
     </tbody>
   </table>
 </body>

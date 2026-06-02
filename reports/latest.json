@@ -3,7 +3,7 @@
   "labVersion": "0.1.0",
   "status": "executed",
   "metadata": {
-    "generatedAt": "2026-06-01T17:11:54.713Z",
+    "generatedAt": "2026-06-02T18:34:14.081Z",
     "runtime": {
       "node": "v25.9.0",
       "platform": "darwin",
@@ -27,7 +27,8 @@
       "packageName": "specqr",
       "packageVersion": "2.4.0",
       "status": "active",
-      "lane": "generation-planning"
+      "lane": "generation-planning",
+      "required": true
     },
     {
       "id": "jsqr",
@@ -35,7 +36,8 @@
       "packageName": "jsqr",
       "packageVersion": "1.4.0",
       "status": "active",
-      "lane": "decode-readability"
+      "lane": "decode-readability",
+      "required": true
     },
     {
       "id": "nayuki",
@@ -43,7 +45,35 @@
       "packageName": "nayuki-qr-code-generator",
       "packageVersion": "1.8.0",
       "status": "active",
-      "lane": "reference-matrix"
+      "lane": "reference-matrix",
+      "required": true
+    },
+    {
+      "id": "zbarimg",
+      "name": "zbarimg",
+      "packageName": null,
+      "packageVersion": null,
+      "status": "optional",
+      "lane": "optional-decode-readability",
+      "required": false,
+      "commandCandidates": [
+        "zbarimg"
+      ]
+    },
+    {
+      "id": "zxing-cli",
+      "name": "ZXing CLI",
+      "packageName": null,
+      "packageVersion": null,
+      "status": "optional",
+      "lane": "optional-decode-readability",
+      "required": false,
+      "commandCandidates": [
+        "ZXingReader",
+        "zxing",
+        "zxing-cpp",
+        "zxingscan"
+      ]
     }
   ],
   "suites": [
@@ -99,7 +129,7 @@
   "summary": {
     "suiteCount": 6,
     "totalVectors": 63,
-    "totalResults": 189,
+    "totalResults": 315,
     "categories": {
       "core": 3,
       "segments": 1,
@@ -160,6 +190,28 @@
         "failed": 0,
         "skipped": 57,
         "error": 0
+      },
+      "zbarimg": {
+        "id": "zbarimg",
+        "name": "zbarimg",
+        "status": "optional",
+        "total": 63,
+        "executed": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 63,
+        "error": 0
+      },
+      "zxing-cli": {
+        "id": "zxing-cli",
+        "name": "ZXing CLI",
+        "status": "optional",
+        "total": 63,
+        "executed": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 63,
+        "error": 0
       }
     },
     "gs1DigitalLink": {
@@ -175,11 +227,11 @@
         "gs1.normalizeDigitalLink": 1
       },
       "vectorCount": 15,
-      "resultCount": 45,
+      "resultCount": 75,
       "executed": 15,
       "passed": 15,
       "failed": 0,
-      "skipped": 30,
+      "skipped": 60,
       "error": 0,
       "adapterSummary": {
         "specqr": {
@@ -211,6 +263,26 @@
           "failed": 0,
           "skipped": 15,
           "error": 0
+        },
+        "zbarimg": {
+          "id": "zbarimg",
+          "name": "zbarimg",
+          "total": 15,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 15,
+          "error": 0
+        },
+        "zxing-cli": {
+          "id": "zxing-cli",
+          "name": "ZXing CLI",
+          "total": 15,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 15,
+          "error": 0
         }
       }
     },
@@ -224,11 +296,11 @@
         "structuredAppend.mergeParts": 5
       },
       "vectorCount": 12,
-      "resultCount": 36,
+      "resultCount": 60,
       "executed": 12,
       "passed": 12,
       "failed": 0,
-      "skipped": 24,
+      "skipped": 48,
       "error": 0,
       "adapterSummary": {
         "specqr": {
@@ -260,6 +332,26 @@
           "failed": 0,
           "skipped": 12,
           "error": 0
+        },
+        "zbarimg": {
+          "id": "zbarimg",
+          "name": "zbarimg",
+          "total": 12,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 12,
+          "error": 0
+        },
+        "zxing-cli": {
+          "id": "zxing-cli",
+          "name": "ZXing CLI",
+          "total": 12,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 12,
+          "error": 0
         }
       }
     },
@@ -273,11 +365,11 @@
         "getCapacity": 6
       },
       "vectorCount": 23,
-      "resultCount": 69,
+      "resultCount": 115,
       "executed": 23,
       "passed": 23,
       "failed": 0,
-      "skipped": 46,
+      "skipped": 92,
       "error": 0,
       "adapterSummary": {
         "specqr": {
@@ -309,13 +401,33 @@
           "failed": 0,
           "skipped": 23,
           "error": 0
+        },
+        "zbarimg": {
+          "id": "zbarimg",
+          "name": "zbarimg",
+          "total": 23,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 23,
+          "error": 0
+        },
+        "zxing-cli": {
+          "id": "zxing-cli",
+          "name": "ZXing CLI",
+          "total": 23,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 23,
+          "error": 0
         }
       }
     },
     "executed": 68,
     "passed": 68,
     "failed": 0,
-    "skipped": 121,
+    "skipped": 247,
     "error": 0
   },
   "results": [
@@ -501,6 +613,59 @@
     },
     {
       "suiteId": "core",
+      "vectorId": "core.generate.byte-text",
+      "title": "Byte text generation",
+      "adapterId": "zbarimg",
+      "category": "core",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.generate.byte-text",
+      "title": "Byte text generation",
+      "adapterId": "zxing-cli",
+      "category": "core",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
       "vectorId": "core.generate.numeric-fixed-version-ecc-mask",
       "title": "Numeric generation with fixed version, ECC, and mask",
       "adapterId": "specqr",
@@ -650,6 +815,59 @@
         }
       ],
       "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.generate.numeric-fixed-version-ecc-mask",
+      "title": "Numeric generation with fixed version, ECC, and mask",
+      "adapterId": "zbarimg",
+      "category": "core",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.generate.numeric-fixed-version-ecc-mask",
+      "title": "Numeric generation with fixed version, ECC, and mask",
+      "adapterId": "zxing-cli",
+      "category": "core",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
     },
     {
       "suiteId": "core",
@@ -857,6 +1075,59 @@
     },
     {
       "suiteId": "core",
+      "vectorId": "core.generate-segments.manual-mixed",
+      "title": "Manual mixed segments",
+      "adapterId": "zbarimg",
+      "category": "segments",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.generate-segments.manual-mixed",
+      "title": "Manual mixed segments",
+      "adapterId": "zxing-cli",
+      "category": "segments",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
       "vectorId": "core.generate.binary-00-ff",
       "title": "Binary byte payload 00 ff",
       "adapterId": "specqr",
@@ -1041,6 +1312,59 @@
     },
     {
       "suiteId": "core",
+      "vectorId": "core.generate.binary-00-ff",
+      "title": "Binary byte payload 00 ff",
+      "adapterId": "zbarimg",
+      "category": "core",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.generate.binary-00-ff",
+      "title": "Binary byte payload 00 ff",
+      "adapterId": "zxing-cli",
+      "category": "core",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "core",
       "vectorId": "core.estimate.byte-success",
       "title": "Estimate byte text success",
       "adapterId": "specqr",
@@ -1176,6 +1500,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: estimate"
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.estimate.byte-success",
+      "title": "Estimate byte text success",
+      "adapterId": "zbarimg",
+      "category": "planning",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.estimate.byte-success",
+      "title": "Estimate byte text success",
+      "adapterId": "zxing-cli",
+      "category": "planning",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
     },
     {
       "suiteId": "core",
@@ -1336,6 +1694,40 @@
       "reason": "Unsupported operation for Nayuki lane: estimate"
     },
     {
+      "suiteId": "core",
+      "vectorId": "core.estimate.data-too-long-reject",
+      "title": "Estimate rejects data that cannot fit fixed Version 1-H",
+      "adapterId": "zbarimg",
+      "category": "negative",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "core",
+      "vectorId": "core.estimate.data-too-long-reject",
+      "title": "Estimate rejects data that cannot fit fixed Version 1-H",
+      "adapterId": "zxing-cli",
+      "category": "negative",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
       "suiteId": "gs1-digital-link",
       "vectorId": "gs1.create-element-string.gtin-01",
       "title": "AI 01 GTIN element string",
@@ -1386,6 +1778,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.gtin-01",
+      "title": "AI 01 GTIN element string",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.gtin-01",
+      "title": "AI 01 GTIN element string",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.createElementString"
     },
     {
       "suiteId": "gs1-digital-link",
@@ -1441,6 +1867,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.sscc-00",
+      "title": "AI 00 SSCC element string",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.sscc-00",
+      "title": "AI 00 SSCC element string",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.create-element-string.lot-separator-before-date",
       "title": "AI 10 lot with separator before AI 17",
       "adapterId": "specqr",
@@ -1493,6 +1953,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.lot-separator-before-date",
+      "title": "AI 10 lot with separator before AI 17",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.lot-separator-before-date",
+      "title": "AI 10 lot with separator before AI 17",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.create-element-string.expiration-date-17",
       "title": "AI 17 expiration date element string",
       "adapterId": "specqr",
@@ -1542,6 +2036,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.expiration-date-17",
+      "title": "AI 17 expiration date element string",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.createElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-element-string.expiration-date-17",
+      "title": "AI 17 expiration date element string",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.createElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.createElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.createElementString"
     },
     {
       "suiteId": "gs1-digital-link",
@@ -1615,6 +2143,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.success",
+      "title": "Validate GS1 element string with separator",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.success",
+      "title": "Validate GS1 element string with separator",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.create-digital-link.primary-gtin",
       "title": "Create Digital Link with primary GTIN",
       "adapterId": "specqr",
@@ -1664,6 +2226,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.createDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-digital-link.primary-gtin",
+      "title": "Create Digital Link with primary GTIN",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.createDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.createDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.createDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.create-digital-link.primary-gtin",
+      "title": "Create Digital Link with primary GTIN",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.createDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.createDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.createDigitalLink"
     },
     {
       "suiteId": "gs1-digital-link",
@@ -1759,6 +2355,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.success",
+      "title": "Validate Digital Link with primary GTIN",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.success",
+      "title": "Validate Digital Link with primary GTIN",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.normalize-digital-link.deterministic",
       "title": "Normalize Digital Link host and query order",
       "adapterId": "specqr",
@@ -1808,6 +2438,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.normalizeDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.normalize-digital-link.deterministic",
+      "title": "Normalize Digital Link host and query order",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.normalizeDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.normalizeDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.normalizeDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.normalize-digital-link.deterministic",
+      "title": "Normalize Digital Link host and query order",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.normalizeDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.normalizeDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.normalizeDigitalLink"
     },
     {
       "suiteId": "gs1-digital-link",
@@ -1915,6 +2579,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.unknown-query-preserve",
+      "title": "Preserve unknown Digital Link query parameter",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.unknown-query-preserve",
+      "title": "Preserve unknown Digital Link query parameter",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.validate-element-string.missing-separator-reject",
       "title": "Reject missing separator after variable-length AI",
       "adapterId": "specqr",
@@ -1980,6 +2678,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.missing-separator-reject",
+      "title": "Reject missing separator after variable-length AI",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.missing-separator-reject",
+      "title": "Reject missing separator after variable-length AI",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.validate-element-string.invalid-gtin-reject",
       "title": "Reject invalid GTIN check digit",
       "adapterId": "specqr",
@@ -2041,6 +2773,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.invalid-gtin-reject",
+      "title": "Reject invalid GTIN check digit",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.invalid-gtin-reject",
+      "title": "Reject invalid GTIN check digit",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateElementString"
     },
     {
       "suiteId": "gs1-digital-link",
@@ -2109,6 +2875,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.unsupported-ai-reject",
+      "title": "Reject unsupported AI",
+      "adapterId": "zbarimg",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-element-string.unsupported-ai-reject",
+      "title": "Reject unsupported AI",
+      "adapterId": "zxing-cli",
+      "category": "gs1",
+      "operation": "gs1.validateElementString",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateElementString を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateElementString"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.validate-digital-link.duplicate-ai-reject",
       "title": "Reject duplicate Digital Link AI",
       "adapterId": "specqr",
@@ -2170,6 +2970,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.duplicate-ai-reject",
+      "title": "Reject duplicate Digital Link AI",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.duplicate-ai-reject",
+      "title": "Reject duplicate Digital Link AI",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateDigitalLink"
     },
     {
       "suiteId": "gs1-digital-link",
@@ -2236,6 +3070,40 @@
     },
     {
       "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.invalid-placement-reject",
+      "title": "Reject Digital Link key qualifier in invalid placement",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.invalid-placement-reject",
+      "title": "Reject Digital Link key qualifier in invalid placement",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
       "vectorId": "gs1.validate-digital-link.unknown-query-reject",
       "title": "Reject unknown Digital Link query parameter",
       "adapterId": "specqr",
@@ -2297,6 +3165,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.unknown-query-reject",
+      "title": "Reject unknown Digital Link query parameter",
+      "adapterId": "zbarimg",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "gs1-digital-link",
+      "vectorId": "gs1.validate-digital-link.unknown-query-reject",
+      "title": "Reject unknown Digital Link query parameter",
+      "adapterId": "zxing-cli",
+      "category": "gs1-digital-link",
+      "operation": "gs1.validateDigitalLink",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は gs1.validateDigitalLink を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: gs1.validateDigitalLink"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -2435,6 +3337,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.byte-simple-success",
+      "title": "Estimate simple byte text",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.byte-simple-success",
+      "title": "Estimate simple byte text",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -2596,6 +3532,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.numeric-v1-l-boundary",
+      "title": "Estimate numeric Version 1-L boundary",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.numeric-v1-l-boundary",
+      "title": "Estimate numeric Version 1-L boundary",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.estimate.binary-hex-success",
       "title": "Estimate binary input via binaryHex",
       "adapterId": "specqr",
@@ -2734,6 +3704,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.binary-hex-success",
+      "title": "Estimate binary input via binaryHex",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.binary-hex-success",
+      "title": "Estimate binary input via binaryHex",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.estimate.kanji-success",
       "title": "Estimate Kanji text",
       "adapterId": "specqr",
@@ -2869,6 +3873,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.kanji-success",
+      "title": "Estimate Kanji text",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.kanji-success",
+      "title": "Estimate Kanji text",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -3049,6 +4087,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.gs1-raw-success",
+      "title": "Estimate GS1 raw element string",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.gs1-raw-success",
+      "title": "Estimate GS1 raw element string",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.estimate.fnc1-second-success",
       "title": "Estimate FNC1 second position",
       "adapterId": "specqr",
@@ -3198,6 +4270,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.fnc1-second-success",
+      "title": "Estimate FNC1 second position",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.fnc1-second-success",
+      "title": "Estimate FNC1 second position",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -3361,6 +4467,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.structured-append-low-level-success",
+      "title": "Estimate low-level Structured Append option",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.structured-append-low-level-success",
+      "title": "Estimate low-level Structured Append option",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.analyze-segments.mixed-manual",
       "title": "Analyze mixed manual segments",
       "adapterId": "specqr",
@@ -3508,6 +4648,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.mixed-manual",
+      "title": "Analyze mixed manual segments",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.mixed-manual",
+      "title": "Analyze mixed manual segments",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: analyzeSegments"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -3667,6 +4841,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.eci-byte-numeric",
+      "title": "Analyze ECI + byte + numeric segments",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.eci-byte-numeric",
+      "title": "Analyze ECI + byte + numeric segments",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.analyze-segments.fnc1-second-manual",
       "title": "Analyze FNC1 second manual segment",
       "adapterId": "specqr",
@@ -3816,6 +5024,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.fnc1-second-manual",
+      "title": "Analyze FNC1 second manual segment",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.fnc1-second-manual",
+      "title": "Analyze FNC1 second manual segment",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: analyzeSegments"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -3979,6 +5221,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.structured-append-manual",
+      "title": "Analyze low-level Structured Append manual segment",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.structured-append-manual",
+      "title": "Analyze low-level Structured Append manual segment",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.get-capacity.v1-l-table",
       "title": "Version 1-L capacity table lookup",
       "adapterId": "specqr",
@@ -4042,6 +5318,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v1-l-table",
+      "title": "Version 1-L capacity table lookup",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v1-l-table",
+      "title": "Version 1-L capacity table lookup",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: getCapacity"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -4111,6 +5421,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v1-l-byte-control",
+      "title": "Version 1-L byte capacity with controlBits",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v1-l-byte-control",
+      "title": "Version 1-L byte capacity with controlBits",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.get-capacity.v10-m-numeric",
       "title": "Version 10 numeric character count boundary",
       "adapterId": "specqr",
@@ -4174,6 +5518,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v10-m-numeric",
+      "title": "Version 10 numeric character count boundary",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v10-m-numeric",
+      "title": "Version 10 numeric character count boundary",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: getCapacity"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -4243,6 +5621,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v27-q-alphanumeric",
+      "title": "Version 27 alphanumeric character count boundary",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v27-q-alphanumeric",
+      "title": "Version 27 alphanumeric character count boundary",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.get-capacity.v40-h-kanji",
       "title": "Version 40-H Kanji capacity",
       "adapterId": "specqr",
@@ -4306,6 +5718,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v40-h-kanji",
+      "title": "Version 40-H Kanji capacity",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.v40-h-kanji",
+      "title": "Version 40-H Kanji capacity",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: getCapacity"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -4471,6 +5917,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.data-too-long-v1-h",
+      "title": "Estimate fixed Version 1-H data-too-long",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.estimate.data-too-long-v1-h",
+      "title": "Estimate fixed Version 1-H data-too-long",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.analyze-segments.data-too-long-v1-h",
       "title": "Analyze fixed Version 1-H data-too-long",
       "adapterId": "specqr",
@@ -4633,6 +6113,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.data-too-long-v1-h",
+      "title": "Analyze fixed Version 1-H data-too-long",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.analyze-segments.data-too-long-v1-h",
+      "title": "Analyze fixed Version 1-H data-too-long",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "analyzeSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は analyzeSegments を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: analyzeSegments"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.get-capacity.invalid-version-reject",
       "title": "Reject invalid getCapacity version",
       "adapterId": "specqr",
@@ -4680,6 +6194,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.invalid-version-reject",
+      "title": "Reject invalid getCapacity version",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: getCapacity"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.get-capacity.invalid-version-reject",
+      "title": "Reject invalid getCapacity version",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "getCapacity",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は getCapacity を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: getCapacity"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -4861,6 +6409,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.quiet-zone-too-small",
+      "title": "Quiet zone warning",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.quiet-zone-too-small",
+      "title": "Quiet zone warning",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.diagnostics.warning.low-contrast",
       "title": "Low contrast warning",
       "adapterId": "specqr",
@@ -5036,6 +6618,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.low-contrast",
+      "title": "Low contrast warning",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.low-contrast",
+      "title": "Low contrast warning",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
     },
     {
       "suiteId": "planning-diagnostics",
@@ -5219,6 +6835,40 @@
     },
     {
       "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.print-module-too-small",
+      "title": "Print module too small warning",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.print-module-too-small",
+      "title": "Print module too small warning",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
       "vectorId": "planning.diagnostics.warning.capacity-near-limit",
       "title": "Capacity near limit warning",
       "adapterId": "specqr",
@@ -5374,6 +7024,40 @@
         }
       ],
       "reason": "Unsupported operation for Nayuki lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.capacity-near-limit",
+      "title": "Capacity near limit warning",
+      "adapterId": "zbarimg",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: estimate"
+    },
+    {
+      "suiteId": "planning-diagnostics",
+      "vectorId": "planning.diagnostics.warning.capacity-near-limit",
+      "title": "Capacity near limit warning",
+      "adapterId": "zxing-cli",
+      "category": "planning-diagnostics",
+      "operation": "estimate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は estimate を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: estimate"
     },
     {
       "suiteId": "reference-nayuki",
@@ -5536,6 +7220,40 @@
     },
     {
       "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.numeric.v1-l-mask0",
+      "title": "Numeric fixed Version 1-L mask 0",
+      "adapterId": "zbarimg",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.numeric.v1-l-mask0",
+      "title": "Numeric fixed Version 1-L mask 0",
+      "adapterId": "zxing-cli",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
       "vectorId": "reference.nayuki.alphanumeric.v1-m-mask1",
       "title": "Alphanumeric fixed Version 1-M mask 1",
       "adapterId": "specqr",
@@ -5695,6 +7413,40 @@
     },
     {
       "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.alphanumeric.v1-m-mask1",
+      "title": "Alphanumeric fixed Version 1-M mask 1",
+      "adapterId": "zbarimg",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.alphanumeric.v1-m-mask1",
+      "title": "Alphanumeric fixed Version 1-M mask 1",
+      "adapterId": "zxing-cli",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
       "vectorId": "reference.nayuki.byte-utf8.v2-q-mask2",
       "title": "UTF-8 byte fixed Version 2-Q mask 2",
       "adapterId": "specqr",
@@ -5851,6 +7603,40 @@
           "maskPattern": 2
         }
       }
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.byte-utf8.v2-q-mask2",
+      "title": "UTF-8 byte fixed Version 2-Q mask 2",
+      "adapterId": "zbarimg",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.byte-utf8.v2-q-mask2",
+      "title": "UTF-8 byte fixed Version 2-Q mask 2",
+      "adapterId": "zxing-cli",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
     },
     {
       "suiteId": "reference-nayuki",
@@ -6025,6 +7811,40 @@
     },
     {
       "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.manual-mixed.v3-q-mask5",
+      "title": "Manual mixed segments fixed Version 3-Q mask 5",
+      "adapterId": "zbarimg",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.manual-mixed.v3-q-mask5",
+      "title": "Manual mixed segments fixed Version 3-Q mask 5",
+      "adapterId": "zxing-cli",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
       "vectorId": "reference.nayuki.eci-utf8-byte.v2-q-mask6",
       "title": "ECI UTF-8 byte fixed Version 2-Q mask 6",
       "adapterId": "specqr",
@@ -6196,6 +8016,40 @@
     },
     {
       "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.eci-utf8-byte.v2-q-mask6",
+      "title": "ECI UTF-8 byte fixed Version 2-Q mask 6",
+      "adapterId": "zbarimg",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.eci-utf8-byte.v2-q-mask6",
+      "title": "ECI UTF-8 byte fixed Version 2-Q mask 6",
+      "adapterId": "zxing-cli",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
       "vectorId": "reference.nayuki.binary-0041ff4200.v1-q-mask7",
       "title": "Binary 0041ff4200 fixed Version 1-Q mask 7",
       "adapterId": "specqr",
@@ -6352,6 +8206,40 @@
           "maskPattern": 7
         }
       }
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.binary-0041ff4200.v1-q-mask7",
+      "title": "Binary 0041ff4200 fixed Version 1-Q mask 7",
+      "adapterId": "zbarimg",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "reference-nayuki",
+      "vectorId": "reference.nayuki.binary-0041ff4200.v1-q-mask7",
+      "title": "Binary 0041ff4200 fixed Version 1-Q mask 7",
+      "adapterId": "zxing-cli",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
     },
     {
       "suiteId": "schema-example",
@@ -6532,6 +8420,59 @@
         }
       ],
       "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "schema-example",
+      "vectorId": "example.generate.byte-text",
+      "title": "Byte text generation example",
+      "adapterId": "zbarimg",
+      "category": "example",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "schema-example",
+      "vectorId": "example.generate.byte-text",
+      "title": "Byte text generation example",
+      "adapterId": "zxing-cli",
+      "category": "example",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
     },
     {
       "suiteId": "structured-append",
@@ -6989,6 +8930,40 @@
         }
       ],
       "reason": "Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.alphanumeric-two-symbol",
+      "title": "2-symbol alphanumeric split",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.alphanumeric-two-symbol",
+      "title": "2-symbol alphanumeric split",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generate"
     },
     {
       "suiteId": "structured-append",
@@ -7629,6 +9604,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.alphanumeric-three-symbol",
+      "title": "3-symbol alphanumeric split",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.alphanumeric-three-symbol",
+      "title": "3-symbol alphanumeric split",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.generate.binary-three-symbol",
       "title": "Binary input split",
       "adapterId": "specqr",
@@ -8266,6 +10275,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.binary-three-symbol",
+      "title": "Binary input split",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.binary-three-symbol",
+      "title": "Binary input split",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.generate-segments.segment-boundary",
       "title": "Manual segment split at segment boundary",
       "adapterId": "specqr",
@@ -8766,6 +10809,40 @@
         }
       ],
       "reason": "Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generateSegments"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate-segments.segment-boundary",
+      "title": "Manual segment split at segment boundary",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generateSegments"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate-segments.segment-boundary",
+      "title": "Manual segment split at segment boundary",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generateSegments"
     },
     {
       "suiteId": "structured-append",
@@ -9920,6 +11997,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.generate-segments.byte-chunk",
+      "title": "Byte segment chunk split",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generateSegments"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate-segments.byte-chunk",
+      "title": "Byte segment chunk split",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generateSegments"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.generate.parity-helper-consistency",
       "title": "Parity helper consistency for binary input",
       "adapterId": "specqr",
@@ -10557,6 +12668,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.parity-helper-consistency",
+      "title": "Parity helper consistency for binary input",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate.parity-helper-consistency",
+      "title": "Parity helper consistency for binary input",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generate"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.merge-parts.valid-string",
       "title": "Merge valid decoded parts",
       "adapterId": "specqr",
@@ -10657,6 +12802,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.valid-string",
+      "title": "Merge valid decoded parts",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.valid-string",
+      "title": "Merge valid decoded parts",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.merge-parts.missing-part-reject",
       "title": "Reject missing Structured Append part",
       "adapterId": "specqr",
@@ -10704,6 +12883,40 @@
         }
       ],
       "reason": "Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.missing-part-reject",
+      "title": "Reject missing Structured Append part",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.missing-part-reject",
+      "title": "Reject missing Structured Append part",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts"
     },
     {
       "suiteId": "structured-append",
@@ -10757,6 +12970,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.duplicate-part-reject",
+      "title": "Reject duplicate Structured Append part",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.duplicate-part-reject",
+      "title": "Reject duplicate Structured Append part",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.merge-parts.total-mismatch-reject",
       "title": "Reject Structured Append total mismatch",
       "adapterId": "specqr",
@@ -10807,6 +13054,40 @@
     },
     {
       "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.total-mismatch-reject",
+      "title": "Reject Structured Append total mismatch",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.total-mismatch-reject",
+      "title": "Reject Structured Append total mismatch",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
       "vectorId": "structured-append.merge-parts.parity-mismatch-reject",
       "title": "Reject Structured Append parity mismatch",
       "adapterId": "specqr",
@@ -10854,6 +13135,40 @@
         }
       ],
       "reason": "Structured Append is outside Nayuki fixed matrix scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.parity-mismatch-reject",
+      "title": "Reject Structured Append parity mismatch",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.mergeParts"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.merge-parts.parity-mismatch-reject",
+      "title": "Reject Structured Append parity mismatch",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.mergeParts",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.mergeParts"
     },
     {
       "suiteId": "structured-append",
@@ -10904,6 +13219,40 @@
         }
       ],
       "reason": "Structured Append is outside Nayuki fixed matrix scope: structuredAppend.generateSegments"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate-segments.invalid-low-level-header-reject",
+      "title": "Reject invalid low-level Structured Append header segment",
+      "adapterId": "zbarimg",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zbarimg scope: structuredAppend.generateSegments"
+    },
+    {
+      "suiteId": "structured-append",
+      "vectorId": "structured-append.generate-segments.invalid-low-level-header-reject",
+      "title": "Reject invalid low-level Structured Append header segment",
+      "adapterId": "zxing-cli",
+      "category": "structured-append",
+      "operation": "structuredAppend.generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "optional CLI decoder lane は Structured Append metadata validation や merge support を主張しません。"
+        }
+      ],
+      "reason": "Structured Append operation is outside zxing-cli scope: structuredAppend.generateSegments"
     }
   ]
 }
