@@ -39,6 +39,8 @@ async function readReport() {
       },
       target: {
         name: "specqr",
+        requested: "specqr@2.4.0",
+        resolvedVersion: "2.4.0",
         version: "2.4.0",
         source: "npm"
       },
@@ -180,6 +182,7 @@ ${objectRows(summary?.categories)}
 
 const report = await readReport();
 const summary = report.summary ?? {};
+const target = report.target ?? {};
 const adapters = Array.isArray(report.adapters) ? report.adapters : [];
 const suites = Array.isArray(report.suites) ? report.suites : [];
 const results = Array.isArray(report.results) ? report.results : [];
@@ -238,6 +241,9 @@ const suiteRows = suites
 
 const metadataRows = [
   ["generatedAt", metadata.generatedAt],
+  ["target.requested", target.requested ?? `${target.name ?? "specqr"}@${target.version ?? ""}`],
+  ["target.resolvedVersion", target.resolvedVersion ?? target.version],
+  ["target.source", target.source],
   ["run mode", run.mode ?? "full"],
   ["filters.suites", (runFilters.suites ?? []).join(", ")],
   ["filters.categories", (runFilters.categories ?? []).join(", ")],
@@ -306,7 +312,7 @@ const html = `<!doctype html>
 <body>
   <h1>SpecQR Conformance Lab レポート</h1>
   <p>状態: <code>${escapeHtml(report.status)}</code></p>
-  <p>対象: <code>${escapeHtml(report.target?.name)}@${escapeHtml(report.target?.version)}</code> from <code>${escapeHtml(report.target?.source)}</code></p>
+  <p>対象 requested: <code>${escapeHtml(target.requested ?? `${target.name ?? "specqr"}@${target.version ?? ""}`)}</code> / resolved: <code>${escapeHtml(target.name ?? "specqr")}@${escapeHtml(target.resolvedVersion ?? target.version)}</code> from <code>${escapeHtml(target.source)}</code></p>
   <div class="status-grid">
 ${statusBands}
   </div>

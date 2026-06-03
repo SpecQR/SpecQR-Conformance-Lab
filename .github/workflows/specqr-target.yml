@@ -1,0 +1,84 @@
+name: SpecQR Target
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_spec:
+        description: SpecQR npm package spec, for example specqr@2.4.0, specqr@latest, or specqr@next.
+        required: true
+        default: specqr@2.4.0
+        type: string
+      node_version:
+        description: Node.js version for this investigation run.
+        required: true
+        default: "22"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    name: ${{ inputs.package_spec }} on Node ${{ inputs.node_version }}
+    runs-on: ubuntu-latest
+    env:
+      SPECQR_TARGET_REQUESTED: ${{ inputs.package_spec }}
+      SPECQR_TARGET_SOURCE: npm
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: npm
+
+      - name: Install pinned lab dependencies
+        run: npm ci
+
+      - name: Install requested SpecQR package
+        env:
+          PACKAGE_SPEC: ${{ inputs.package_spec }}
+        run: npm install --no-save --package-lock=false "$PACKAGE_SPEC"
+
+      - name: Confirm package manifests unchanged
+        run: git diff --exit-code -- package.json package-lock.json
+
+      - name: Verify installed SpecQR target
+        run: npm run verify:target
+
+      - name: Validate vectors
+        run: npm run validate:vectors
+
+      - name: Test
+        run: npm test
+
+      - name: Conformance
+        run: npm run conformance
+
+      - name: Build report
+        run: npm run report
+
+      - name: Verify report integrity
+        run: npm run verify:report
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f reports/latest.json ]; then
+            npm run summary
+          else
+            echo "reports/latest.json was not generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload target conformance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: specqr-target-node-${{ inputs.node_version }}
+          if-no-files-found: warn
+          path: |
+            reports/latest.json
+            reports/latest.html
+            badges/*.json

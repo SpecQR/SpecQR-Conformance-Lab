@@ -58,6 +58,14 @@ function statusLine(summary = {}) {
   ].join(" / ");
 }
 
+function targetRequested(target = {}) {
+  return target.requested ?? `${target.name ?? "specqr"}@${target.version ?? target.resolvedVersion ?? "unknown"}`;
+}
+
+function targetResolved(target = {}) {
+  return `${target.name ?? "specqr"}@${target.resolvedVersion ?? target.version ?? "unknown"}`;
+}
+
 function resultCountRows(counts = {}) {
   return [
     count(counts.total ?? counts.totalResults ?? counts.resultCount),
@@ -145,7 +153,8 @@ export function renderGithubSummary(report, options = {}) {
   const lines = [
     "# SpecQR Conformance Summary",
     "",
-    "- 対象: `" + `${target.name ?? "specqr"}@${target.version ?? "unknown"}` + "` (`" + `${target.source ?? "unknown"}` + "`)",
+    `- 対象 requested: \`${targetRequested(target)}\``,
+    `- 対象 resolved: \`${targetResolved(target)}\` (\`${target.source ?? "unknown"}\`)`,
     `- 実行: \`${run.mode ?? "full"}\` / filters: ${formatFilters(run)}`,
     `- Vectors: ${count(summary.totalVectors)} / Results: ${count(summary.totalResults)} / Executed: ${count(summary.executed)}`,
     `- Status: ${statusLine(summary)}`,

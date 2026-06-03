@@ -391,9 +391,11 @@ export async function createConformanceReport(options = {}) {
       outputPath: relativeOutputPath(outputPath, cwd)
     },
     target: {
-      name: "specqr",
-      version: metadata.packages.specqr,
-      source: "npm"
+      name: metadata.target?.packageName ?? "specqr",
+      requested: metadata.target?.requested ?? `specqr@${metadata.packages.specqr}`,
+      resolvedVersion: metadata.target?.resolvedVersion ?? metadata.packages.specqr,
+      version: metadata.target?.resolvedVersion ?? metadata.packages.specqr,
+      source: metadata.target?.source ?? "npm"
     },
     adapters: scope.adapters.map((activeAdapter) => createAdapterReportMetadata(activeAdapter, metadata)),
     suites: scope.suites.map(suiteReportMetadata),

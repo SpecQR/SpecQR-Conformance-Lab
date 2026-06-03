@@ -3,7 +3,7 @@
   "labVersion": "0.1.0",
   "status": "executed",
   "metadata": {
-    "generatedAt": "2026-06-03T12:13:32.674Z",
+    "generatedAt": "2026-06-03T12:26:38.477Z",
     "runtime": {
       "node": "v25.9.0",
       "platform": "darwin",
@@ -13,6 +13,12 @@
       "specqr": "2.4.0",
       "jsqr": "1.4.0",
       "nayuki-qr-code-generator": "1.8.0"
+    },
+    "target": {
+      "packageName": "specqr",
+      "requested": "specqr@2.4.0",
+      "resolvedVersion": "2.4.0",
+      "source": "npm"
     }
   },
   "run": {
@@ -27,6 +33,8 @@
   },
   "target": {
     "name": "specqr",
+    "requested": "specqr@2.4.0",
+    "resolvedVersion": "2.4.0",
     "version": "2.4.0",
     "source": "npm"
   },

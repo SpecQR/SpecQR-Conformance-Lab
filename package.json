@@ -22,6 +22,7 @@
     "conformance": "node tools/run-conformance.js",
     "report": "node tools/report.js",
     "verify:report": "node tools/verify-report.js",
+    "verify:target": "node tools/verify-specqr-target.js",
     "summary": "node tools/write-github-summary.js",
     "pages:build": "npm run conformance && npm run report && node tools/build-pages.js",
     "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:report"

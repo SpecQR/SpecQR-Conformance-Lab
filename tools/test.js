@@ -10,10 +10,11 @@ import zbarAdapter, { parseZbarOutput } from "../adapters/zbar.js";
 import zxingCliAdapter, { parseZxingOutput } from "../adapters/zxing-cli.js";
 import { buildPages } from "./build-pages.js";
 import { pngToRgba } from "./png-rgba.js";
-import { createReportMetadata } from "./report-metadata.js";
+import { createReportMetadata, readInstalledPackageMetadata } from "./report-metadata.js";
 import { badgeFileNames, createBadge, createBadgeSet, summarizeStatus } from "./report-utils.js";
 import { activeAdapters, createConformanceReport } from "./run-conformance.js";
 import { verifyReportObject } from "./verify-report.js";
+import { verifySpecqrTarget } from "./verify-specqr-target.js";
 import { renderGithubSummary, writeGithubSummary } from "./write-github-summary.js";
 
 const requiredPaths = [
@@ -44,15 +45,17 @@ const requiredPaths = [
   "tools/report-metadata.js",
   "tools/report-utils.js",
   "tools/verify-report.js",
+  "tools/verify-specqr-target.js",
   "tools/write-github-summary.js",
   "tools/build-pages.js",
   "tools/png-rgba.js",
   ".github/workflows/verify.yml",
   ".github/workflows/pages.yml",
-  ".github/workflows/conformance-filtered.yml"
+  ".github/workflows/conformance-filtered.yml",
+  ".github/workflows/specqr-target.yml"
 ];
 
-const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "summary", "pages:build", "verify"];
+const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "summary", "pages:build", "verify"];
 const allowedOperations = [
   "generate",
   "generateSegments",
@@ -210,6 +213,7 @@ try {
     "reports/latest.html",
     "badges/overall.json",
     "npm run summary",
+    "npm run verify:target",
     "npm run conformance -- --list-suites",
     "npm run conformance -- --suite kanji-eci-binary",
     "npm run conformance -- --adapter specqr",
@@ -220,6 +224,13 @@ try {
     "GitHub Step Summary",
     "conformance-report-node-22",
     ".github/workflows/conformance-filtered.yml",
+    ".github/workflows/specqr-target.yml",
+    "target.requested",
+    "target.resolvedVersion",
+    "調査 workflow",
+    "investigation artifact",
+    "release claim",
+    "公開 Pages report",
     "docs/development-policy.md",
     ".github/workflows/pages.yml"
   ]) {
@@ -242,6 +253,32 @@ try {
   }
   assert(!filteredWorkflow.includes("eval "), "filtered workflow must not use eval");
   assert(!filteredWorkflow.includes("bash -c"), "filtered workflow must not pass filter input through bash -c");
+
+  const targetWorkflow = await readFile(".github/workflows/specqr-target.yml", "utf8");
+  for (const text of [
+    "workflow_dispatch",
+    "package_spec",
+    "default: specqr@2.4.0",
+    "node_version",
+    "default: \"22\"",
+    "SPECQR_TARGET_REQUESTED",
+    "SPECQR_TARGET_SOURCE",
+    "npm ci",
+    "npm install --no-save --package-lock=false \"$PACKAGE_SPEC\"",
+    "git diff --exit-code -- package.json package-lock.json",
+    "npm run verify:target",
+    "npm run validate:vectors",
+    "npm test",
+    "npm run conformance",
+    "npm run report",
+    "npm run verify:report",
+    "npm run summary",
+    "actions/upload-artifact@v4"
+  ]) {
+    requireText(targetWorkflow, text, ".github/workflows/specqr-target.yml");
+  }
+  assert(!targetWorkflow.includes("deploy-pages"), "target workflow must not deploy Pages");
+  assert(!targetWorkflow.includes("upload-pages-artifact"), "target workflow must not upload Pages artifacts");
 
   const knownLimits = await readFile("docs/known-limits.md", "utf8");
   for (const text of [
@@ -395,8 +432,17 @@ try {
   );
 
   const fullReportForIntegrity = await createConformanceReport();
+  assert(fullReportForIntegrity.report.target.requested === "specqr@2.4.0", "default report target must request pinned specqr@2.4.0");
+  assert(fullReportForIntegrity.report.target.resolvedVersion === "2.4.0", "report target must include resolved SpecQR version");
+  assert(fullReportForIntegrity.report.target.version === fullReportForIntegrity.report.target.resolvedVersion, "legacy target.version must remain resolved version");
+  assert(fullReportForIntegrity.report.target.source === "npm", "default report target source must be npm");
   const validIntegrity = await verifyReportObject(fullReportForIntegrity.report);
   assert(validIntegrity.ok, "valid full report must pass integrity check");
+  const legacyCompatibleReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
+  delete legacyCompatibleReport.target.requested;
+  delete legacyCompatibleReport.target.resolvedVersion;
+  const legacyCompatibleIntegrity = await verifyReportObject(legacyCompatibleReport);
+  assert(legacyCompatibleIntegrity.ok, "legacy target.version report must remain integrity-compatible");
   const mismatchedReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
   mismatchedReport.summary.totalResults += 1;
   const mismatchedIntegrity = await verifyReportObject(mismatchedReport);
@@ -409,6 +455,8 @@ try {
   const summaryMarkdown = renderGithubSummary(fullReportForIntegrity.report);
   const specqrCounts = fullReportForIntegrity.report.summary.adapterSummary.specqr;
   assert(summaryMarkdown.includes("# SpecQR Conformance Summary"), "summary markdown must include title");
+  assert(summaryMarkdown.includes("- 対象 requested: `specqr@2.4.0`"), "summary markdown must include requested target");
+  assert(summaryMarkdown.includes("- 対象 resolved: `specqr@2.4.0` (`npm`)"), "summary markdown must include resolved target");
   assert(
     summaryMarkdown.includes(`| specqr | required | active | ${specqrCounts.total} | ${specqrCounts.executed} | ${specqrCounts.passed} | ${specqrCounts.failed} | ${specqrCounts.error} | ${specqrCounts.skipped} |`),
     "summary markdown must include SpecQR adapter counts"
@@ -480,6 +528,52 @@ try {
     assert(summaryStdout.includes("# SpecQR Conformance Summary"), "summary must write to stdout without GITHUB_STEP_SUMMARY");
   } finally {
     await rm(summaryTmpRoot, { recursive: true, force: true });
+  }
+
+  const targetOverrideReport = await createConformanceReport({
+    filters: {
+      vectors: ["core.generate.byte-text"],
+      adapters: ["specqr"]
+    },
+    metadataOptions: {
+      env: {
+        SPECQR_TARGET_REQUESTED: "specqr@next",
+        SPECQR_TARGET_SOURCE: "npm"
+      }
+    }
+  });
+  assert(targetOverrideReport.report.target.requested === "specqr@next", "env requested target must appear in report target");
+  assert(targetOverrideReport.report.target.resolvedVersion === "2.4.0", "env target report must still use installed SpecQR version");
+  assert(targetOverrideReport.report.metadata.target.requested === "specqr@next", "env requested target must appear in report metadata");
+  const overrideSummary = renderGithubSummary(targetOverrideReport.report);
+  assert(overrideSummary.includes("- 対象 requested: `specqr@next`"), "summary must include overridden requested target");
+  assert(overrideSummary.includes("- 対象 resolved: `specqr@2.4.0` (`npm`)"), "summary must include installed resolved target");
+
+  const installedTarget = await verifySpecqrTarget({
+    env: {
+      SPECQR_TARGET_REQUESTED: "specqr@2.4.0",
+      SPECQR_TARGET_SOURCE: "npm"
+    }
+  });
+  assert(installedTarget.ok, "verifySpecqrTarget must succeed for installed specqr package");
+  assert(installedTarget.target.requested === "specqr@2.4.0", "verifySpecqrTarget must echo requested target");
+  assert(installedTarget.target.resolvedVersion === "2.4.0", "verifySpecqrTarget must read installed SpecQR version");
+
+  const missingTargetTmpRoot = await mkdtemp(path.join(tmpdir(), "specqr-missing-target-test-"));
+  try {
+    let missingError = null;
+    try {
+      await readInstalledPackageMetadata("specqr", { cwd: missingTargetTmpRoot });
+    } catch (error) {
+      missingError = error;
+    }
+    assert(missingError, "missing SpecQR package metadata must fail");
+    assert(
+      /Unable to read installed package metadata for specqr/.test(missingError.message),
+      "missing SpecQR package metadata must fail clearly"
+    );
+  } finally {
+    await rm(missingTargetTmpRoot, { recursive: true, force: true });
   }
 
   const passingWithScopeSkipsBadge = createBadge("overall", {
@@ -565,6 +659,10 @@ try {
   assert(typeof metadata.runtime.platform === "string" && metadata.runtime.platform.length > 0, "report metadata must include platform");
   assert(typeof metadata.runtime.arch === "string" && metadata.runtime.arch.length > 0, "report metadata must include arch");
   assert(metadata.packages.specqr === "2.4.0", "report metadata must include specqr package version");
+  assert(metadata.target.packageName === "specqr", "report metadata must include target package name");
+  assert(metadata.target.requested === "specqr@2.4.0", "report metadata must include default requested target");
+  assert(metadata.target.resolvedVersion === metadata.packages.specqr, "report metadata target must use installed SpecQR version");
+  assert(metadata.target.source === "npm", "report metadata target source must default to npm");
   assert(metadata.packages.jsqr === "1.4.0", "report metadata must include jsqr package version");
   assert(
     metadata.packages["nayuki-qr-code-generator"] === "1.8.0",

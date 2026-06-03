@@ -91,6 +91,32 @@ function optionalUnavailableSkipCount(report) {
   }).length;
 }
 
+function addTargetMetadataErrors(errors, report) {
+  const target = report.target ?? {};
+  const installedSpecqr = report.metadata?.packages?.specqr;
+  const resolvedVersion = target.resolvedVersion ?? target.version;
+
+  if (target.name !== "specqr") {
+    errors.push({ label: "target.name", expected: "specqr", actual: target.name });
+  }
+
+  if (!target.requested && !target.version) {
+    errors.push({ label: "target.requested", expected: "requested target or legacy version", actual: target.requested });
+  }
+
+  if (!resolvedVersion) {
+    errors.push({ label: "target.resolvedVersion", expected: "installed specqr version", actual: resolvedVersion });
+  }
+
+  if (installedSpecqr && resolvedVersion && installedSpecqr !== resolvedVersion) {
+    errors.push({ label: "target.resolvedVersion", expected: installedSpecqr, actual: resolvedVersion });
+  }
+
+  if (!target.source) {
+    errors.push({ label: "target.source", expected: "package source", actual: target.source });
+  }
+}
+
 export async function verifyReportObject(report, options = {}) {
   const cwd = options.cwd ?? process.cwd();
   const errors = [];
@@ -117,6 +143,8 @@ export async function verifyReportObject(report, options = {}) {
   const results = Array.isArray(report.results) ? report.results : [];
   const vectorIds = new Set(scope.vectors.map((vector) => vector.id));
   const adapterIds = new Set(scope.adapters.map((adapter) => adapter.id));
+
+  addTargetMetadataErrors(errors, report);
 
   for (const result of results) {
     if (!vectorIds.has(result.vectorId)) {
