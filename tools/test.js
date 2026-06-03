@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { access, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -11,6 +12,8 @@ import { buildPages } from "./build-pages.js";
 import { pngToRgba } from "./png-rgba.js";
 import { createReportMetadata } from "./report-metadata.js";
 import { badgeFileNames, createBadge, createBadgeSet, summarizeStatus } from "./report-utils.js";
+import { activeAdapters, createConformanceReport } from "./run-conformance.js";
+import { verifyReportObject } from "./verify-report.js";
 
 const requiredPaths = [
   "package.json",
@@ -39,13 +42,14 @@ const requiredPaths = [
   "tools/report.js",
   "tools/report-metadata.js",
   "tools/report-utils.js",
+  "tools/verify-report.js",
   "tools/build-pages.js",
   "tools/png-rgba.js",
   ".github/workflows/verify.yml",
   ".github/workflows/pages.yml"
 ];
 
-const requiredScripts = ["test", "validate:vectors", "conformance", "report", "pages:build", "verify"];
+const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "pages:build", "verify"];
 const allowedOperations = [
   "generate",
   "generateSegments",
@@ -202,6 +206,11 @@ try {
     "reports/latest.json",
     "reports/latest.html",
     "badges/overall.json",
+    "npm run conformance -- --list-suites",
+    "npm run conformance -- --suite kanji-eci-binary",
+    "npm run conformance -- --adapter specqr",
+    "npm run conformance -- --vector core.generate.byte-text",
+    "npm run verify:report",
     "npm run pages:build",
     "public/",
     "docs/development-policy.md",
@@ -249,6 +258,15 @@ try {
     requireText(schemaDoc, text, "docs/vector-schema.md");
   }
 
+  const developmentPolicy = await readFile("docs/development-policy.md", "utf8");
+  for (const text of [
+    "filtered conformance run",
+    "full `npm run verify`",
+    "npm run verify:report"
+  ]) {
+    requireText(developmentPolicy, text, "docs/development-policy.md");
+  }
+
   for (const operation of allowedOperations) {
     requireText(schemaDoc, operation, "docs/vector-schema.md");
   }
@@ -291,6 +309,78 @@ try {
       }
     }
   }
+
+  const listSuitesRun = spawnSync(process.execPath, ["tools/run-conformance.js", "--list-suites"], {
+    cwd: process.cwd(),
+    encoding: "utf8"
+  });
+  assert(listSuitesRun.status === 0, "--list-suites must exit successfully");
+  const listedSuites = JSON.parse(listSuitesRun.stdout);
+  assert(
+    listedSuites.suites.some((suite) => suite.id === "kanji-eci-binary"),
+    "--list-suites must include kanji-eci-binary"
+  );
+
+  const listAdaptersRun = spawnSync(process.execPath, ["tools/run-conformance.js", "--list-adapters"], {
+    cwd: process.cwd(),
+    encoding: "utf8"
+  });
+  assert(listAdaptersRun.status === 0, "--list-adapters must exit successfully");
+  const listedAdapters = JSON.parse(listAdaptersRun.stdout);
+  assert(
+    listedAdapters.adapters.map((adapter) => adapter.id).join(",") === activeAdapters.map((adapter) => adapter.id).join(","),
+    "--list-adapters must include active adapters in runner order"
+  );
+
+  const suiteFilteredReport = await createConformanceReport({
+    filters: {
+      suites: ["kanji-eci-binary"],
+      adapters: ["specqr"]
+    }
+  });
+  assert(suiteFilteredReport.report.run.mode === "filtered", "suite filtered run must record filtered mode");
+  assert(suiteFilteredReport.report.summary.totalVectors === 12, "suite filter must select only kanji-eci-binary vectors");
+  assert(
+    suiteFilteredReport.report.results.every((result) => result.suiteId === "kanji-eci-binary"),
+    "suite filter must return only that suite's vectors"
+  );
+
+  const adapterFilteredReport = await createConformanceReport({
+    filters: {
+      suites: ["core"],
+      adapters: ["specqr"]
+    }
+  });
+  assert(adapterFilteredReport.report.adapters.length === 1, "adapter filter must select one adapter");
+  assert(adapterFilteredReport.report.adapters[0].id === "specqr", "adapter filter must select specqr");
+  assert(
+    adapterFilteredReport.report.results.every((result) => result.adapterId === "specqr"),
+    "adapter filter must return only that adapter's results"
+  );
+
+  const vectorFilteredReport = await createConformanceReport({
+    filters: {
+      vectors: ["core.generate.byte-text"]
+    }
+  });
+  assert(vectorFilteredReport.report.summary.totalVectors === 1, "vector filter must select one vector");
+  assert(vectorFilteredReport.report.summary.totalResults === activeAdapters.length, "vector filter must run selected vector across adapters");
+  assert(
+    vectorFilteredReport.report.results.every((result) => result.vectorId === "core.generate.byte-text"),
+    "vector filter must return expected single-vector results"
+  );
+
+  const fullReportForIntegrity = await createConformanceReport();
+  const validIntegrity = await verifyReportObject(fullReportForIntegrity.report);
+  assert(validIntegrity.ok, "valid full report must pass integrity check");
+  const mismatchedReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
+  mismatchedReport.summary.totalResults += 1;
+  const mismatchedIntegrity = await verifyReportObject(mismatchedReport);
+  assert(!mismatchedIntegrity.ok, "report integrity checker must catch mismatched summary counts");
+  assert(
+    mismatchedIntegrity.errors.some((error) => error.label === "summary"),
+    "mismatched summary count must be reported as a summary integrity error"
+  );
 
   const passingWithScopeSkipsBadge = createBadge("overall", {
     executed: 12,

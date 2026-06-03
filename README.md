@@ -52,6 +52,8 @@ optional decoder lane は CLI command が見つからない場合、clear reason
 
 `npm run conformance` は `reports/latest.json` を生成します。JSON には `generatedAt`、Node version、platform/arch、`specqr` / `jsqr` / `nayuki-qr-code-generator` の installed package version を含めます。
 
+default の conformance run は unfiltered full run として記録されます。`--suite`, `--category`, `--adapter`, `--vector`, `--output` を使うと filtered run を作れます。filtered run は `reports/latest.json` の `run.mode` と `run.filters` に記録されます。
+
 `npm run report` は `reports/latest.html` と Shields-compatible な badge JSON を生成します。badge は scope skip を失敗とは別に扱い、失敗またはエラーがある場合だけ red、実行 check がなく skip だけの場合は yellow、それ以外は green になります。
 
 生成する badge file:
@@ -78,11 +80,32 @@ npm test
 npm run validate:vectors
 npm run conformance
 npm run report
+npm run verify:report
 npm run pages:build
 npm run verify
 ```
 
-`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
+よく使う runner command:
+
+```sh
+# 全 suite / 全 adapter を実行して reports/latest.json を更新する
+npm run conformance
+
+# suite と adapter を一覧する
+npm run conformance -- --list-suites
+npm run conformance -- --list-adapters
+
+# 1 suite だけを一時 report に出す
+npm run conformance -- --suite kanji-eci-binary --output reports/kanji-eci-binary.local.json
+
+# 1 adapter だけを実行する
+npm run conformance -- --adapter specqr --output reports/specqr.local.json
+
+# 1 vector だけを全 adapter で実行する
+npm run conformance -- --vector core.generate.byte-text --output reports/vector.local.json
+```
+
+`npm run verify:report` は生成済み `reports/latest.json` の summary / adapter summary / suite count / result coverage を検査します。`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation、report integrity validation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
 
 ## 現在の状態
 

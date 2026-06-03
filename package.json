@@ -21,8 +21,9 @@
     "validate:vectors": "node tools/validate-vectors.js",
     "conformance": "node tools/run-conformance.js",
     "report": "node tools/report.js",
+    "verify:report": "node tools/verify-report.js",
     "pages:build": "npm run conformance && npm run report && node tools/build-pages.js",
-    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report"
+    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:report"
   },
   "keywords": [
     "specqr",

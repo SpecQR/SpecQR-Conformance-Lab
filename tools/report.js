@@ -27,6 +27,16 @@ async function readReport() {
         runtime: {},
         packages: {}
       },
+      run: {
+        mode: "full",
+        filters: {
+          suites: [],
+          categories: [],
+          adapters: [],
+          vectors: []
+        },
+        outputPath: "reports/latest.json"
+      },
       target: {
         name: "specqr",
         version: "2.4.0",
@@ -174,6 +184,8 @@ const adapters = Array.isArray(report.adapters) ? report.adapters : [];
 const suites = Array.isArray(report.suites) ? report.suites : [];
 const results = Array.isArray(report.results) ? report.results : [];
 const metadata = report.metadata ?? {};
+const run = report.run ?? {};
+const runFilters = run.filters ?? {};
 const packages = metadata.packages ?? {};
 const runtime = metadata.runtime ?? {};
 const adapterSummary = summary.adapterSummary ?? {};
@@ -226,6 +238,11 @@ const suiteRows = suites
 
 const metadataRows = [
   ["generatedAt", metadata.generatedAt],
+  ["run mode", run.mode ?? "full"],
+  ["filters.suites", (runFilters.suites ?? []).join(", ")],
+  ["filters.categories", (runFilters.categories ?? []).join(", ")],
+  ["filters.adapters", (runFilters.adapters ?? []).join(", ")],
+  ["filters.vectors", (runFilters.vectors ?? []).join(", ")],
   ["Node", runtime.node],
   ["platform", runtime.platform],
   ["arch", runtime.arch],
