@@ -136,6 +136,14 @@ function createPlanningDiagnosticsSummary(vectors, results) {
   return createScopedSummary(vectors, results, isPlanningDiagnosticsCategory);
 }
 
+function isKanjiEciBinaryCategory(category) {
+  return category === "kanji-eci-binary";
+}
+
+function createKanjiEciBinarySummary(vectors, results) {
+  return createScopedSummary(vectors, results, isKanjiEciBinaryCategory);
+}
+
 const suites = await readSuites();
 const vectors = suites.flatMap((suite) => {
   return (Array.isArray(suite.vectors) ? suite.vectors : []).map((vector) => ({
@@ -220,6 +228,7 @@ const report = {
     gs1DigitalLink: createGs1DigitalLinkSummary(vectors, results),
     structuredAppend: createStructuredAppendSummary(vectors, results),
     planningDiagnostics: createPlanningDiagnosticsSummary(vectors, results),
+    kanjiEciBinary: createKanjiEciBinarySummary(vectors, results),
     executed: results.filter((result) => result.status !== "skipped").length,
     passed: statusCounts.passed,
     failed: statusCounts.failed,

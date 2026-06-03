@@ -5,6 +5,7 @@ export const badgeFileNames = [
   "nayuki.json",
   "zbarimg.json",
   "zxing-cli.json",
+  "kanji-eci-binary.json",
   "gs1-digital-link.json",
   "structured-append.json",
   "planning-diagnostics.json"
@@ -76,6 +77,7 @@ export function createBadgeSet(summary = {}) {
     "nayuki.json": createBadge("nayuki", adapterSummary.nayuki),
     "zbarimg.json": createBadge("zbarimg", adapterSummary.zbarimg),
     "zxing-cli.json": createBadge("zxing cli", adapterSummary["zxing-cli"]),
+    "kanji-eci-binary.json": createBadge("kanji eci binary", summary.kanjiEciBinary),
     "gs1-digital-link.json": createBadge("gs1 digital link", summary.gs1DigitalLink),
     "structured-append.json": createBadge("structured append", summary.structuredAppend),
     "planning-diagnostics.json": createBadge("planning diagnostics", summary.planningDiagnostics)

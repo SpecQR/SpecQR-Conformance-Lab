@@ -1,0 +1,398 @@
+{
+  "version": 1,
+  "id": "kanji-eci-binary",
+  "name": "Kanji, ECI, and binary vectors",
+  "description": "QR Code Model 2 の Kanji mode、ECI UTF-8、raw binary payload を published SpecQR から外部検証する vector suite。",
+  "category": "kanji-eci-binary",
+  "vectors": [
+    {
+      "id": "kanji.auto.japanese-text",
+      "title": "Auto Kanji generation for Japanese text",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "漢字"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "kanji",
+            "eciAssignmentNumber": null,
+            "segments": [
+              {
+                "mode": "kanji",
+                "characterCount": 2,
+                "byteCount": 4
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "漢字"
+        }
+      },
+      "tags": ["kanji", "auto", "decode"]
+    },
+    {
+      "id": "kanji.forced-mode.japanese-text",
+      "title": "Explicit Kanji mode generation",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "漢字"
+      },
+      "options": {
+        "mode": "kanji",
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "kanji",
+            "segments": [
+              {
+                "mode": "kanji",
+                "characterCount": 2,
+                "byteCount": 4
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "漢字"
+        }
+      },
+      "tags": ["kanji", "forced-mode", "decode"]
+    },
+    {
+      "id": "kanji.auto.mixed-kanji-alphanumeric",
+      "title": "Mixed Kanji plus numeric and alphanumeric text",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "漢字123ABC"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "mixed",
+            "segments": [
+              {
+                "mode": "kanji",
+                "characterCount": 2,
+                "byteCount": 4
+              },
+              {
+                "mode": "alphanumeric",
+                "characterCount": 6,
+                "byteCount": 6
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "漢字123ABC"
+        }
+      },
+      "tags": ["kanji", "mixed", "alphanumeric", "decode"]
+    },
+    {
+      "id": "kanji.manual-segment.japanese-text",
+      "title": "Manual Kanji segment generation",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "kanji",
+            "text": "漢字"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "kanji",
+            "segments": [
+              {
+                "mode": "kanji",
+                "characterCount": 2,
+                "byteCount": 4
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "漢字"
+        }
+      },
+      "tags": ["kanji", "manual-segments", "decode"]
+    },
+    {
+      "id": "binary.utf8-byte-fallback.emoji",
+      "title": "UTF-8 byte fallback for text outside QR Kanji mode",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "😀"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "byte",
+            "segments": [
+              {
+                "mode": "byte",
+                "characterCount": 1,
+                "byteCount": 4
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "😀"
+        }
+      },
+      "tags": ["byte", "utf-8", "fallback", "decode"]
+    },
+    {
+      "id": "eci.utf8-auto.text",
+      "title": "ECI UTF-8 text generation",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "こんにちは😀"
+      },
+      "options": {
+        "eci": true,
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 2,
+            "errorCorrectionLevel": "M",
+            "mode": "byte",
+            "eciAssignmentNumber": 26,
+            "controlSegments": [
+              {
+                "mode": "eci",
+                "assignmentNumber": 26
+              }
+            ],
+            "segments": [
+              {
+                "mode": "eci",
+                "assignmentNumber": 26
+              },
+              {
+                "mode": "byte",
+                "characterCount": 6,
+                "byteCount": 19
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "こんにちは😀"
+        }
+      },
+      "tags": ["eci", "utf-8", "decode"]
+    },
+    {
+      "id": "eci.manual-segment.byte-text",
+      "title": "Manual ECI segment plus byte segment",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "eci",
+            "assignmentNumber": 26
+          },
+          {
+            "mode": "byte",
+            "text": "こんにちは"
+          }
+        ]
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 2,
+            "errorCorrectionLevel": "M",
+            "mode": "byte",
+            "eciAssignmentNumber": 26,
+            "controlSegments": [
+              {
+                "mode": "eci",
+                "assignmentNumber": 26
+              }
+            ],
+            "segments": [
+              {
+                "mode": "eci",
+                "assignmentNumber": 26
+              },
+              {
+                "mode": "byte",
+                "characterCount": 5,
+                "byteCount": 15
+              }
+            ]
+          }
+        },
+        "decode": {
+          "text": "こんにちは"
+        }
+      },
+      "tags": ["eci", "manual-segments", "byte", "decode"]
+    },
+    {
+      "id": "binary.raw.00-ascii-ff",
+      "title": "Raw binary payload with NUL, printable ASCII, and FF",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "004153434949ff"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "byte",
+            "segments": [
+              {
+                "mode": "byte",
+                "byteCount": 7
+              }
+            ]
+          }
+        },
+        "decode": {
+          "binaryHex": "004153434949ff"
+        }
+      },
+      "tags": ["binary", "raw-bytes", "decode"]
+    },
+    {
+      "id": "binary.raw.offset-like-representative",
+      "title": "Raw binary payload with offset-like representative bytes",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "000102107f80feff"
+      },
+      "options": {
+        "errorCorrectionLevel": "M"
+      },
+      "expect": {
+        "diagnostics": {
+          "subset": {
+            "version": 1,
+            "errorCorrectionLevel": "M",
+            "mode": "byte",
+            "segments": [
+              {
+                "mode": "byte",
+                "byteCount": 8
+              }
+            ]
+          }
+        },
+        "decode": {
+          "binaryHex": "000102107f80feff"
+        }
+      },
+      "tags": ["binary", "raw-bytes", "offset-like", "decode"]
+    },
+    {
+      "id": "kanji.reject.forced-unsupported-character",
+      "title": "Forced Kanji mode rejects unsupported character",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "😀"
+      },
+      "options": {
+        "mode": "kanji"
+      },
+      "expect": {
+        "rejects": {
+          "code": "INVALID_MODE",
+          "messageIncludes": "kanji mode cannot encode character"
+        }
+      },
+      "tags": ["kanji", "negative", "reject"]
+    },
+    {
+      "id": "eci.reject.invalid-assignment",
+      "title": "Invalid ECI assignment rejects",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "input": {
+        "text": "HELLO"
+      },
+      "options": {
+        "eci": 999999999
+      },
+      "expect": {
+        "rejects": {
+          "code": "INVALID_ECI",
+          "messageIncludes": "eci must be false, true, or an integer from 0 to 999999"
+        }
+      },
+      "tags": ["eci", "negative", "reject"]
+    },
+    {
+      "id": "segments.reject.manual-kanji-missing-payload",
+      "title": "Invalid manual segment payload rejects",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "kanji"
+          }
+        ]
+      },
+      "options": {},
+      "expect": {
+        "rejects": {
+          "code": "INVALID_INPUT",
+          "messageIncludes": "must include data or text"
+        }
+      },
+      "tags": ["kanji", "manual-segments", "negative", "reject"]
+    }
+  ]
+}

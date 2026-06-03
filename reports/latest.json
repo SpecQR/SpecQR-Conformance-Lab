@@ -3,7 +3,7 @@
   "labVersion": "0.1.0",
   "status": "executed",
   "metadata": {
-    "generatedAt": "2026-06-02T18:34:14.081Z",
+    "generatedAt": "2026-06-03T11:39:45.354Z",
     "runtime": {
       "node": "v25.9.0",
       "platform": "darwin",
@@ -94,6 +94,14 @@
       "vectorCount": 15
     },
     {
+      "file": "vectors/kanji-eci-binary.json",
+      "id": "kanji-eci-binary",
+      "name": "Kanji, ECI, and binary vectors",
+      "description": "QR Code Model 2 の Kanji mode、ECI UTF-8、raw binary payload を published SpecQR から外部検証する vector suite。",
+      "category": "kanji-eci-binary",
+      "vectorCount": 12
+    },
+    {
       "file": "vectors/planning-diagnostics.json",
       "id": "planning-diagnostics",
       "name": "Planning and Diagnostics API vectors",
@@ -127,9 +135,9 @@
     }
   ],
   "summary": {
-    "suiteCount": 6,
-    "totalVectors": 63,
-    "totalResults": 315,
+    "suiteCount": 7,
+    "totalVectors": 75,
+    "totalResults": 375,
     "categories": {
       "core": 3,
       "segments": 1,
@@ -137,14 +145,15 @@
       "negative": 1,
       "gs1": 8,
       "gs1-digital-link": 7,
+      "kanji-eci-binary": 12,
       "planning-diagnostics": 23,
       "reference-matrix": 6,
       "example": 1,
       "structured-append": 12
     },
     "operations": {
-      "generate": 9,
-      "generateSegments": 2,
+      "generate": 18,
+      "generateSegments": 5,
       "estimate": 14,
       "gs1.createElementString": 4,
       "gs1.validateElementString": 4,
@@ -162,9 +171,9 @@
         "id": "specqr",
         "name": "SpecQR",
         "status": "active",
-        "total": 63,
-        "executed": 57,
-        "passed": 57,
+        "total": 75,
+        "executed": 69,
+        "passed": 69,
         "failed": 0,
         "skipped": 6,
         "error": 0
@@ -173,44 +182,44 @@
         "id": "jsqr",
         "name": "jsQR",
         "status": "active",
-        "total": 63,
-        "executed": 5,
-        "passed": 5,
+        "total": 75,
+        "executed": 14,
+        "passed": 14,
         "failed": 0,
-        "skipped": 58,
+        "skipped": 61,
         "error": 0
       },
       "nayuki": {
         "id": "nayuki",
         "name": "Nayuki QR Code generator",
         "status": "active",
-        "total": 63,
+        "total": 75,
         "executed": 6,
         "passed": 6,
         "failed": 0,
-        "skipped": 57,
+        "skipped": 69,
         "error": 0
       },
       "zbarimg": {
         "id": "zbarimg",
         "name": "zbarimg",
         "status": "optional",
-        "total": 63,
+        "total": 75,
         "executed": 0,
         "passed": 0,
         "failed": 0,
-        "skipped": 63,
+        "skipped": 75,
         "error": 0
       },
       "zxing-cli": {
         "id": "zxing-cli",
         "name": "ZXing CLI",
         "status": "optional",
-        "total": 63,
+        "total": 75,
         "executed": 0,
         "passed": 0,
         "failed": 0,
-        "skipped": 63,
+        "skipped": 75,
         "error": 0
       }
     },
@@ -424,10 +433,78 @@
         }
       }
     },
-    "executed": 68,
-    "passed": 68,
+    "kanjiEciBinary": {
+      "categories": {
+        "kanji-eci-binary": 12
+      },
+      "operations": {
+        "generate": 9,
+        "generateSegments": 3
+      },
+      "vectorCount": 12,
+      "resultCount": 60,
+      "executed": 21,
+      "passed": 21,
+      "failed": 0,
+      "skipped": 39,
+      "error": 0,
+      "adapterSummary": {
+        "specqr": {
+          "id": "specqr",
+          "name": "SpecQR",
+          "total": 12,
+          "executed": 12,
+          "passed": 12,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0
+        },
+        "jsqr": {
+          "id": "jsqr",
+          "name": "jsQR",
+          "total": 12,
+          "executed": 9,
+          "passed": 9,
+          "failed": 0,
+          "skipped": 3,
+          "error": 0
+        },
+        "nayuki": {
+          "id": "nayuki",
+          "name": "Nayuki QR Code generator",
+          "total": 12,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 12,
+          "error": 0
+        },
+        "zbarimg": {
+          "id": "zbarimg",
+          "name": "zbarimg",
+          "total": 12,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 12,
+          "error": 0
+        },
+        "zxing-cli": {
+          "id": "zxing-cli",
+          "name": "ZXing CLI",
+          "total": 12,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 12,
+          "error": 0
+        }
+      }
+    },
+    "executed": 89,
+    "passed": 89,
     "failed": 0,
-    "skipped": 247,
+    "skipped": 286,
     "error": 0
   },
   "results": [
@@ -3199,6 +3276,2484 @@
         }
       ],
       "reason": "Unsupported operation for zxing-cli lane: gs1.validateDigitalLink"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.japanese-text",
+      "title": "Auto Kanji generation for Japanese text",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 0,
+          "maskPenalty": 295,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 295
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 395
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 420
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 503
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 423
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 470
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 423
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 550
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 0 had the lowest penalty score (295) among the evaluated masks.",
+          "mode": "kanji",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "kanji",
+              "characterCount": 2,
+              "byteCount": 4,
+              "bitLength": 38
+            }
+          ],
+          "dataBitLength": 38,
+          "capacityBits": 128,
+          "remainingBits": 90,
+          "capacityUtilization": 0.296875,
+          "inputBytes": 6,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.japanese-text",
+      "title": "Auto Kanji generation for Japanese text",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "漢字",
+          "binaryHex": "8abf8e9a",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "kanji",
+              "bytes": [
+                138,
+                191,
+                142,
+                154
+              ],
+              "text": "漢字"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.japanese-text",
+      "title": "Auto Kanji generation for Japanese text",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.japanese-text",
+      "title": "Auto Kanji generation for Japanese text",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.japanese-text",
+      "title": "Auto Kanji generation for Japanese text",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.forced-mode.japanese-text",
+      "title": "Explicit Kanji mode generation",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 0,
+          "maskPenalty": 295,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 295
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 395
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 420
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 503
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 423
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 470
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 423
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 550
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 0 had the lowest penalty score (295) among the evaluated masks.",
+          "mode": "kanji",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "kanji",
+              "characterCount": 2,
+              "byteCount": 4,
+              "bitLength": 38
+            }
+          ],
+          "dataBitLength": 38,
+          "capacityBits": 128,
+          "remainingBits": 90,
+          "capacityUtilization": 0.296875,
+          "inputBytes": 6,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.forced-mode.japanese-text",
+      "title": "Explicit Kanji mode generation",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "漢字",
+          "binaryHex": "8abf8e9a",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "kanji",
+              "bytes": [
+                138,
+                191,
+                142,
+                154
+              ],
+              "text": "漢字"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.forced-mode.japanese-text",
+      "title": "Explicit Kanji mode generation",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.forced-mode.japanese-text",
+      "title": "Explicit Kanji mode generation",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.forced-mode.japanese-text",
+      "title": "Explicit Kanji mode generation",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.mixed-kanji-alphanumeric",
+      "title": "Mixed Kanji plus numeric and alphanumeric text",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 3,
+          "maskPenalty": 311,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 361
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 393
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 333
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 311
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 497
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 503
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 325
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 483
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 3 had the lowest penalty score (311) among the evaluated masks.",
+          "mode": "mixed",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "kanji",
+              "characterCount": 2,
+              "byteCount": 4,
+              "bitLength": 38
+            },
+            {
+              "mode": "alphanumeric",
+              "characterCount": 6,
+              "byteCount": 6,
+              "bitLength": 46
+            }
+          ],
+          "dataBitLength": 84,
+          "capacityBits": 128,
+          "remainingBits": 44,
+          "capacityUtilization": 0.65625,
+          "inputBytes": 12,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.mixed-kanji-alphanumeric",
+      "title": "Mixed Kanji plus numeric and alphanumeric text",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "漢字123ABC",
+          "binaryHex": "8abf8e9a313233414243",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "kanji",
+              "bytes": [
+                138,
+                191,
+                142,
+                154
+              ],
+              "text": "漢字"
+            },
+            {
+              "type": "alphanumeric",
+              "text": "123ABC"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.mixed-kanji-alphanumeric",
+      "title": "Mixed Kanji plus numeric and alphanumeric text",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.mixed-kanji-alphanumeric",
+      "title": "Mixed Kanji plus numeric and alphanumeric text",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.auto.mixed-kanji-alphanumeric",
+      "title": "Mixed Kanji plus numeric and alphanumeric text",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.manual-segment.japanese-text",
+      "title": "Manual Kanji segment generation",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 0,
+          "maskPenalty": 295,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 295
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 395
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 420
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 503
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 423
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 470
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 423
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 550
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 0 had the lowest penalty score (295) among the evaluated masks.",
+          "mode": "kanji",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "kanji",
+              "characterCount": 2,
+              "byteCount": 4,
+              "bitLength": 38
+            }
+          ],
+          "dataBitLength": 38,
+          "capacityBits": 128,
+          "remainingBits": 90,
+          "capacityUtilization": 0.296875,
+          "inputBytes": 4,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.manual-segment.japanese-text",
+      "title": "Manual Kanji segment generation",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "漢字",
+          "binaryHex": "8abf8e9a",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "kanji",
+              "bytes": [
+                138,
+                191,
+                142,
+                154
+              ],
+              "text": "漢字"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.manual-segment.japanese-text",
+      "title": "Manual Kanji segment generation",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.manual-segment.japanese-text",
+      "title": "Manual Kanji segment generation",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.manual-segment.japanese-text",
+      "title": "Manual Kanji segment generation",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.utf8-byte-fallback.emoji",
+      "title": "UTF-8 byte fallback for text outside QR Kanji mode",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 3,
+          "maskPenalty": 278,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 390
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 351
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 336
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 278
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 399
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 521
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 420
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 425
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 3 had the lowest penalty score (278) among the evaluated masks.",
+          "mode": "byte",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "byte",
+              "characterCount": 1,
+              "byteCount": 4,
+              "bitLength": 44
+            }
+          ],
+          "dataBitLength": 44,
+          "capacityBits": 128,
+          "remainingBits": 84,
+          "capacityUtilization": 0.34375,
+          "inputBytes": 4,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.utf8-byte-fallback.emoji",
+      "title": "UTF-8 byte fallback for text outside QR Kanji mode",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "😀",
+          "binaryHex": "f09f9880",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "byte",
+              "bytes": [
+                240,
+                159,
+                152,
+                128
+              ],
+              "text": "😀"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.utf8-byte-fallback.emoji",
+      "title": "UTF-8 byte fallback for text outside QR Kanji mode",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.utf8-byte-fallback.emoji",
+      "title": "UTF-8 byte fallback for text outside QR Kanji mode",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.utf8-byte-fallback.emoji",
+      "title": "UTF-8 byte fallback for text outside QR Kanji mode",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.utf8-auto.text",
+      "title": "ECI UTF-8 text generation",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 2,
+          "size": 25,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 2 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 2,
+          "maskPenalty": 429,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 534
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 585
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 429
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 542
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 467
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 498
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 605
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 461
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 2 had the lowest penalty score (429) among the evaluated masks.",
+          "mode": "byte",
+          "controlSegments": [
+            {
+              "mode": "eci",
+              "assignmentNumber": 26
+            }
+          ],
+          "eciAssignmentNumber": 26,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "eci",
+              "assignmentNumber": 26,
+              "characterCount": 0,
+              "byteCount": 0,
+              "bitLength": 12
+            },
+            {
+              "mode": "byte",
+              "characterCount": 6,
+              "byteCount": 19,
+              "bitLength": 164
+            }
+          ],
+          "dataBitLength": 176,
+          "capacityBits": 224,
+          "remainingBits": 48,
+          "capacityUtilization": 0.7857142857142857,
+          "inputBytes": 19,
+          "dataCodewords": 28,
+          "errorCorrectionCodewords": 16,
+          "totalCodewords": 44,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.utf8-auto.text",
+      "title": "ECI UTF-8 text generation",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 396,
+          "height": 396
+        },
+        "decoded": {
+          "text": "こんにちは😀",
+          "binaryHex": "e38193e38293e381abe381a1e381aff09f9880",
+          "version": 2,
+          "chunks": [
+            {
+              "type": "eci",
+              "assignmentNumber": 26
+            },
+            {
+              "type": "byte",
+              "bytes": [
+                227,
+                129,
+                147,
+                227,
+                130,
+                147,
+                227,
+                129,
+                171,
+                227,
+                129,
+                161,
+                227,
+                129,
+                175,
+                240,
+                159,
+                152,
+                128
+              ],
+              "text": "こんにちは😀"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.utf8-auto.text",
+      "title": "ECI UTF-8 text generation",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.utf8-auto.text",
+      "title": "ECI UTF-8 text generation",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.utf8-auto.text",
+      "title": "ECI UTF-8 text generation",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.manual-segment.byte-text",
+      "title": "Manual ECI segment plus byte segment",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 2,
+          "size": 25,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 2 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 2,
+          "maskPenalty": 517,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 518
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 532
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 517
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 524
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 535
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 517
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 543
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 570
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 2 had the lowest penalty score (517) among the evaluated masks.",
+          "mode": "byte",
+          "controlSegments": [
+            {
+              "mode": "eci",
+              "assignmentNumber": 26
+            }
+          ],
+          "eciAssignmentNumber": 26,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "eci",
+              "assignmentNumber": 26,
+              "characterCount": 0,
+              "byteCount": 0,
+              "bitLength": 12
+            },
+            {
+              "mode": "byte",
+              "characterCount": 5,
+              "byteCount": 15,
+              "bitLength": 132
+            }
+          ],
+          "dataBitLength": 144,
+          "capacityBits": 224,
+          "remainingBits": 80,
+          "capacityUtilization": 0.6428571428571429,
+          "inputBytes": 15,
+          "dataCodewords": 28,
+          "errorCorrectionCodewords": 16,
+          "totalCodewords": 44,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.manual-segment.byte-text",
+      "title": "Manual ECI segment plus byte segment",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 396,
+          "height": 396
+        },
+        "decoded": {
+          "text": "こんにちは",
+          "binaryHex": "e38193e38293e381abe381a1e381af",
+          "version": 2,
+          "chunks": [
+            {
+              "type": "eci",
+              "assignmentNumber": 26
+            },
+            {
+              "type": "byte",
+              "bytes": [
+                227,
+                129,
+                147,
+                227,
+                130,
+                147,
+                227,
+                129,
+                171,
+                227,
+                129,
+                161,
+                227,
+                129,
+                175
+              ],
+              "text": "こんにちは"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.manual-segment.byte-text",
+      "title": "Manual ECI segment plus byte segment",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.manual-segment.byte-text",
+      "title": "Manual ECI segment plus byte segment",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.manual-segment.byte-text",
+      "title": "Manual ECI segment plus byte segment",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.00-ascii-ff",
+      "title": "Raw binary payload with NUL, printable ASCII, and FF",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 0,
+          "maskPenalty": 258,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 258
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 504
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 368
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 434
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 378
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 474
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 489
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 439
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 0 had the lowest penalty score (258) among the evaluated masks.",
+          "mode": "byte",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "byte",
+              "characterCount": 0,
+              "byteCount": 7,
+              "bitLength": 68
+            }
+          ],
+          "dataBitLength": 68,
+          "capacityBits": 128,
+          "remainingBits": 60,
+          "capacityUtilization": 0.53125,
+          "inputBytes": 7,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.00-ascii-ff",
+      "title": "Raw binary payload with NUL, printable ASCII, and FF",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.binaryHex",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "",
+          "binaryHex": "004153434949ff",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "byte",
+              "bytes": [
+                0,
+                65,
+                83,
+                67,
+                73,
+                73,
+                255
+              ],
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.00-ascii-ff",
+      "title": "Raw binary payload with NUL, printable ASCII, and FF",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.00-ascii-ff",
+      "title": "Raw binary payload with NUL, printable ASCII, and FF",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.00-ascii-ff",
+      "title": "Raw binary payload with NUL, printable ASCII, and FF",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.offset-like-representative",
+      "title": "Raw binary payload with offset-like representative bytes",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "diagnostics.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "diagnostics": {
+          "version": 1,
+          "size": 21,
+          "errorCorrectionLevel": "M",
+          "requestedErrorCorrectionLevel": "M",
+          "boostedErrorCorrection": false,
+          "versionSelection": "auto-minimum",
+          "versionSelectionReason": "Version 1 is the smallest version in 1..40 that fits the encoded data at error correction M.",
+          "maskPattern": 0,
+          "maskPenalty": 344,
+          "maskPenalties": [
+            {
+              "maskPattern": 0,
+              "penalty": 344
+            },
+            {
+              "maskPattern": 1,
+              "penalty": 440
+            },
+            {
+              "maskPattern": 2,
+              "penalty": 382
+            },
+            {
+              "maskPattern": 3,
+              "penalty": 431
+            },
+            {
+              "maskPattern": 4,
+              "penalty": 447
+            },
+            {
+              "maskPattern": 5,
+              "penalty": 373
+            },
+            {
+              "maskPattern": 6,
+              "penalty": 455
+            },
+            {
+              "maskPattern": 7,
+              "penalty": 392
+            }
+          ],
+          "maskSelectionReason": "Mask pattern 0 had the lowest penalty score (344) among the evaluated masks.",
+          "mode": "byte",
+          "controlSegments": [],
+          "eciAssignmentNumber": null,
+          "fnc1": null,
+          "fnc1Second": {
+            "enabled": false,
+            "applicationIndicator": null,
+            "applicationIndicatorCodeword": null
+          },
+          "structuredAppend": {
+            "enabled": false,
+            "index": null,
+            "total": null,
+            "parity": null,
+            "sequenceIndex": null,
+            "sequenceTotal": null,
+            "sequenceIndicator": null
+          },
+          "gs1": false,
+          "gs1Validation": {
+            "enabled": false,
+            "elementCount": 0,
+            "ais": [],
+            "hasSeparators": false
+          },
+          "segments": [
+            {
+              "mode": "byte",
+              "characterCount": 0,
+              "byteCount": 8,
+              "bitLength": 76
+            }
+          ],
+          "dataBitLength": 76,
+          "capacityBits": 128,
+          "remainingBits": 52,
+          "capacityUtilization": 0.59375,
+          "inputBytes": 8,
+          "dataCodewords": 16,
+          "errorCorrectionCodewords": 10,
+          "totalCodewords": 26,
+          "quietZone": {
+            "modules": 4,
+            "recommendedModules": 4,
+            "isSufficient": true
+          },
+          "colors": {
+            "ratio": 21,
+            "foregroundAlpha": 255,
+            "backgroundAlpha": 255,
+            "isInspectable": true,
+            "isStrong": true,
+            "isSufficient": true
+          },
+          "print": {
+            "dpi": null,
+            "modulePixels": 8,
+            "moduleSizeMm": null,
+            "symbolSizeMm": null,
+            "recommendedMinimumModuleSizeMm": 0.25,
+            "isModuleSizeSufficient": null
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.offset-like-representative",
+      "title": "Raw binary payload with offset-like representative bytes",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.binaryHex",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 348,
+          "height": 348
+        },
+        "decoded": {
+          "text": "",
+          "binaryHex": "000102107f80feff",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "byte",
+              "bytes": [
+                0,
+                1,
+                2,
+                16,
+                127,
+                128,
+                254,
+                255
+              ],
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.offset-like-representative",
+      "title": "Raw binary payload with offset-like representative bytes",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.offset-like-representative",
+      "title": "Raw binary payload with offset-like representative bytes",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "binary.raw.offset-like-representative",
+      "title": "Raw binary payload with offset-like representative bytes",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.reject.forced-unsupported-character",
+      "title": "Forced Kanji mode rejects unsupported character",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "rejects",
+          "status": "passed"
+        }
+      ],
+      "details": {}
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.reject.forced-unsupported-character",
+      "title": "Forced Kanji mode rejects unsupported character",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.reject.forced-unsupported-character",
+      "title": "Forced Kanji mode rejects unsupported character",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.reject.forced-unsupported-character",
+      "title": "Forced Kanji mode rejects unsupported character",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "kanji.reject.forced-unsupported-character",
+      "title": "Forced Kanji mode rejects unsupported character",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.reject.invalid-assignment",
+      "title": "Invalid ECI assignment rejects",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "rejects",
+          "status": "passed"
+        }
+      ],
+      "details": {}
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.reject.invalid-assignment",
+      "title": "Invalid ECI assignment rejects",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.reject.invalid-assignment",
+      "title": "Invalid ECI assignment rejects",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.reject.invalid-assignment",
+      "title": "Invalid ECI assignment rejects",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "eci.reject.invalid-assignment",
+      "title": "Invalid ECI assignment rejects",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "segments.reject.manual-kanji-missing-payload",
+      "title": "Invalid manual segment payload rejects",
+      "adapterId": "specqr",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "rejects",
+          "status": "passed"
+        }
+      ],
+      "details": {}
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "segments.reject.manual-kanji-missing-payload",
+      "title": "Invalid manual segment payload rejects",
+      "adapterId": "jsqr",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "segments.reject.manual-kanji-missing-payload",
+      "title": "Invalid manual segment payload rejects",
+      "adapterId": "nayuki",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "segments.reject.manual-kanji-missing-payload",
+      "title": "Invalid manual segment payload rejects",
+      "adapterId": "zbarimg",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "kanji-eci-binary",
+      "vectorId": "segments.reject.manual-kanji-missing-payload",
+      "title": "Invalid manual segment payload rejects",
+      "adapterId": "zxing-cli",
+      "category": "kanji-eci-binary",
+      "operation": "generateSegments",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
     },
     {
       "suiteId": "planning-diagnostics",

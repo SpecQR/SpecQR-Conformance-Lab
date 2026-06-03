@@ -44,6 +44,7 @@ async function readReport() {
         gs1DigitalLink: {},
         structuredAppend: {},
         planningDiagnostics: {},
+        kanjiEciBinary: {},
         executed: 0,
         passed: 0,
         failed: 0,
@@ -179,6 +180,7 @@ const adapterSummary = summary.adapterSummary ?? {};
 const gs1DigitalLink = summary.gs1DigitalLink ?? {};
 const structuredAppend = summary.structuredAppend ?? {};
 const planningDiagnostics = summary.planningDiagnostics ?? {};
+const kanjiEciBinary = summary.kanjiEciBinary ?? {};
 const optionalDecoderAdapters = adapters.filter((adapter) => {
   return adapter.lane === "optional-decode-readability" || adapter.required === false;
 });
@@ -202,7 +204,8 @@ const statusBands = [
   }),
   statusBand("GS1 / Digital Link", "SpecQR がサポートする GS1 helper subset", gs1DigitalLink),
   statusBand("Structured Append", "generation と merge helper の scope", structuredAppend),
-  statusBand("Planning / Diagnostics", "estimate / analyzeSegments / getCapacity と warnings", planningDiagnostics)
+  statusBand("Planning / Diagnostics", "estimate / analyzeSegments / getCapacity と warnings", planningDiagnostics),
+  statusBand("Kanji / ECI / Binary", "Kanji mode、ECI UTF-8、raw byte payload の scope", kanjiEciBinary)
 ].join("\n");
 
 function commandCandidates(adapter) {
@@ -342,7 +345,13 @@ ${scopeSection(
   planningDiagnostics,
   "Planning / Diagnostics categories"
 )}
-  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append checks</h2>
+${scopeSection(
+  "Kanji / ECI / Binary 集計",
+  "この集計は Kanji mode、ECI UTF-8、raw binary payload の generation diagnostics と decoder readability を確認します。decoder が raw bytes や ECI metadata を露出しない場合は、制限として skip を記録します。",
+  kanjiEciBinary,
+  "Kanji / ECI / Binary categories"
+)}
+  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append/Kanji/ECI/Binary checks</h2>
   <table>
     <thead>
       <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>

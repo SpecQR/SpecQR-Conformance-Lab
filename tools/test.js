@@ -26,6 +26,7 @@ const requiredPaths = [
   "vectors/gs1-digital-link.json",
   "vectors/structured-append.json",
   "vectors/planning-diagnostics.json",
+  "vectors/kanji-eci-binary.json",
   "adapters/README.md",
   "adapters/specqr.js",
   "adapters/jsqr.js",
@@ -195,6 +196,8 @@ try {
     "Nayuki",
     "zbarimg",
     "ZXing CLI",
+    "Kanji / ECI / binary suite",
+    "Kanji mode、ECI UTF-8、raw binary payload",
     "missing `zbarimg` / ZXing CLI は CI failure ではありません",
     "reports/latest.json",
     "reports/latest.html",
@@ -217,7 +220,9 @@ try {
     "何を検証していないか: logo/styled QR",
     "zbarimg adapter",
     "ZXing CLI adapter",
-    "output format"
+    "output format",
+    "ECI assignment",
+    "decode.binaryHex"
   ]) {
     requireText(knownLimits, text, "docs/known-limits.md");
   }
@@ -237,6 +242,7 @@ try {
     "GS1",
     "Digital Link",
     "Structured Append",
+    "ECI assignment",
     "expect.rejects",
     "expect.validation"
   ]) {
@@ -344,6 +350,7 @@ try {
       }
     },
     gs1DigitalLink: passingCounts,
+    kanjiEciBinary: passingCounts,
     structuredAppend: {
       executed: 0,
       passed: 0,
@@ -357,6 +364,7 @@ try {
     assert(badgeSet[fileName]?.schemaVersion === 1, `${fileName} must be Shields-compatible badge JSON`);
   }
   assert(badgeSet["overall.json"].color === "green", "overall badge with expected skips must stay green");
+  assert(badgeSet["kanji-eci-binary.json"].color === "green", "Kanji / ECI / binary passing scope badge must be green");
   assert(badgeSet["structured-append.json"].color === "yellow", "skipped-only scope badge must be yellow");
   assert(badgeSet["zbarimg.json"].color === "yellow", "missing optional zbarimg lane badge must be yellow");
   assert(badgeSet["zxing-cli.json"].color === "yellow", "missing optional ZXing lane badge must be yellow");
@@ -653,6 +661,49 @@ try {
     "jsQR binary decode must pass via raw bytes or skip with a raw byte limitation reason"
   );
 
+  const kanjiEciBinarySuite = JSON.parse(await readFile("vectors/kanji-eci-binary.json", "utf8"));
+  const kanjiAutoVector = kanjiEciBinarySuite.vectors.find((vector) => vector.id === "kanji.auto.japanese-text");
+  assert(kanjiAutoVector, "Kanji auto vector must exist");
+  const kanjiAutoResult = await specqrAdapter.run(kanjiAutoVector);
+  assert(kanjiAutoResult.status === "passed", "SpecQR auto Kanji vector must pass");
+  assert(
+    kanjiAutoResult.checks.some((check) => check.name === "diagnostics.subset" && check.status === "passed"),
+    "SpecQR auto Kanji vector must pass diagnostics subset"
+  );
+
+  const eciAutoVector = kanjiEciBinarySuite.vectors.find((vector) => vector.id === "eci.utf8-auto.text");
+  assert(eciAutoVector, "ECI auto vector must exist");
+  const eciAutoResult = await specqrAdapter.run(eciAutoVector);
+  assert(eciAutoResult.status === "passed", "SpecQR ECI UTF-8 vector must pass");
+  assert(
+    eciAutoResult.checks.some((check) => check.name === "diagnostics.subset" && check.status === "passed"),
+    "SpecQR ECI UTF-8 vector must pass diagnostics subset"
+  );
+
+  const rawBinaryVector = kanjiEciBinarySuite.vectors.find((vector) => vector.id === "binary.raw.00-ascii-ff");
+  assert(rawBinaryVector, "Kanji / ECI / binary raw byte vector must exist");
+  const jsqrRawBinaryResult = await jsqrAdapter.run(rawBinaryVector);
+  assert(jsqrRawBinaryResult.status === "passed", "jsQR must pass raw byte expectation when binaryData is available");
+  assert(
+    jsqrRawBinaryResult.checks.some((check) => check.name === "decode.binaryHex" && check.status === "passed"),
+    "jsQR raw byte vector must include passed decode.binaryHex check"
+  );
+
+  for (const vectorId of [
+    "kanji.reject.forced-unsupported-character",
+    "eci.reject.invalid-assignment",
+    "segments.reject.manual-kanji-missing-payload"
+  ]) {
+    const negativeVector = kanjiEciBinarySuite.vectors.find((vector) => vector.id === vectorId);
+    assert(negativeVector, `${vectorId} must exist`);
+    const negativeResult = await specqrAdapter.run(negativeVector);
+    assert(negativeResult.status === "passed", `${vectorId} must pass by rejecting`);
+    assert(
+      negativeResult.checks.some((check) => check.name === "rejects" && check.status === "passed"),
+      `${vectorId} must pass rejects check`
+    );
+  }
+
   const optionalTextVector = {
     id: "test.optional-cli.decode-text",
     title: "Optional CLI decode text",
@@ -709,27 +760,17 @@ try {
     "available optional CLI mismatch must include failed decode.text check"
   );
 
-  const optionalBinaryResult = await zxingCliAdapter.run({
-    id: "test.optional-cli.raw-binary",
-    title: "Optional CLI raw binary",
-    category: "test",
-    operation: "generate",
-    input: {
-      binaryHex: "00ff"
-    },
-    options: {},
-    expect: {
-      decode: {
-        binaryHex: "00ff"
-      }
-    }
-  }, {
+  const optionalBinaryResult = await zxingCliAdapter.run(rawBinaryVector, {
     commandRunner: fakeAvailableRunner
   });
   assert(optionalBinaryResult.status === "skipped", "optional CLI raw binary expectation must skip without reliable raw bytes");
   assert(
     optionalBinaryResult.checks.some((check) => check.name === "decode.binaryHex" && check.status === "skipped"),
     "optional CLI raw binary result must include skipped decode.binaryHex check"
+  );
+  assert(
+    optionalBinaryResult.checks.some((check) => /raw bytes/i.test(check.reason ?? "")),
+    "optional CLI raw binary skip reason must mention raw bytes"
   );
 
   const matrix = [
@@ -773,7 +814,7 @@ try {
   assert(!mismatch.ok, "compareMatrixRows must detect mismatches");
   assert(mismatch.firstMismatch?.x === 0 && mismatch.firstMismatch?.y === 1, "mismatch details must include first mismatch coordinates");
 
-  console.log(JSON.stringify({ ok: true, checks: requiredPaths.length + requiredScripts.length + allowedOperations.length + 44 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checks: requiredPaths.length + requiredScripts.length + allowedOperations.length + 54 }, null, 2));
 } catch (error) {
   fail(error.message);
 }

@@ -157,6 +157,37 @@ manual segments は `input.segments` に配列で書きます。各 segment は 
 
 v1 では segment mode の詳細な意味は adapter 側で解釈します。validator は `segments` の中にある `binaryHex` も hex として検査します。
 
+Kanji / ECI / binary vector では、manual Kanji segment や ECI control segment も同じ `segments` 配列で表します。ECI assignment の metadata は SpecQR diagnostics subset で確認し、reader lane では payload readability として観測できる範囲だけを確認します。
+
+```json
+{
+  "operation": "generateSegments",
+  "input": {
+    "segments": [
+      { "mode": "eci", "assignmentNumber": 26 },
+      { "mode": "byte", "text": "こんにちは" }
+    ]
+  },
+  "options": {
+    "errorCorrectionLevel": "M"
+  },
+  "expect": {
+    "diagnostics": {
+      "subset": {
+        "eciAssignmentNumber": 26,
+        "segments": [
+          { "mode": "eci", "assignmentNumber": 26 },
+          { "mode": "byte", "byteCount": 15 }
+        ]
+      }
+    },
+    "decode": {
+      "text": "こんにちは"
+    }
+  }
+}
+```
+
 ## Options
 
 `options` は operation に渡す設定です。代表例は次の通りです。

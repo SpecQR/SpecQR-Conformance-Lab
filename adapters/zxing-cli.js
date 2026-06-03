@@ -117,7 +117,7 @@ export const adapter = createOptionalCliDecodeAdapter({
     }
   ],
   parseOutput: parseZxingOutput,
-  rawBinaryReason: "ZXing CLI output formats vary by command; this adapter only treats parsed text as reliable."
+  rawBinaryReason: "ZXing CLI output formats vary by command; this adapter does not treat CLI output as reliable raw bytes."
 });
 
 export default adapter;
