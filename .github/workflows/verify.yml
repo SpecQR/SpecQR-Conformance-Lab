@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     name: Node ${{ matrix.node-version }}
@@ -31,3 +34,23 @@ jobs:
 
       - name: Verify
         run: npm run verify
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f reports/latest.json ]; then
+            npm run summary
+          else
+            echo "reports/latest.json was not generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload conformance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-report-node-${{ matrix.node-version }}
+          if-no-files-found: warn
+          path: |
+            reports/latest.json
+            reports/latest.html
+            badges/*.json

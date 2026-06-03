@@ -1,0 +1,98 @@
+name: Filtered Conformance
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Suite id. Empty means all suites.
+        required: false
+        type: string
+      category:
+        description: Category id. Empty means all categories.
+        required: false
+        type: string
+      adapter:
+        description: Adapter id. Empty means all adapters.
+        required: false
+        type: string
+      vector:
+        description: Vector id. Empty means all vectors.
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  conformance:
+    name: Filtered conformance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Validate vectors
+        run: npm run validate:vectors
+
+      - name: Run filtered conformance
+        env:
+          FILTER_SUITE: ${{ inputs.suite }}
+          FILTER_CATEGORY: ${{ inputs.category }}
+          FILTER_ADAPTER: ${{ inputs.adapter }}
+          FILTER_VECTOR: ${{ inputs.vector }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { spawnSync } from "node:child_process";
+
+          const args = ["tools/run-conformance.js", "--output", "reports/latest.json"];
+          const filters = [
+            ["--suite", process.env.FILTER_SUITE],
+            ["--category", process.env.FILTER_CATEGORY],
+            ["--adapter", process.env.FILTER_ADAPTER],
+            ["--vector", process.env.FILTER_VECTOR]
+          ];
+
+          for (const [flag, value] of filters) {
+            if (value && value.trim()) {
+              args.push(flag, value.trim());
+            }
+          }
+
+          const result = spawnSync(process.execPath, args, { stdio: "inherit" });
+          process.exit(result.status ?? 1);
+          NODE
+
+      - name: Build report
+        run: npm run report
+
+      - name: Verify report integrity
+        run: npm run verify:report -- --report reports/latest.json
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f reports/latest.json ]; then
+            npm run summary
+          else
+            echo "reports/latest.json was not generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload filtered conformance report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: filtered-conformance-report
+          if-no-files-found: warn
+          path: |
+            reports/latest.json
+            reports/latest.html
+            badges/*.json

@@ -14,6 +14,7 @@ import { createReportMetadata } from "./report-metadata.js";
 import { badgeFileNames, createBadge, createBadgeSet, summarizeStatus } from "./report-utils.js";
 import { activeAdapters, createConformanceReport } from "./run-conformance.js";
 import { verifyReportObject } from "./verify-report.js";
+import { renderGithubSummary, writeGithubSummary } from "./write-github-summary.js";
 
 const requiredPaths = [
   "package.json",
@@ -43,13 +44,15 @@ const requiredPaths = [
   "tools/report-metadata.js",
   "tools/report-utils.js",
   "tools/verify-report.js",
+  "tools/write-github-summary.js",
   "tools/build-pages.js",
   "tools/png-rgba.js",
   ".github/workflows/verify.yml",
-  ".github/workflows/pages.yml"
+  ".github/workflows/pages.yml",
+  ".github/workflows/conformance-filtered.yml"
 ];
 
-const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "pages:build", "verify"];
+const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "summary", "pages:build", "verify"];
 const allowedOperations = [
   "generate",
   "generateSegments",
@@ -206,6 +209,7 @@ try {
     "reports/latest.json",
     "reports/latest.html",
     "badges/overall.json",
+    "npm run summary",
     "npm run conformance -- --list-suites",
     "npm run conformance -- --suite kanji-eci-binary",
     "npm run conformance -- --adapter specqr",
@@ -213,11 +217,31 @@ try {
     "npm run verify:report",
     "npm run pages:build",
     "public/",
+    "GitHub Step Summary",
+    "conformance-report-node-22",
+    ".github/workflows/conformance-filtered.yml",
     "docs/development-policy.md",
     ".github/workflows/pages.yml"
   ]) {
     requireText(readme, text, "README.md");
   }
+
+  const filteredWorkflow = await readFile(".github/workflows/conformance-filtered.yml", "utf8");
+  for (const text of [
+    "workflow_dispatch",
+    "FILTER_SUITE",
+    "FILTER_CATEGORY",
+    "FILTER_ADAPTER",
+    "FILTER_VECTOR",
+    "node --input-type=module",
+    "spawnSync(process.execPath, args, { stdio: \"inherit\" })",
+    "args.push(flag, value.trim())",
+    "npm run verify:report -- --report reports/latest.json"
+  ]) {
+    requireText(filteredWorkflow, text, ".github/workflows/conformance-filtered.yml");
+  }
+  assert(!filteredWorkflow.includes("eval "), "filtered workflow must not use eval");
+  assert(!filteredWorkflow.includes("bash -c"), "filtered workflow must not pass filter input through bash -c");
 
   const knownLimits = await readFile("docs/known-limits.md", "utf8");
   for (const text of [
@@ -381,6 +405,82 @@ try {
     mismatchedIntegrity.errors.some((error) => error.label === "summary"),
     "mismatched summary count must be reported as a summary integrity error"
   );
+
+  const summaryMarkdown = renderGithubSummary(fullReportForIntegrity.report);
+  const specqrCounts = fullReportForIntegrity.report.summary.adapterSummary.specqr;
+  assert(summaryMarkdown.includes("# SpecQR Conformance Summary"), "summary markdown must include title");
+  assert(
+    summaryMarkdown.includes(`| specqr | required | active | ${specqrCounts.total} | ${specqrCounts.executed} | ${specqrCounts.passed} | ${specqrCounts.failed} | ${specqrCounts.error} | ${specqrCounts.skipped} |`),
+    "summary markdown must include SpecQR adapter counts"
+  );
+  assert(summaryMarkdown.includes("GS1 / DL"), "summary markdown must include GS1 / DL scope");
+  assert(summaryMarkdown.includes("Structured Append"), "summary markdown must include Structured Append scope");
+  assert(summaryMarkdown.includes("Planning / Diagnostics"), "summary markdown must include Planning / Diagnostics scope");
+  assert(summaryMarkdown.includes("Kanji / ECI / binary"), "summary markdown must include Kanji / ECI / binary scope");
+
+  const optionalUnavailableReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
+  optionalUnavailableReport.adapters.push({
+    id: "optional-demo",
+    name: "Optional demo decoder",
+    required: false,
+    status: "optional",
+    lane: "optional-decode-readability",
+    commandCandidates: ["optional-demo"]
+  });
+  optionalUnavailableReport.summary.adapterSummary["optional-demo"] = {
+    id: "optional-demo",
+    name: "Optional demo decoder",
+    status: "optional",
+    total: 1,
+    executed: 0,
+    passed: 0,
+    failed: 0,
+    skipped: 1,
+    error: 0
+  };
+  optionalUnavailableReport.results.push({
+    suiteId: "test",
+    vectorId: "test.optional-demo.unavailable",
+    title: "Optional demo unavailable",
+    adapterId: "optional-demo",
+    category: "test",
+    operation: "generate",
+    status: "skipped",
+    checks: [
+      {
+        name: "availability",
+        status: "skipped",
+        reason: "optional-demo not available"
+      }
+    ],
+    reason: "optional-demo not available"
+  });
+  const optionalSummaryMarkdown = renderGithubSummary(optionalUnavailableReport);
+  assert(optionalSummaryMarkdown.includes("optional-demo"), "summary markdown must include optional decoder id");
+  assert(optionalSummaryMarkdown.includes("Availability skips"), "summary markdown must describe availability skips");
+  assert(
+    optionalSummaryMarkdown.includes("| optional-demo | optional-demo | 1 | 1 | 0 |"),
+    "summary markdown must count optional decoder availability skips"
+  );
+
+  const summaryTmpRoot = await mkdtemp(path.join(tmpdir(), "specqr-summary-test-"));
+  try {
+    const summaryReportPath = path.join(summaryTmpRoot, "latest.json");
+    await writeFile(summaryReportPath, `${JSON.stringify(fullReportForIntegrity.report, null, 2)}\n`, "utf8");
+    let summaryStdout = "";
+    await writeGithubSummary({
+      reportPath: summaryReportPath,
+      env: {},
+      stdout: {
+        write(chunk) {
+          summaryStdout += chunk;
+        }
+      }
+    });
+    assert(summaryStdout.includes("# SpecQR Conformance Summary"), "summary must write to stdout without GITHUB_STEP_SUMMARY");
+  } finally {
+    await rm(summaryTmpRoot, { recursive: true, force: true });
+  }
 
   const passingWithScopeSkipsBadge = createBadge("overall", {
     executed: 12,
@@ -904,7 +1004,7 @@ try {
   assert(!mismatch.ok, "compareMatrixRows must detect mismatches");
   assert(mismatch.firstMismatch?.x === 0 && mismatch.firstMismatch?.y === 1, "mismatch details must include first mismatch coordinates");
 
-  console.log(JSON.stringify({ ok: true, checks: requiredPaths.length + requiredScripts.length + allowedOperations.length + 54 }, null, 2));
+  console.log(JSON.stringify({ ok: true, checks: requiredPaths.length + requiredScripts.length + allowedOperations.length + 66 }, null, 2));
 } catch (error) {
   fail(error.message);
 }

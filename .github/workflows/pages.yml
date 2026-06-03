@@ -41,6 +41,9 @@ jobs:
       - name: Build Pages artifact
         run: npm run pages:build
 
+      - name: Summary
+        run: npm run summary
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
