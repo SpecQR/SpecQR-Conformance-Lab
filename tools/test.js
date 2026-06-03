@@ -176,6 +176,7 @@ try {
   if (packageJson.devDependencies?.specqr !== "2.4.0") {
     throw new Error("SpecQR target must be published package specqr@2.4.0");
   }
+  const installedSpecqrVersion = (await readInstalledPackageMetadata("specqr")).version;
 
   if (packageJson.devDependencies?.jsqr !== "1.4.0") {
     throw new Error("jsQR decoder target must be exact devDependency jsqr@1.4.0");
@@ -431,9 +432,13 @@ try {
     "vector filter must return expected single-vector results"
   );
 
-  const fullReportForIntegrity = await createConformanceReport();
+  const fullReportForIntegrity = await createConformanceReport({
+    metadataOptions: {
+      env: {}
+    }
+  });
   assert(fullReportForIntegrity.report.target.requested === "specqr@2.4.0", "default report target must request pinned specqr@2.4.0");
-  assert(fullReportForIntegrity.report.target.resolvedVersion === "2.4.0", "report target must include resolved SpecQR version");
+  assert(fullReportForIntegrity.report.target.resolvedVersion === installedSpecqrVersion, "report target must include resolved SpecQR version");
   assert(fullReportForIntegrity.report.target.version === fullReportForIntegrity.report.target.resolvedVersion, "legacy target.version must remain resolved version");
   assert(fullReportForIntegrity.report.target.source === "npm", "default report target source must be npm");
   const validIntegrity = await verifyReportObject(fullReportForIntegrity.report);
@@ -456,7 +461,7 @@ try {
   const specqrCounts = fullReportForIntegrity.report.summary.adapterSummary.specqr;
   assert(summaryMarkdown.includes("# SpecQR Conformance Summary"), "summary markdown must include title");
   assert(summaryMarkdown.includes("- 対象 requested: `specqr@2.4.0`"), "summary markdown must include requested target");
-  assert(summaryMarkdown.includes("- 対象 resolved: `specqr@2.4.0` (`npm`)"), "summary markdown must include resolved target");
+  assert(summaryMarkdown.includes(`- 対象 resolved: \`specqr@${installedSpecqrVersion}\` (\`npm\`)`), "summary markdown must include resolved target");
   assert(
     summaryMarkdown.includes(`| specqr | required | active | ${specqrCounts.total} | ${specqrCounts.executed} | ${specqrCounts.passed} | ${specqrCounts.failed} | ${specqrCounts.error} | ${specqrCounts.skipped} |`),
     "summary markdown must include SpecQR adapter counts"
@@ -543,11 +548,11 @@ try {
     }
   });
   assert(targetOverrideReport.report.target.requested === "specqr@next", "env requested target must appear in report target");
-  assert(targetOverrideReport.report.target.resolvedVersion === "2.4.0", "env target report must still use installed SpecQR version");
+  assert(targetOverrideReport.report.target.resolvedVersion === installedSpecqrVersion, "env target report must still use installed SpecQR version");
   assert(targetOverrideReport.report.metadata.target.requested === "specqr@next", "env requested target must appear in report metadata");
   const overrideSummary = renderGithubSummary(targetOverrideReport.report);
   assert(overrideSummary.includes("- 対象 requested: `specqr@next`"), "summary must include overridden requested target");
-  assert(overrideSummary.includes("- 対象 resolved: `specqr@2.4.0` (`npm`)"), "summary must include installed resolved target");
+  assert(overrideSummary.includes(`- 対象 resolved: \`specqr@${installedSpecqrVersion}\` (\`npm\`)`), "summary must include installed resolved target");
 
   const installedTarget = await verifySpecqrTarget({
     env: {
@@ -557,7 +562,7 @@ try {
   });
   assert(installedTarget.ok, "verifySpecqrTarget must succeed for installed specqr package");
   assert(installedTarget.target.requested === "specqr@2.4.0", "verifySpecqrTarget must echo requested target");
-  assert(installedTarget.target.resolvedVersion === "2.4.0", "verifySpecqrTarget must read installed SpecQR version");
+  assert(installedTarget.target.resolvedVersion === installedSpecqrVersion, "verifySpecqrTarget must read installed SpecQR version");
 
   const missingTargetTmpRoot = await mkdtemp(path.join(tmpdir(), "specqr-missing-target-test-"));
   try {
@@ -653,12 +658,15 @@ try {
   assert(badgeSet["zbarimg.json"].color === "yellow", "missing optional zbarimg lane badge must be yellow");
   assert(badgeSet["zxing-cli.json"].color === "yellow", "missing optional ZXing lane badge must be yellow");
 
-  const metadata = await createReportMetadata({ now: new Date("2026-01-01T00:00:00.000Z") });
+  const metadata = await createReportMetadata({
+    now: new Date("2026-01-01T00:00:00.000Z"),
+    env: {}
+  });
   assert(metadata.generatedAt === "2026-01-01T00:00:00.000Z", "report metadata must include generatedAt");
   assert(metadata.runtime.node === process.version, "report metadata must include Node version");
   assert(typeof metadata.runtime.platform === "string" && metadata.runtime.platform.length > 0, "report metadata must include platform");
   assert(typeof metadata.runtime.arch === "string" && metadata.runtime.arch.length > 0, "report metadata must include arch");
-  assert(metadata.packages.specqr === "2.4.0", "report metadata must include specqr package version");
+  assert(metadata.packages.specqr === installedSpecqrVersion, "report metadata must include specqr package version");
   assert(metadata.target.packageName === "specqr", "report metadata must include target package name");
   assert(metadata.target.requested === "specqr@2.4.0", "report metadata must include default requested target");
   assert(metadata.target.resolvedVersion === metadata.packages.specqr, "report metadata target must use installed SpecQR version");
