@@ -9,6 +9,7 @@ import specqrAdapter, { binaryHexToBytes, deepSubsetMatch } from "../adapters/sp
 import zbarAdapter, { parseZbarOutput } from "../adapters/zbar.js";
 import zxingCliAdapter, { parseZxingOutput } from "../adapters/zxing-cli.js";
 import { buildPages } from "./build-pages.js";
+import { compareReportFiles, compareReports, renderComparisonMarkdown } from "./compare-reports.js";
 import { pngToRgba } from "./png-rgba.js";
 import { createReportMetadata, readInstalledPackageMetadata } from "./report-metadata.js";
 import { badgeFileNames, createBadge, createBadgeSet, summarizeStatus } from "./report-utils.js";
@@ -40,6 +41,7 @@ const requiredPaths = [
   "adapters/zbar.js",
   "adapters/zxing-cli.js",
   "tools/validate-vectors.js",
+  "tools/compare-reports.js",
   "tools/run-conformance.js",
   "tools/report.js",
   "tools/report-metadata.js",
@@ -55,7 +57,7 @@ const requiredPaths = [
   ".github/workflows/specqr-target.yml"
 ];
 
-const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "summary", "pages:build", "verify"];
+const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "compare:reports", "summary", "pages:build", "verify"];
 const allowedOperations = [
   "generate",
   "generateSegments",
@@ -87,6 +89,33 @@ function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+function cloneJson(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function adjustStatusCounts(counts, fromStatus, toStatus) {
+  counts[fromStatus] = (counts[fromStatus] ?? 0) - 1;
+  counts[toStatus] = (counts[toStatus] ?? 0) + 1;
+  if (fromStatus === "skipped" && toStatus !== "skipped") {
+    counts.executed = (counts.executed ?? 0) + 1;
+  } else if (fromStatus !== "skipped" && toStatus === "skipped") {
+    counts.executed = (counts.executed ?? 0) - 1;
+  }
+}
+
+function changeReportResultStatus(report, predicate, toStatus) {
+  const result = report.results.find(predicate);
+  assert(result, "test fixture result must exist");
+  const fromStatus = result.status;
+  result.status = toStatus;
+  if (Array.isArray(result.checks) && result.checks.length > 0) {
+    result.checks[0].status = toStatus;
+  }
+  adjustStatusCounts(report.summary, fromStatus, toStatus);
+  adjustStatusCounts(report.summary.adapterSummary[result.adapterId], fromStatus, toStatus);
+  return result;
 }
 
 async function fileExists(relativePath) {
@@ -215,6 +244,11 @@ try {
     "badges/overall.json",
     "npm run summary",
     "npm run verify:target",
+    "npm run compare:reports",
+    "reports/baseline.json",
+    "reports/candidate.json",
+    "reports/comparison.json",
+    "reports/comparison.md",
     "npm run conformance -- --list-suites",
     "npm run conformance -- --suite kanji-eci-binary",
     "npm run conformance -- --adapter specqr",
@@ -228,6 +262,7 @@ try {
     ".github/workflows/specqr-target.yml",
     "target.requested",
     "target.resolvedVersion",
+    "比較 artifact",
     "調査 workflow",
     "investigation artifact",
     "release claim",
@@ -265,15 +300,22 @@ try {
     "SPECQR_TARGET_REQUESTED",
     "SPECQR_TARGET_SOURCE",
     "npm ci",
+    "node tools/run-conformance.js --output reports/baseline.json",
+    "npm run verify:report -- --report reports/baseline.json",
     "npm install --no-save --package-lock=false \"$PACKAGE_SPEC\"",
     "git diff --exit-code -- package.json package-lock.json",
     "npm run verify:target",
     "npm run validate:vectors",
     "npm test",
-    "npm run conformance",
-    "npm run report",
-    "npm run verify:report",
-    "npm run summary",
+    "node tools/run-conformance.js --output reports/candidate.json",
+    "npm run verify:report -- --report reports/candidate.json",
+    "continue-on-error: true",
+    "npm run compare:reports --",
+    "--base reports/baseline.json",
+    "--candidate reports/candidate.json",
+    "--json-output reports/comparison.json",
+    "--markdown-output reports/comparison.md",
+    "cat reports/comparison.md >> \"$GITHUB_STEP_SUMMARY\"",
     "actions/upload-artifact@v4"
   ]) {
     requireText(targetWorkflow, text, ".github/workflows/specqr-target.yml");
@@ -456,6 +498,116 @@ try {
     mismatchedIntegrity.errors.some((error) => error.label === "summary"),
     "mismatched summary count must be reported as a summary integrity error"
   );
+
+  const identicalComparison = compareReports(fullReportForIntegrity.report, cloneJson(fullReportForIntegrity.report), {
+    now: new Date("2026-01-01T00:00:00.000Z")
+  });
+  assert(!identicalComparison.hasChanges, "identical reports must produce a no-op comparison");
+  assert(!identicalComparison.hasRegression, "identical reports must not report regressions");
+  assert(identicalComparison.resultStatusChanges.length === 0, "identical reports must not report status changes");
+  assert(identicalComparison.checkStatusChanges.length === 0, "identical reports must not report check changes");
+
+  const failingCandidateReport = cloneJson(fullReportForIntegrity.report);
+  failingCandidateReport.target.requested = "specqr@next";
+  failingCandidateReport.target.resolvedVersion = "2.5.0";
+  failingCandidateReport.target.version = "2.5.0";
+  failingCandidateReport.metadata.target.requested = "specqr@next";
+  failingCandidateReport.metadata.target.resolvedVersion = "2.5.0";
+  failingCandidateReport.metadata.packages.specqr = "2.5.0";
+  const failedResult = changeReportResultStatus(
+    failingCandidateReport,
+    (result) => result.adapterId === "specqr" && result.status === "passed",
+    "failed"
+  );
+  const failingComparison = compareReports(fullReportForIntegrity.report, failingCandidateReport, {
+    now: new Date("2026-01-01T00:00:00.000Z")
+  });
+  assert(failingComparison.hasChanges, "candidate failure must produce comparison changes");
+  assert(failingComparison.hasRegression, "candidate new required failure must be detected as regression");
+  assert(
+    failingComparison.resultStatusChanges.some((change) => {
+      return change.vectorId === failedResult.vectorId && change.adapterId === "specqr" && change.regression;
+    }),
+    "candidate new required failure must be present in result status changes"
+  );
+  assert(
+    failingComparison.checkStatusChanges.some((change) => {
+      return change.vectorId === failedResult.vectorId && change.adapterId === "specqr" && change.regression;
+    }),
+    "candidate new required check failure must be present in check status changes"
+  );
+  const failingMarkdown = renderComparisonMarkdown(failingComparison);
+  assert(failingMarkdown.includes("Base requested: `specqr@2.4.0`"), "comparison markdown must include base requested target");
+  assert(failingMarkdown.includes("Candidate requested: `specqr@next`"), "comparison markdown must include candidate requested target");
+  assert(failingMarkdown.includes("resolved: `specqr@2.5.0`"), "comparison markdown must include candidate resolved target");
+  assert(failingMarkdown.includes("| specqr |"), "comparison markdown must include adapter changes");
+
+  const optionalSkipCandidateReport = cloneJson(fullReportForIntegrity.report);
+  changeReportResultStatus(
+    optionalSkipCandidateReport,
+    (result) => result.adapterId === "zbarimg" && result.status === "skipped",
+    "passed"
+  );
+  const optionalSkipComparison = compareReports(fullReportForIntegrity.report, optionalSkipCandidateReport, {
+    now: new Date("2026-01-01T00:00:00.000Z")
+  });
+  assert(optionalSkipComparison.hasChanges, "optional skip changes must be reported");
+  assert(!optionalSkipComparison.hasRegression, "optional skip improvement must not be a regression");
+  assert(
+    optionalSkipComparison.resultStatusChanges.some((change) => change.adapterId === "zbarimg" && !change.regression),
+    "optional skip change must be visible as a non-regression status change"
+  );
+
+  const compareTmpRoot = await mkdtemp(path.join(tmpdir(), "specqr-compare-test-"));
+  try {
+    const baseReportPath = path.join(compareTmpRoot, "base.json");
+    const failingCandidatePath = path.join(compareTmpRoot, "candidate-failing.json");
+    const optionalCandidatePath = path.join(compareTmpRoot, "candidate-optional.json");
+    const comparisonJsonPath = path.join(compareTmpRoot, "comparison.json");
+    const comparisonMarkdownPath = path.join(compareTmpRoot, "comparison.md");
+    await writeFile(baseReportPath, `${JSON.stringify(fullReportForIntegrity.report, null, 2)}\n`, "utf8");
+    await writeFile(failingCandidatePath, `${JSON.stringify(failingCandidateReport, null, 2)}\n`, "utf8");
+    await writeFile(optionalCandidatePath, `${JSON.stringify(optionalSkipCandidateReport, null, 2)}\n`, "utf8");
+
+    const optionalCliRun = spawnSync(process.execPath, [
+      "tools/compare-reports.js",
+      "--base",
+      baseReportPath,
+      "--candidate",
+      optionalCandidatePath
+    ], {
+      cwd: process.cwd(),
+      encoding: "utf8"
+    });
+    assert(optionalCliRun.status === 0, "compare CLI must not fail by default for non-regression count/status changes");
+
+    const failingCliRun = spawnSync(process.execPath, [
+      "tools/compare-reports.js",
+      "--base",
+      baseReportPath,
+      "--candidate",
+      failingCandidatePath,
+      "--fail-on-regression"
+    ], {
+      cwd: process.cwd(),
+      encoding: "utf8"
+    });
+    assert(failingCliRun.status !== 0, "compare CLI --fail-on-regression must fail on new required failures");
+
+    const fileComparison = await compareReportFiles({
+      basePath: baseReportPath,
+      candidatePath: optionalCandidatePath,
+      jsonOutputPath: comparisonJsonPath,
+      markdownOutputPath: comparisonMarkdownPath
+    });
+    assert(fileComparison.ok, "compareReportFiles must succeed without fail-on-regression");
+    await access(comparisonJsonPath);
+    await access(comparisonMarkdownPath);
+    const comparisonMarkdown = await readFile(comparisonMarkdownPath, "utf8");
+    assert(comparisonMarkdown.includes("SpecQR Conformance Comparison"), "comparison markdown file must include title");
+  } finally {
+    await rm(compareTmpRoot, { recursive: true, force: true });
+  }
 
   const summaryMarkdown = renderGithubSummary(fullReportForIntegrity.report);
   const specqrCounts = fullReportForIntegrity.report.summary.adapterSummary.specqr;

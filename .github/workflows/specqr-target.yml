@@ -37,6 +37,21 @@ jobs:
       - name: Install pinned lab dependencies
         run: npm ci
 
+      - name: Validate vectors
+        run: npm run validate:vectors
+
+      - name: Test tooling on pinned baseline
+        run: npm test
+
+      - name: Generate baseline report
+        env:
+          SPECQR_TARGET_REQUESTED: specqr@2.4.0
+          SPECQR_TARGET_SOURCE: npm
+        run: node tools/run-conformance.js --output reports/baseline.json
+
+      - name: Verify baseline report integrity
+        run: npm run verify:report -- --report reports/baseline.json
+
       - name: Install requested SpecQR package
         env:
           PACKAGE_SPEC: ${{ inputs.package_spec }}
@@ -48,37 +63,38 @@ jobs:
       - name: Verify installed SpecQR target
         run: npm run verify:target
 
-      - name: Validate vectors
-        run: npm run validate:vectors
+      - name: Generate candidate report
+        run: node tools/run-conformance.js --output reports/candidate.json
 
-      - name: Test
-        run: npm test
+      - name: Verify candidate report integrity
+        continue-on-error: true
+        run: npm run verify:report -- --report reports/candidate.json
 
-      - name: Conformance
-        run: npm run conformance
+      - name: Compare reports
+        run: |
+          npm run compare:reports -- \
+            --base reports/baseline.json \
+            --candidate reports/candidate.json \
+            --json-output reports/comparison.json \
+            --markdown-output reports/comparison.md
 
-      - name: Build report
-        run: npm run report
-
-      - name: Verify report integrity
-        run: npm run verify:report
-
-      - name: Summary
+      - name: Comparison summary
         if: always()
         run: |
-          if [ -f reports/latest.json ]; then
-            npm run summary
+          if [ -f reports/comparison.md ]; then
+            cat reports/comparison.md >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "reports/latest.json was not generated." >> "$GITHUB_STEP_SUMMARY"
+            echo "reports/comparison.md was not generated." >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Upload target conformance report
+      - name: Upload target comparison artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: specqr-target-node-${{ inputs.node_version }}
           if-no-files-found: warn
           path: |
-            reports/latest.json
-            reports/latest.html
-            badges/*.json
+            reports/baseline.json
+            reports/candidate.json
+            reports/comparison.json
+            reports/comparison.md
