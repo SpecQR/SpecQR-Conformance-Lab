@@ -1,0 +1,456 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/report-comparison-v1.schema.json",
+  "title": "SpecQR Conformance Lab Report Comparison v1",
+  "type": "object",
+  "required": [
+    "ok",
+    "comparedAt",
+    "base",
+    "candidate",
+    "targetDelta",
+    "summaryDelta",
+    "adapterSummaries",
+    "keySuiteSummaries",
+    "resultStatusChanges",
+    "checkStatusChanges",
+    "regressions",
+    "hasRegression",
+    "hasChanges"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "ok": {
+      "type": "boolean"
+    },
+    "comparedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "base": {
+      "$ref": "#/$defs/reportSide"
+    },
+    "candidate": {
+      "$ref": "#/$defs/reportSide"
+    },
+    "targetDelta": {
+      "$ref": "#/$defs/targetDelta"
+    },
+    "summaryDelta": {
+      "$ref": "#/$defs/reportCountDelta"
+    },
+    "adapterSummaries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/adapterComparison"
+      }
+    },
+    "keySuiteSummaries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/keySuiteComparison"
+      }
+    },
+    "resultStatusChanges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/resultStatusChange"
+      }
+    },
+    "checkStatusChanges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/checkStatusChange"
+      }
+    },
+    "regressions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/regression"
+      }
+    },
+    "hasRegression": {
+      "type": "boolean"
+    },
+    "hasChanges": {
+      "type": "boolean"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "maybeString": {
+      "type": ["string", "null"]
+    },
+    "integer": {
+      "type": "integer"
+    },
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": ["passed", "failed", "error", "skipped", "missing"]
+    },
+    "target": {
+      "type": "object",
+      "required": ["name", "requested", "resolved", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "const": "specqr"
+        },
+        "requested": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "resolved": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "reportCounts": {
+      "type": "object",
+      "required": ["totalVectors", "totalResults", "executed", "passed", "failed", "error", "skipped"],
+      "additionalProperties": true,
+      "properties": {
+        "totalVectors": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "totalResults": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "executed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "passed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "failed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "error": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "skipped": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "reportCountDelta": {
+      "type": "object",
+      "required": ["totalVectors", "totalResults", "executed", "passed", "failed", "error", "skipped"],
+      "additionalProperties": true,
+      "properties": {
+        "totalVectors": {
+          "$ref": "#/$defs/integer"
+        },
+        "totalResults": {
+          "$ref": "#/$defs/integer"
+        },
+        "executed": {
+          "$ref": "#/$defs/integer"
+        },
+        "passed": {
+          "$ref": "#/$defs/integer"
+        },
+        "failed": {
+          "$ref": "#/$defs/integer"
+        },
+        "error": {
+          "$ref": "#/$defs/integer"
+        },
+        "skipped": {
+          "$ref": "#/$defs/integer"
+        }
+      }
+    },
+    "reportSide": {
+      "type": "object",
+      "required": ["target", "summary"],
+      "additionalProperties": true,
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/target"
+        },
+        "summary": {
+          "$ref": "#/$defs/reportCounts"
+        }
+      }
+    },
+    "targetDelta": {
+      "type": "object",
+      "required": ["requestedChanged", "resolvedChanged", "sourceChanged"],
+      "additionalProperties": true,
+      "properties": {
+        "requestedChanged": {
+          "type": "boolean"
+        },
+        "resolvedChanged": {
+          "type": "boolean"
+        },
+        "sourceChanged": {
+          "type": "boolean"
+        }
+      }
+    },
+    "adapterCounts": {
+      "type": "object",
+      "required": ["total", "executed", "passed", "failed", "error", "skipped"],
+      "additionalProperties": true,
+      "properties": {
+        "total": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "executed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "passed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "failed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "error": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "skipped": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "adapterCountDelta": {
+      "type": "object",
+      "required": ["total", "executed", "passed", "failed", "error", "skipped"],
+      "additionalProperties": true,
+      "properties": {
+        "total": {
+          "$ref": "#/$defs/integer"
+        },
+        "executed": {
+          "$ref": "#/$defs/integer"
+        },
+        "passed": {
+          "$ref": "#/$defs/integer"
+        },
+        "failed": {
+          "$ref": "#/$defs/integer"
+        },
+        "error": {
+          "$ref": "#/$defs/integer"
+        },
+        "skipped": {
+          "$ref": "#/$defs/integer"
+        }
+      }
+    },
+    "adapterComparison": {
+      "type": "object",
+      "required": ["id", "base", "candidate", "delta", "changed"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "base": {
+          "$ref": "#/$defs/adapterCounts"
+        },
+        "candidate": {
+          "$ref": "#/$defs/adapterCounts"
+        },
+        "delta": {
+          "$ref": "#/$defs/adapterCountDelta"
+        },
+        "changed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "keySuiteCounts": {
+      "type": "object",
+      "required": ["vectorCount", "resultCount", "executed", "passed", "failed", "error", "skipped"],
+      "additionalProperties": true,
+      "properties": {
+        "vectorCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "resultCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "executed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "passed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "failed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "error": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "skipped": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "keySuiteCountDelta": {
+      "type": "object",
+      "required": ["vectorCount", "resultCount", "executed", "passed", "failed", "error", "skipped"],
+      "additionalProperties": true,
+      "properties": {
+        "vectorCount": {
+          "$ref": "#/$defs/integer"
+        },
+        "resultCount": {
+          "$ref": "#/$defs/integer"
+        },
+        "executed": {
+          "$ref": "#/$defs/integer"
+        },
+        "passed": {
+          "$ref": "#/$defs/integer"
+        },
+        "failed": {
+          "$ref": "#/$defs/integer"
+        },
+        "error": {
+          "$ref": "#/$defs/integer"
+        },
+        "skipped": {
+          "$ref": "#/$defs/integer"
+        }
+      }
+    },
+    "keySuiteComparison": {
+      "type": "object",
+      "required": ["key", "label", "base", "candidate", "delta", "changed"],
+      "additionalProperties": true,
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "label": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "base": {
+          "$ref": "#/$defs/keySuiteCounts"
+        },
+        "candidate": {
+          "$ref": "#/$defs/keySuiteCounts"
+        },
+        "delta": {
+          "$ref": "#/$defs/keySuiteCountDelta"
+        },
+        "changed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "resultStatusChange": {
+      "type": "object",
+      "required": ["vectorId", "adapterId", "requiredAdapter", "baseStatus", "candidateStatus", "regression"],
+      "additionalProperties": true,
+      "properties": {
+        "vectorId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "adapterId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "requiredAdapter": {
+          "type": "boolean"
+        },
+        "category": {
+          "$ref": "#/$defs/maybeString"
+        },
+        "operation": {
+          "$ref": "#/$defs/maybeString"
+        },
+        "baseStatus": {
+          "$ref": "#/$defs/status"
+        },
+        "candidateStatus": {
+          "$ref": "#/$defs/status"
+        },
+        "regression": {
+          "type": "boolean"
+        },
+        "reason": {
+          "$ref": "#/$defs/maybeString"
+        }
+      }
+    },
+    "checkStatusChange": {
+      "type": "object",
+      "required": ["vectorId", "adapterId", "check", "requiredAdapter", "baseStatus", "candidateStatus", "regression"],
+      "additionalProperties": true,
+      "properties": {
+        "vectorId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "adapterId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "check": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "requiredAdapter": {
+          "type": "boolean"
+        },
+        "baseStatus": {
+          "$ref": "#/$defs/status"
+        },
+        "candidateStatus": {
+          "$ref": "#/$defs/status"
+        },
+        "regression": {
+          "type": "boolean"
+        },
+        "reason": {
+          "$ref": "#/$defs/maybeString"
+        }
+      }
+    },
+    "regression": {
+      "type": "object",
+      "required": ["type", "vectorId", "adapterId", "requiredAdapter", "baseStatus", "candidateStatus", "regression"],
+      "additionalProperties": true,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["result", "check"]
+        },
+        "vectorId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "adapterId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "check": {
+          "type": "string"
+        },
+        "requiredAdapter": {
+          "type": "boolean"
+        },
+        "baseStatus": {
+          "$ref": "#/$defs/status"
+        },
+        "candidateStatus": {
+          "$ref": "#/$defs/status"
+        },
+        "regression": {
+          "type": "boolean"
+        },
+        "reason": {
+          "$ref": "#/$defs/maybeString"
+        }
+      }
+    }
+  }
+}

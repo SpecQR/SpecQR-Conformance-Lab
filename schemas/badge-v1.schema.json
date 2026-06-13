@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/badge-v1.schema.json",
+  "title": "SpecQR Conformance Lab Badge v1",
+  "type": "object",
+  "required": ["schemaVersion", "label", "message", "color"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "color": {
+      "type": "string",
+      "enum": ["green", "yellow", "red"]
+    }
+  }
+}

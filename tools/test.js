@@ -14,6 +14,7 @@ import { pngToRgba } from "./png-rgba.js";
 import { createReportMetadata, readInstalledPackageMetadata } from "./report-metadata.js";
 import { badgeFileNames, createBadge, createBadgeSet, summarizeStatus } from "./report-utils.js";
 import { activeAdapters, createConformanceReport } from "./run-conformance.js";
+import { loadSchemas, schemaFiles, validateAllSchemas, validateSchemaValue } from "./validate-schemas.js";
 import { verifyReportObject } from "./verify-report.js";
 import { verifySpecqrTarget } from "./verify-specqr-target.js";
 import { renderGithubSummary, writeGithubSummary } from "./write-github-summary.js";
@@ -23,9 +24,14 @@ const requiredPaths = [
   "README.md",
   "LICENSE",
   "docs/vector-schema.md",
+  "docs/report-format.md",
   "docs/adapter-contract.md",
   "docs/known-limits.md",
   "docs/development-policy.md",
+  "schemas/vector-suite-v1.schema.json",
+  "schemas/conformance-report-v1.schema.json",
+  "schemas/badge-v1.schema.json",
+  "schemas/report-comparison-v1.schema.json",
   "vectors/schema.example.json",
   "vectors/core.json",
   "vectors/reference-nayuki.json",
@@ -41,6 +47,7 @@ const requiredPaths = [
   "adapters/zbar.js",
   "adapters/zxing-cli.js",
   "tools/validate-vectors.js",
+  "tools/validate-schemas.js",
   "tools/compare-reports.js",
   "tools/run-conformance.js",
   "tools/report.js",
@@ -57,7 +64,7 @@ const requiredPaths = [
   ".github/workflows/specqr-target.yml"
 ];
 
-const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "compare:reports", "summary", "pages:build", "verify"];
+const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "validate:schemas", "compare:reports", "summary", "pages:build", "verify"];
 const allowedOperations = [
   "generate",
   "generateSegments",
@@ -132,6 +139,7 @@ async function collectPublicFacingFiles() {
     "README.md",
     "adapters/README.md",
     "docs/vector-schema.md",
+    "docs/report-format.md",
     "docs/adapter-contract.md",
     "docs/known-limits.md",
     "docs/development-policy.md",
@@ -154,6 +162,15 @@ async function collectPublicFacingFiles() {
     for (const fileName of publicBadges) {
       if (fileName.endsWith(".json")) {
         files.push(path.join("public/badges", fileName));
+      }
+    }
+  }
+
+  if (await fileExists("public/schemas")) {
+    const publicSchemas = await readdir("public/schemas");
+    for (const fileName of publicSchemas) {
+      if (fileName.endsWith(".schema.json")) {
+        files.push(path.join("public/schemas", fileName));
       }
     }
   }
@@ -249,6 +266,12 @@ try {
     "reports/candidate.json",
     "reports/comparison.json",
     "reports/comparison.md",
+    "schemas/vector-suite-v1.schema.json",
+    "schemas/conformance-report-v1.schema.json",
+    "schemas/badge-v1.schema.json",
+    "schemas/report-comparison-v1.schema.json",
+    "npm run validate:schemas",
+    "public/schemas/",
     "npm run conformance -- --list-suites",
     "npm run conformance -- --suite kanji-eci-binary",
     "npm run conformance -- --adapter specqr",
@@ -360,6 +383,20 @@ try {
     "expect.validation"
   ]) {
     requireText(schemaDoc, text, "docs/vector-schema.md");
+  }
+
+  const reportFormatDoc = await readFile("docs/report-format.md", "utf8");
+  for (const text of [
+    "Report Format",
+    "JSON Schema",
+    "conformance-report-v1.schema.json",
+    "badge-v1.schema.json",
+    "report-comparison-v1.schema.json",
+    "run.mode: \"filtered\"",
+    "Compatibility policy",
+    "additive field"
+  ]) {
+    requireText(reportFormatDoc, text, "docs/report-format.md");
   }
 
   const developmentPolicy = await readFile("docs/development-policy.md", "utf8");
@@ -499,6 +536,32 @@ try {
     "mismatched summary count must be reported as a summary integrity error"
   );
 
+  const schemas = await loadSchemas();
+  const coreSuiteForSchema = JSON.parse(await readFile("vectors/core.json", "utf8"));
+  const validVectorSchemaResult = validateSchemaValue(coreSuiteForSchema, schemas.vectorSuite);
+  assert(validVectorSchemaResult.ok, "valid vector suite must pass JSON Schema validation");
+  const invalidVectorSuite = cloneJson(coreSuiteForSchema);
+  delete invalidVectorSuite.vectors[0].id;
+  const invalidVectorSchemaResult = validateSchemaValue(invalidVectorSuite, schemas.vectorSuite);
+  assert(!invalidVectorSchemaResult.ok, "invalid vector suite must fail JSON Schema validation");
+  assert(
+    invalidVectorSchemaResult.errors.some((schemaError) => schemaError.path === "$.vectors[0].id"),
+    "invalid vector suite error must include a clear vector id path"
+  );
+
+  const reportSchemaResult = validateSchemaValue(fullReportForIntegrity.report, schemas.conformanceReport);
+  assert(reportSchemaResult.ok, "latest report shape must pass JSON Schema validation");
+  const allSchemaValidation = await validateAllSchemas();
+  assert(allSchemaValidation.ok, "current vectors, latest report, badges, and self-comparison must pass schema validation");
+  assert(
+    allSchemaValidation.validated.filter((entry) => entry.schema === schemaFiles.badge).length >= badgeFileNames.length,
+    "current badge files must pass schema validation"
+  );
+  assert(
+    allSchemaValidation.validated.some((entry) => entry.file === "self-comparison:reports/latest.json"),
+    "schema validation must include a report self-comparison"
+  );
+
   const identicalComparison = compareReports(fullReportForIntegrity.report, cloneJson(fullReportForIntegrity.report), {
     now: new Date("2026-01-01T00:00:00.000Z")
   });
@@ -506,6 +569,8 @@ try {
   assert(!identicalComparison.hasRegression, "identical reports must not report regressions");
   assert(identicalComparison.resultStatusChanges.length === 0, "identical reports must not report status changes");
   assert(identicalComparison.checkStatusChanges.length === 0, "identical reports must not report check changes");
+  const comparisonSchemaResult = validateSchemaValue(identicalComparison, schemas.reportComparison);
+  assert(comparisonSchemaResult.ok, "comparison output must pass JSON Schema validation");
 
   const failingCandidateReport = cloneJson(fullReportForIntegrity.report);
   failingCandidateReport.target.requested = "specqr@next";
@@ -803,6 +868,8 @@ try {
   });
   for (const fileName of badgeFileNames) {
     assert(badgeSet[fileName]?.schemaVersion === 1, `${fileName} must be Shields-compatible badge JSON`);
+    const badgeSchemaResult = validateSchemaValue(badgeSet[fileName], schemas.badge);
+    assert(badgeSchemaResult.ok, `${fileName} must pass badge JSON Schema validation`);
   }
   assert(badgeSet["overall.json"].color === "green", "overall badge with expected skips must stay green");
   assert(badgeSet["kanji-eci-binary.json"].color === "green", "Kanji / ECI / binary passing scope badge must be green");
@@ -833,17 +900,26 @@ try {
   try {
     await mkdir(path.join(tmpRoot, "reports"), { recursive: true });
     await mkdir(path.join(tmpRoot, "badges"), { recursive: true });
+    await mkdir(path.join(tmpRoot, "schemas"), { recursive: true });
     await writeFile(path.join(tmpRoot, "reports/latest.html"), "<!doctype html><title>report</title>", "utf8");
     await writeFile(path.join(tmpRoot, "reports/latest.json"), `${JSON.stringify({ schemaVersion: 1 })}\n`, "utf8");
     for (const [fileName, badge] of Object.entries(badgeSet)) {
       await writeFile(path.join(tmpRoot, "badges", fileName), `${JSON.stringify(badge)}\n`, "utf8");
     }
+    for (const fileName of Object.values(schemaFiles).map((schemaPath) => path.basename(schemaPath))) {
+      await writeFile(path.join(tmpRoot, "schemas", fileName), `${JSON.stringify({ $schema: "https://json-schema.org/draft/2020-12/schema" })}\n`, "utf8");
+    }
 
     const pagesResult = await buildPages({ cwd: tmpRoot });
     assert(pagesResult.files.includes("index.html"), "Pages artifact must include index.html");
     assert(pagesResult.files.includes("reports/latest.json"), "Pages artifact must include reports/latest.json");
+    assert(
+      pagesResult.files.includes("schemas/vector-suite-v1.schema.json"),
+      "Pages artifact must include public schema files"
+    );
     await access(path.join(tmpRoot, "public/index.html"));
     await access(path.join(tmpRoot, "public/reports/latest.json"));
+    await access(path.join(tmpRoot, "public/schemas/vector-suite-v1.schema.json"));
     for (const fileName of badgeFileNames) {
       await access(path.join(tmpRoot, "public/badges", fileName));
     }

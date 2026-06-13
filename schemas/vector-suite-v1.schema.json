@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json",
+  "title": "SpecQR Conformance Lab Vector Suite v1",
+  "type": "object",
+  "required": ["version", "id", "name", "description", "category", "vectors"],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "name": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "description": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "category": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "vectors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/vector"
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "jsonObject": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "binaryHex": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-fA-F]{2})*$"
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "generate",
+        "generateSegments",
+        "estimate",
+        "analyzeSegments",
+        "getCapacity",
+        "gs1.createElementString",
+        "gs1.validateElementString",
+        "gs1.createDigitalLink",
+        "gs1.validateDigitalLink",
+        "gs1.normalizeDigitalLink",
+        "structuredAppend.generate",
+        "structuredAppend.generateSegments",
+        "structuredAppend.mergeParts"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "decodeExpectation": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "binaryHex": {
+          "$ref": "#/$defs/binaryHex"
+        }
+      }
+    },
+    "matrixHashExpectation": {
+      "type": "object",
+      "required": ["algorithm", "value"],
+      "additionalProperties": true,
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": ["sha256"]
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        }
+      }
+    },
+    "referenceMatrixExpectation": {
+      "type": "object",
+      "required": ["adapter", "exact", "scope"],
+      "additionalProperties": true,
+      "properties": {
+        "adapter": {
+          "const": "nayuki"
+        },
+        "exact": {
+          "const": true
+        },
+        "scope": {
+          "const": "fixed-version-ecc-mask"
+        }
+      }
+    },
+    "validationExpectation": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array"
+        },
+        "warnings": {
+          "type": "array"
+        }
+      }
+    },
+    "expect": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "decode": {
+          "$ref": "#/$defs/decodeExpectation"
+        },
+        "matrixHash": {
+          "$ref": "#/$defs/matrixHashExpectation"
+        },
+        "referenceMatrix": {
+          "$ref": "#/$defs/referenceMatrixExpectation"
+        },
+        "diagnostics": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "planning": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "gs1": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "structuredAppend": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "validation": {
+          "$ref": "#/$defs/validationExpectation"
+        },
+        "rejects": {
+          "$ref": "#/$defs/jsonObject"
+        }
+      }
+    },
+    "vector": {
+      "type": "object",
+      "required": ["id", "title", "category", "operation", "input", "options", "expect"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "category": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "operation": {
+          "$ref": "#/$defs/operation"
+        },
+        "input": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "options": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "expect": {
+          "$ref": "#/$defs/expect"
+        },
+        "tags": {
+          "$ref": "#/$defs/tags"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

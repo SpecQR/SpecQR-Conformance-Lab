@@ -25,9 +25,22 @@ contributor 向けの実装制約は [docs/development-policy.md](docs/developme
 
 ## Vector Schema
 
-vector schema v1 は [docs/vector-schema.md](docs/vector-schema.md) に定義しています。suite は `version`, `id`, `name`, `description`, `category`, `vectors` を持ち、各 vector は `id`, `title`, `category`, `operation`, `input`, `options`, `expect` を必須 field とします。
+vector schema v1 は [docs/vector-schema.md](docs/vector-schema.md) と machine-readable な [schemas/vector-suite-v1.schema.json](schemas/vector-suite-v1.schema.json) に定義しています。suite は `version`, `id`, `name`, `description`, `category`, `vectors` を持ち、各 vector は `id`, `title`, `category`, `operation`, `input`, `options`, `expect` を必須 field とします。
 
 `operation` は QR generation、manual segments、Planning API、GS1 / Digital Link helper、Structured Append helper を表せる enum です。adapter 実装者はこの schema を先に読めば、どの入力をどの API に渡し、どの期待値を比較すべきか分かる状態を目指します。
+
+## Data format schemas
+
+Lab が生成・公開する machine-readable data format は `schemas/*.schema.json` に JSON Schema draft 2020-12 として置いています。対象は vector suite、conformance report、badge、report comparison です。形式の詳細と互換性方針は [docs/report-format.md](docs/report-format.md) にまとめています。
+
+- `schemas/vector-suite-v1.schema.json`
+- `schemas/conformance-report-v1.schema.json`
+- `schemas/badge-v1.schema.json`
+- `schemas/report-comparison-v1.schema.json`
+
+`npm run validate:schemas` は `vectors/*.json`、`reports/latest.json`、`badges/*.json`、report self-comparison を schema に対して検査します。`reports/comparison.json` が存在する場合はそれも検査します。filtered report も同じ report schema を使い、`run.mode: "filtered"` と `run.filters` で filter 条件を表します。
+
+`npm run pages:build` は schema file を `public/schemas/` にコピーします。Pages deploy 後は `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json` のような URL で参照できます。
 
 ## 最初に予定している Adapter
 
@@ -98,6 +111,7 @@ npm run conformance
 npm run report
 npm run verify:report
 npm run verify:target
+npm run validate:schemas
 npm run compare:reports -- --base reports/latest.json --candidate reports/latest.json
 npm run summary
 npm run pages:build
@@ -124,7 +138,7 @@ npm run conformance -- --adapter specqr --output reports/specqr.local.json
 npm run conformance -- --vector core.generate.byte-text --output reports/vector.local.json
 ```
 
-`npm run verify:report` は生成済み `reports/latest.json` の summary / adapter summary / suite count / result coverage を検査します。`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation、report integrity validation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
+`npm run verify:report` は生成済み `reports/latest.json` の summary / adapter summary / suite count / result coverage を検査します。`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation、schema validation、report integrity validation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
 
 ## 現在の状態
 

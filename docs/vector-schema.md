@@ -1,6 +1,6 @@
 # Vector Schema v1
 
-この文書は SpecQR Conformance Lab の machine-readable vector schema v1 を定義します。adapter 実装者は、ここに書かれた suite / vector / expectation の形だけを前提にして実装します。
+この文書は SpecQR Conformance Lab の machine-readable vector schema v1 を定義します。JSON Schema draft 2020-12 の schema file は [../schemas/vector-suite-v1.schema.json](../schemas/vector-suite-v1.schema.json) です。adapter 実装者は、ここに書かれた suite / vector / expectation の形だけを前提にして実装します。
 
 schema v1 の目的は、SpecQR を npm package として外部から検証し、同じ vector を jsQR や Nayuki などの adapter でも再利用できるようにすることです。SpecQR core repository の source file は import しません。
 

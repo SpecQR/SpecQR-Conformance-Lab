@@ -9,12 +9,15 @@ export async function buildPages(options = {}) {
   const publicDir = options.publicDir ?? path.join(cwd, "public");
   const reportsDir = path.join(cwd, "reports");
   const badgesDir = path.join(cwd, "badges");
+  const schemasDir = path.join(cwd, "schemas");
   const publicReportsDir = path.join(publicDir, "reports");
   const publicBadgesDir = path.join(publicDir, "badges");
+  const publicSchemasDir = path.join(publicDir, "schemas");
 
   await rm(publicDir, { recursive: true, force: true });
   await mkdir(publicReportsDir, { recursive: true });
   await mkdir(publicBadgesDir, { recursive: true });
+  await mkdir(publicSchemasDir, { recursive: true });
 
   await copyFile(path.join(reportsDir, "latest.html"), path.join(publicDir, "index.html"));
   await copyFile(path.join(reportsDir, "latest.html"), path.join(publicReportsDir, "latest.html"));
@@ -35,6 +38,17 @@ export async function buildPages(options = {}) {
   for (const fileName of badgeFiles) {
     await copyFile(path.join(badgesDir, fileName), path.join(publicBadgesDir, fileName));
     files.push(`badges/${fileName}`);
+  }
+
+  const schemaEntries = await readdir(schemasDir, { withFileTypes: true });
+  const schemaFiles = schemaEntries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".schema.json"))
+    .map((entry) => entry.name)
+    .sort();
+
+  for (const fileName of schemaFiles) {
+    await copyFile(path.join(schemasDir, fileName), path.join(publicSchemasDir, fileName));
+    files.push(`schemas/${fileName}`);
   }
 
   return {

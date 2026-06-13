@@ -23,10 +23,11 @@
     "report": "node tools/report.js",
     "verify:report": "node tools/verify-report.js",
     "verify:target": "node tools/verify-specqr-target.js",
+    "validate:schemas": "node tools/validate-schemas.js",
     "compare:reports": "node tools/compare-reports.js",
     "summary": "node tools/write-github-summary.js",
     "pages:build": "npm run conformance && npm run report && node tools/build-pages.js",
-    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:report"
+    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run validate:schemas && npm run verify:report"
   },
   "keywords": [
     "specqr",

@@ -1,0 +1,494 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/conformance-report-v1.schema.json",
+  "title": "SpecQR Conformance Lab Report v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "labVersion",
+    "status",
+    "metadata",
+    "run",
+    "target",
+    "adapters",
+    "suites",
+    "summary",
+    "results"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "labVersion": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["executed"]
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "run": {
+      "$ref": "#/$defs/run"
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "adapters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/adapter"
+      }
+    },
+    "suites": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/suite"
+      }
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/result"
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": ["passed", "failed", "error", "skipped"]
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "generate",
+        "generateSegments",
+        "estimate",
+        "analyzeSegments",
+        "getCapacity",
+        "gs1.createElementString",
+        "gs1.validateElementString",
+        "gs1.createDigitalLink",
+        "gs1.validateDigitalLink",
+        "gs1.normalizeDigitalLink",
+        "structuredAppend.generate",
+        "structuredAppend.generateSegments",
+        "structuredAppend.mergeParts"
+      ]
+    },
+    "runtime": {
+      "type": "object",
+      "required": ["node", "platform", "arch"],
+      "additionalProperties": true,
+      "properties": {
+        "node": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "platform": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "arch": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "targetMetadata": {
+      "type": "object",
+      "required": ["packageName", "requested", "resolvedVersion", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "packageName": {
+          "const": "specqr"
+        },
+        "requested": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "resolvedVersion": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["generatedAt", "runtime", "packages", "target"],
+      "additionalProperties": true,
+      "properties": {
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "runtime": {
+          "$ref": "#/$defs/runtime"
+        },
+        "packages": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "target": {
+          "$ref": "#/$defs/targetMetadata"
+        }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "required": ["suites", "categories", "adapters", "vectors"],
+      "additionalProperties": true,
+      "properties": {
+        "suites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "adapters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vectors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "run": {
+      "type": "object",
+      "required": ["mode", "filters", "outputPath"],
+      "additionalProperties": true,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["full", "filtered"]
+        },
+        "filters": {
+          "$ref": "#/$defs/filters"
+        },
+        "outputPath": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "required": ["name", "requested", "resolvedVersion", "version", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "const": "specqr"
+        },
+        "requested": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "resolvedVersion": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "required": ["id", "name", "status", "lane", "required"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "packageName": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "packageVersion": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "optional"]
+        },
+        "lane": {
+          "type": "string",
+          "enum": ["generation-planning", "decode-readability", "reference-matrix", "optional-decode-readability"]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "commandCandidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      }
+    },
+    "suite": {
+      "type": "object",
+      "required": ["file", "id", "name", "description", "category", "vectorCount"],
+      "additionalProperties": true,
+      "properties": {
+        "file": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "description": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "category": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "vectorCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "countMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/nonNegativeInteger"
+      }
+    },
+    "adapterSummary": {
+      "type": "object",
+      "required": ["id", "name", "total", "executed", "passed", "failed", "skipped", "error"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "optional"]
+        },
+        "total": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "executed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "passed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "failed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "skipped": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "error": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "adapterSummaryMap": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/adapterSummary"
+      }
+    },
+    "scopeSummary": {
+      "type": "object",
+      "required": ["categories", "operations", "vectorCount", "resultCount", "executed", "passed", "failed", "skipped", "error", "adapterSummary"],
+      "additionalProperties": true,
+      "properties": {
+        "categories": {
+          "$ref": "#/$defs/countMap"
+        },
+        "operations": {
+          "$ref": "#/$defs/countMap"
+        },
+        "vectorCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "resultCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "executed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "passed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "failed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "skipped": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "error": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "adapterSummary": {
+          "$ref": "#/$defs/adapterSummaryMap"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "suiteCount",
+        "totalVectors",
+        "totalResults",
+        "categories",
+        "operations",
+        "adapterSummary",
+        "gs1DigitalLink",
+        "structuredAppend",
+        "planningDiagnostics",
+        "kanjiEciBinary",
+        "executed",
+        "passed",
+        "failed",
+        "skipped",
+        "error"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "suiteCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "totalVectors": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "totalResults": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "categories": {
+          "$ref": "#/$defs/countMap"
+        },
+        "operations": {
+          "$ref": "#/$defs/countMap"
+        },
+        "adapterSummary": {
+          "$ref": "#/$defs/adapterSummaryMap"
+        },
+        "gs1DigitalLink": {
+          "$ref": "#/$defs/scopeSummary"
+        },
+        "structuredAppend": {
+          "$ref": "#/$defs/scopeSummary"
+        },
+        "planningDiagnostics": {
+          "$ref": "#/$defs/scopeSummary"
+        },
+        "kanjiEciBinary": {
+          "$ref": "#/$defs/scopeSummary"
+        },
+        "executed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "passed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "failed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "skipped": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "error": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "required": ["name", "status"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "required": ["suiteId", "vectorId", "title", "adapterId", "category", "operation", "status", "checks"],
+      "additionalProperties": true,
+      "properties": {
+        "suiteId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "vectorId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "adapterId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "category": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "operation": {
+          "$ref": "#/$defs/operation"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}
