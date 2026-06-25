@@ -1,0 +1,30 @@
+name: Report problem
+description: public report、badge、schema、comparison artifact の問題を報告します。
+title: "[Report] "
+labels:
+  - report
+body:
+  - type: input
+    id: url
+    attributes:
+      label: URL または artifact
+      description: 問題のある Pages URL、workflow run、artifact 名など。
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 問題
+      description: 何が期待と違いますか。token や private path は書かないでください。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待される表示 / data
+      description: 正しいと思う report、badge、schema、comparison の状態。
+  - type: textarea
+    id: context
+    attributes:
+      label: 補足
+      description: 関連する vector、adapter、workflow、commit SHA など。

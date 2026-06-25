@@ -1,0 +1,38 @@
+name: Adapter request
+description: 新しい adapter / decoder lane を提案します。
+title: "[Adapter] "
+labels:
+  - adapter
+body:
+  - type: input
+    id: adapter
+    attributes:
+      label: Adapter 名
+      description: package 名、CLI command 名、または実装名。
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 対象 scope
+      description: generation、decode readability、reference matrix など、何を検証しますか。
+    validations:
+      required: true
+  - type: dropdown
+    id: dependency
+    attributes:
+      label: 依存形態
+      options:
+        - npm devDependency
+        - optional CLI command
+        - external reference only
+        - undecided
+    validations:
+      required: true
+  - type: textarea
+    id: skips
+    attributes:
+      label: skip / failure 方針
+      description: 未対応 operation や missing command をどう扱う想定ですか。
+    validations:
+      required: true

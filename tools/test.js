@@ -23,11 +23,16 @@ const requiredPaths = [
   "package.json",
   "README.md",
   "LICENSE",
+  "CONTRIBUTING.md",
+  "SECURITY.md",
   "docs/vector-schema.md",
   "docs/report-format.md",
   "docs/adapter-contract.md",
   "docs/known-limits.md",
   "docs/development-policy.md",
+  "docs/release-readiness.md",
+  "docs/dependency-policy.md",
+  "docs/maintenance.md",
   "schemas/vector-suite-v1.schema.json",
   "schemas/conformance-report-v1.schema.json",
   "schemas/badge-v1.schema.json",
@@ -61,7 +66,11 @@ const requiredPaths = [
   ".github/workflows/verify.yml",
   ".github/workflows/pages.yml",
   ".github/workflows/conformance-filtered.yml",
-  ".github/workflows/specqr-target.yml"
+  ".github/workflows/specqr-target.yml",
+  ".github/ISSUE_TEMPLATE/vector-request.yml",
+  ".github/ISSUE_TEMPLATE/adapter-request.yml",
+  ".github/ISSUE_TEMPLATE/report-problem.yml",
+  ".github/dependabot.yml"
 ];
 
 const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "validate:schemas", "compare:reports", "summary", "pages:build", "verify"];
@@ -137,12 +146,20 @@ async function fileExists(relativePath) {
 async function collectPublicFacingFiles() {
   const files = [
     "README.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
     "adapters/README.md",
     "docs/vector-schema.md",
     "docs/report-format.md",
     "docs/adapter-contract.md",
     "docs/known-limits.md",
     "docs/development-policy.md",
+    "docs/release-readiness.md",
+    "docs/dependency-policy.md",
+    "docs/maintenance.md",
+    ".github/ISSUE_TEMPLATE/vector-request.yml",
+    ".github/ISSUE_TEMPLATE/adapter-request.yml",
+    ".github/ISSUE_TEMPLATE/report-problem.yml",
     "reports/latest.json",
     "reports/latest.html"
   ];
@@ -272,6 +289,14 @@ try {
     "schemas/report-comparison-v1.schema.json",
     "npm run validate:schemas",
     "public/schemas/",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "docs/release-readiness.md",
+    "docs/dependency-policy.md",
+    "docs/maintenance.md",
+    ".github/ISSUE_TEMPLATE/vector-request.yml",
+    ".github/ISSUE_TEMPLATE/adapter-request.yml",
+    ".github/ISSUE_TEMPLATE/report-problem.yml",
     "npm run conformance -- --list-suites",
     "npm run conformance -- --suite kanji-eci-binary",
     "npm run conformance -- --adapter specqr",
@@ -294,6 +319,36 @@ try {
     ".github/workflows/pages.yml"
   ]) {
     requireText(readme, text, "README.md");
+  }
+
+  const contributing = await readFile("CONTRIBUTING.md", "utf8");
+  for (const text of [
+    "Japanese-main",
+    "Add vectors",
+    "Add adapters",
+    "npm run validate:vectors",
+    "npm run verify",
+    "expected skip",
+    "failure semantics",
+    "SpecQR core source",
+    "SpecQR <285361393+SpecQR@users.noreply.github.com>"
+  ]) {
+    requireText(contributing, text, "CONTRIBUTING.md");
+  }
+
+  const security = await readFile("SECURITY.md", "utf8");
+  for (const text of [
+    "Reporting a security issue",
+    "conformance / report / comparison infrastructure",
+    "QR generation core",
+    "workflow",
+    "auth token",
+    "dependency",
+    "report publishing",
+    "private token",
+    "local machine path"
+  ]) {
+    requireText(security, text, "SECURITY.md");
   }
 
   const filteredWorkflow = await readFile(".github/workflows/conformance-filtered.yml", "utf8");
@@ -399,6 +454,50 @@ try {
     requireText(reportFormatDoc, text, "docs/report-format.md");
   }
 
+  const releaseReadiness = await readFile("docs/release-readiness.md", "utf8");
+  for (const text of [
+    "現時点では release",
+    "Verify workflow",
+    "Pages workflow",
+    "reports/latest.json",
+    "schemas/vector-suite-v1.schema.json",
+    "failed` / `error",
+    "expected skip",
+    "\"private\": true",
+    "tag / GitHub release / npm publish",
+    "https://github.com/SpecQR/SpecQR"
+  ]) {
+    requireText(releaseReadiness, text, "docs/release-readiness.md");
+  }
+
+  const dependencyPolicy = await readFile("docs/dependency-policy.md", "utf8");
+  for (const text of [
+    "specqr",
+    "exact pin",
+    "specqr@latest",
+    "specqr@next",
+    "manual target workflow",
+    "automatic dependency bump",
+    "zbarimg",
+    "ZXing CLI",
+    "optional decoder lane",
+    "Adding dependencies",
+    "Dependabot",
+    "GitHub Actions"
+  ]) {
+    requireText(dependencyPolicy, text, "docs/dependency-policy.md");
+  }
+
+  const maintenance = await readFile("docs/maintenance.md", "utf8");
+  for (const text of [
+    "Routine checks",
+    "Before changing workflows",
+    "Before adding adapters",
+    "SpecQR core source import"
+  ]) {
+    requireText(maintenance, text, "docs/maintenance.md");
+  }
+
   const developmentPolicy = await readFile("docs/development-policy.md", "utf8");
   for (const text of [
     "filtered conformance run",
@@ -433,6 +532,28 @@ try {
       if (haystack.includes(needle)) {
         throw new Error(`${relativePath} contains ${term.label}: ${term.text}`);
       }
+    }
+  }
+
+  const dependabot = await readFile(".github/dependabot.yml", "utf8");
+  for (const text of [
+    "package-ecosystem: \"github-actions\"",
+    "interval: \"weekly\""
+  ]) {
+    requireText(dependabot, text, ".github/dependabot.yml");
+  }
+  assert(!dependabot.includes("package-ecosystem: \"npm\""), "Dependabot must not auto-update npm dependencies");
+  assert(!dependabot.includes("specqr"), "Dependabot must not mention or auto-update the pinned specqr baseline");
+
+  const issueTemplateChecks = [
+    [".github/ISSUE_TEMPLATE/vector-request.yml", ["Vector request", "目的", "期待値"]],
+    [".github/ISSUE_TEMPLATE/adapter-request.yml", ["Adapter request", "対象 scope", "skip / failure 方針"]],
+    [".github/ISSUE_TEMPLATE/report-problem.yml", ["Report problem", "token や private path は書かないでください"]]
+  ];
+  for (const [templatePath, texts] of issueTemplateChecks) {
+    const template = await readFile(templatePath, "utf8");
+    for (const text of texts) {
+      requireText(template, text, templatePath);
     }
   }
 

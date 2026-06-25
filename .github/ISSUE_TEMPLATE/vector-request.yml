@@ -1,0 +1,39 @@
+name: Vector request
+description: 追加したい conformance vector を提案します。
+title: "[Vector] "
+labels:
+  - vector
+body:
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的
+      description: 何を検証したい vector ですか。
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: 領域
+      options:
+        - Core QR
+        - Kanji / ECI / binary
+        - GS1 / Digital Link
+        - Structured Append
+        - Planning / Diagnostics
+        - Reference matrix
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expectation
+    attributes:
+      label: 期待値
+      description: decode text、diagnostics subset、reject 条件などを書いてください。
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足
+      description: 仕様上の根拠、既存 vector との差分、optional skip の想定など。
