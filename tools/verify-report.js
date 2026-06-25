@@ -71,6 +71,7 @@ function requiredSummaryFields(summary) {
     structuredAppend: summary.structuredAppend,
     planningDiagnostics: summary.planningDiagnostics,
     kanjiEciBinary: summary.kanjiEciBinary,
+    renderingOutput: summary.renderingOutput,
     executed: summary.executed,
     passed: summary.passed,
     failed: summary.failed,

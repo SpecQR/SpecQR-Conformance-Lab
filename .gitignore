@@ -6,3 +6,4 @@ reports/baseline.json
 reports/candidate.json
 reports/comparison.json
 reports/comparison.md
+reports/*.local.json

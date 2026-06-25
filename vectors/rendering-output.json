@@ -1,0 +1,340 @@
+{
+  "version": 1,
+  "id": "rendering-output",
+  "name": "Rendering / output vectors",
+  "description": "SpecQR renderer output surfaces for matrix, SVG, PNG, and Data URL formats.",
+  "category": "rendering-output",
+  "vectors": [
+    {
+      "id": "rendering.matrix.simple-text",
+      "title": "Matrix output shape for simple text",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "HELLO MATRIX"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "matrix"
+      },
+      "expect": {
+        "render": {
+          "format": "matrix",
+          "matrix": {
+            "size": 21,
+            "rows": 21,
+            "columns": 21,
+            "square": true
+          }
+        }
+      },
+      "tags": ["rendering-output", "matrix"]
+    },
+    {
+      "id": "rendering.svg.default-margin-scale",
+      "title": "SVG output with default margin and scale",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "HELLO SVG"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "svg"
+      },
+      "expect": {
+        "render": {
+          "format": "svg",
+          "svg": {
+            "prefix": "<svg",
+            "rootElement": "svg",
+            "width": 232,
+            "height": 232,
+            "viewBox": "0 0 232 232",
+            "contains": [
+              "fill=\"#ffffff\"",
+              "fill=\"#000000\""
+            ]
+          }
+        }
+      },
+      "tags": ["rendering-output", "svg"]
+    },
+    {
+      "id": "rendering.svg.custom-colors",
+      "title": "SVG output with custom foreground and background colors",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "COLOR SVG"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "svg",
+        "foreground": "#123456",
+        "background": "#fefefe"
+      },
+      "expect": {
+        "render": {
+          "format": "svg",
+          "svg": {
+            "rootElement": "svg",
+            "width": 232,
+            "height": 232,
+            "contains": [
+              "fill=\"#fefefe\"",
+              "fill=\"#123456\""
+            ]
+          },
+          "diagnosticsSubset": {
+            "colors": {
+              "foregroundAlpha": 255,
+              "backgroundAlpha": 255
+            }
+          }
+        }
+      },
+      "tags": ["rendering-output", "svg", "color"]
+    },
+    {
+      "id": "rendering.svg.data-url",
+      "title": "SVG Data URL output",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "SVG DATA URL"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "svg-data-url"
+      },
+      "expect": {
+        "render": {
+          "format": "svg-data-url",
+          "dataUrl": {
+            "prefix": "data:image/svg+xml;charset=utf-8,",
+            "mediaType": "image/svg+xml"
+          },
+          "svg": {
+            "rootElement": "svg",
+            "width": 232,
+            "height": 232,
+            "viewBox": "0 0 232 232"
+          }
+        }
+      },
+      "tags": ["rendering-output", "svg", "data-url"]
+    },
+    {
+      "id": "rendering.png.dimensions",
+      "title": "PNG output with expected dimensions",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "PNG SIZE"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "png",
+        "scale": 4,
+        "margin": 2
+      },
+      "expect": {
+        "render": {
+          "format": "png",
+          "png": {
+            "signature": true,
+            "width": 100,
+            "height": 100
+          },
+          "diagnosticsSubset": {
+            "quietZone": {
+              "modules": 2
+            },
+            "print": {
+              "modulePixels": 4
+            }
+          }
+        }
+      },
+      "tags": ["rendering-output", "png"]
+    },
+    {
+      "id": "rendering.png.data-url",
+      "title": "PNG Data URL output",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "PNG DATA URL"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "png-data-url",
+        "scale": 4,
+        "margin": 2
+      },
+      "expect": {
+        "render": {
+          "format": "png-data-url",
+          "dataUrl": {
+            "prefix": "data:image/png;base64,",
+            "mediaType": "image/png"
+          },
+          "png": {
+            "signature": true,
+            "width": 100,
+            "height": 100
+          }
+        }
+      },
+      "tags": ["rendering-output", "png", "data-url"]
+    },
+    {
+      "id": "rendering.svg.transparent-background",
+      "title": "SVG output with transparent background",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "SVG TRANSPARENT"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "svg",
+        "background": "transparent"
+      },
+      "expect": {
+        "render": {
+          "format": "svg",
+          "svg": {
+            "rootElement": "svg",
+            "width": 232,
+            "height": 232,
+            "contains": [
+              "fill=\"transparent\""
+            ]
+          },
+          "diagnosticsSubset": {
+            "colors": {
+              "backgroundAlpha": 0
+            }
+          }
+        }
+      },
+      "tags": ["rendering-output", "svg", "transparent"]
+    },
+    {
+      "id": "rendering.png.transparent-background",
+      "title": "PNG output with transparent background",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "PNG TRANSPARENT"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "png",
+        "scale": 4,
+        "margin": 4,
+        "background": "transparent"
+      },
+      "expect": {
+        "render": {
+          "format": "png",
+          "png": {
+            "signature": true,
+            "width": 116,
+            "height": 116,
+            "hasTransparentPixels": true
+          },
+          "diagnosticsSubset": {
+            "colors": {
+              "backgroundAlpha": 0
+            }
+          }
+        }
+      },
+      "tags": ["rendering-output", "png", "transparent"]
+    },
+    {
+      "id": "rendering.png.decode-readable",
+      "title": "PNG output remains readable by jsQR",
+      "category": "rendering-output",
+      "operation": "generate",
+      "input": {
+        "text": "PNG DECODE"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "png",
+        "scale": 8,
+        "margin": 4
+      },
+      "expect": {
+        "render": {
+          "format": "png",
+          "png": {
+            "signature": true,
+            "width": 232,
+            "height": 232
+          }
+        },
+        "decode": {
+          "text": "PNG DECODE"
+        }
+      },
+      "tags": ["rendering-output", "png", "decode"]
+    },
+    {
+      "id": "rendering.reject.invalid-foreground-png",
+      "title": "Invalid foreground color rejects for PNG output",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "input": {
+        "text": "BAD COLOR"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "png",
+        "foreground": "not-a-color"
+      },
+      "expect": {
+        "rejects": {
+          "code": "INVALID_COLOR",
+          "messageIncludes": "foreground"
+        }
+      },
+      "tags": ["rendering-output", "negative", "reject"]
+    },
+    {
+      "id": "rendering.reject.invalid-output",
+      "title": "Invalid output option rejects",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "input": {
+        "text": "BAD OUTPUT"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "output": "webp"
+      },
+      "expect": {
+        "rejects": {
+          "code": "INVALID_OUTPUT",
+          "messageIncludes": "output must be one of"
+        }
+      },
+      "tags": ["rendering-output", "negative", "reject"]
+    }
+  ]
+}

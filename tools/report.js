@@ -57,6 +57,7 @@ async function readReport() {
         structuredAppend: {},
         planningDiagnostics: {},
         kanjiEciBinary: {},
+        renderingOutput: {},
         executed: 0,
         passed: 0,
         failed: 0,
@@ -196,6 +197,7 @@ const gs1DigitalLink = summary.gs1DigitalLink ?? {};
 const structuredAppend = summary.structuredAppend ?? {};
 const planningDiagnostics = summary.planningDiagnostics ?? {};
 const kanjiEciBinary = summary.kanjiEciBinary ?? {};
+const renderingOutput = summary.renderingOutput ?? {};
 const optionalDecoderAdapters = adapters.filter((adapter) => {
   return adapter.lane === "optional-decode-readability" || adapter.required === false;
 });
@@ -220,7 +222,8 @@ const statusBands = [
   statusBand("GS1 / Digital Link", "SpecQR がサポートする GS1 helper subset", gs1DigitalLink),
   statusBand("Structured Append", "generation と merge helper の scope", structuredAppend),
   statusBand("Planning / Diagnostics", "estimate / analyzeSegments / getCapacity と warnings", planningDiagnostics),
-  statusBand("Kanji / ECI / Binary", "Kanji mode、ECI UTF-8、raw byte payload の scope", kanjiEciBinary)
+  statusBand("Kanji / ECI / Binary", "Kanji mode、ECI UTF-8、raw byte payload の scope", kanjiEciBinary),
+  statusBand("Rendering / Output", "matrix / SVG / PNG / Data URL output surface", renderingOutput)
 ].join("\n");
 
 function commandCandidates(adapter) {
@@ -325,6 +328,7 @@ ${statusBands}
     <li>full QR reader</li>
     <li>scanner metadata merge support</li>
     <li>logo/styled QR</li>
+    <li>Canvas / browser helper validation</li>
   </ul>
   <h2>概要</h2>
   <table>
@@ -374,7 +378,13 @@ ${scopeSection(
   kanjiEciBinary,
   "Kanji / ECI / Binary categories"
 )}
-  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append/Kanji/ECI/Binary checks</h2>
+${scopeSection(
+  "Rendering / Output 集計",
+  "この集計は Node 上で published specqr@2.4.0 の matrix、SVG、PNG、SVG Data URL、PNG Data URL output surface を確認します。Canvas / browser helper はこの Node-only suite の対象外です。",
+  renderingOutput,
+  "Rendering / Output categories"
+)}
+  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append/Kanji/ECI/Binary/Rendering checks</h2>
   <table>
     <thead>
       <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>

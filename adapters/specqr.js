@@ -14,6 +14,7 @@ import {
   validateGs1DigitalLink,
   validateGs1ElementString
 } from "specqr";
+import { pngToRgba } from "../tools/png-rgba.js";
 
 const supportedOperations = new Set([
   "generate",
@@ -125,19 +126,64 @@ function normalizeSegments(segments) {
   });
 }
 
-function generationOptions(options) {
+function hasRenderExpectation(vector) {
+  return Object.hasOwn(vector.expect ?? {}, "render");
+}
+
+function isRenderRejectExpectation(vector) {
+  return Object.hasOwn(vector.expect ?? {}, "rejects") &&
+    ["png", "png-data-url"].includes(vector.options?.output);
+}
+
+function renderOutputFor(vector) {
+  return vector.options.output ?? vector.expect?.render?.format ?? "matrix";
+}
+
+function operationOptions(vector, mode = "primary") {
+  if (mode === "diagnostics") {
+    return {
+      ...vector.options,
+      output: "matrix",
+      diagnostics: true
+    };
+  }
+
+  if (hasRenderExpectation(vector) || isRenderRejectExpectation(vector)) {
+    return {
+      ...vector.options,
+      output: renderOutputFor(vector),
+      diagnostics: false
+    };
+  }
+
   return {
-    ...options,
-    output: options.output ?? "matrix",
-    diagnostics: options.diagnostics ?? true
+    ...vector.options,
+    output: vector.options.output ?? "matrix",
+    diagnostics: vector.options.diagnostics ?? true
   };
 }
 
-function structuredAppendOptions(options) {
+function structuredAppendOptions(vector, mode = "primary") {
+  if (mode === "diagnostics") {
+    return {
+      ...vector.options,
+      output: "matrix",
+      diagnostics: true
+    };
+  }
+
+  if (hasRenderExpectation(vector) || isRenderRejectExpectation(vector)) {
+    return {
+      ...vector.options,
+      output: renderOutputFor(vector),
+      diagnostics: false
+    };
+  }
+
   return {
-    ...options,
-    output: options.output ?? "matrix",
-    diagnostics: options.diagnostics ?? true
+    ...vector.options,
+    output: vector.options.output ?? "matrix",
+    diagnostics: vector.options.diagnostics ?? true
   };
 }
 
@@ -159,12 +205,12 @@ function normalizeStructuredAppendParts(parts) {
   });
 }
 
-function executeOperation(vector) {
+function executeOperation(vector, mode = "primary") {
   switch (vector.operation) {
     case "generate":
-      return generate(normalizeInput(vector.input), generationOptions(vector.options));
+      return generate(normalizeInput(vector.input), operationOptions(vector, mode));
     case "generateSegments":
-      return generateSegments(normalizeSegments(vector.input.segments), generationOptions(vector.options));
+      return generateSegments(normalizeSegments(vector.input.segments), operationOptions(vector, mode));
     case "estimate":
       return estimate(normalizeInput(vector.input), vector.options);
     case "analyzeSegments":
@@ -182,9 +228,9 @@ function executeOperation(vector) {
     case "gs1.normalizeDigitalLink":
       return normalizeGs1DigitalLink(vector.input.url, vector.options);
     case "structuredAppend.generate":
-      return generateStructuredAppend(normalizeInput(vector.input), structuredAppendOptions(vector.options));
+      return generateStructuredAppend(normalizeInput(vector.input), structuredAppendOptions(vector, mode));
     case "structuredAppend.generateSegments":
-      return generateSegmentsStructuredAppend(normalizeSegments(vector.input.segments), structuredAppendOptions(vector.options));
+      return generateSegmentsStructuredAppend(normalizeSegments(vector.input.segments), structuredAppendOptions(vector, mode));
     case "structuredAppend.mergeParts":
       return mergeStructuredAppendParts(normalizeStructuredAppendParts(vector.input.parts), vector.options);
     default:
@@ -273,12 +319,28 @@ function createSkippedCheck(name, reason) {
   };
 }
 
+function createPassedCheck(name, details = {}) {
+  return {
+    name,
+    status: "passed",
+    ...details
+  };
+}
+
 function matrixToRowMajorBitString(matrix) {
   if (!Array.isArray(matrix) || matrix.length === 0 || !Array.isArray(matrix[0])) {
     throw new Error("matrix must be a non-empty boolean[][]");
   }
 
   return matrix.map((row) => row.map((module) => (module ? "1" : "0")).join("")).join("\n");
+}
+
+function actualMatrix(actual) {
+  if (Array.isArray(actual)) {
+    return actual;
+  }
+
+  return actual?.matrix;
 }
 
 export function matrixHash(matrix, expectation = {}) {
@@ -302,6 +364,433 @@ function getActualDiagnostics(actual) {
   }
 
   return actual.diagnostics ?? null;
+}
+
+function getExecutionDiagnostics(execution) {
+  return getActualDiagnostics(execution.diagnosticActual) ?? getActualDiagnostics(execution.actual);
+}
+
+const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+
+function renderFailure(path, expected, actual, reason) {
+  return {
+    ok: false,
+    path,
+    expected,
+    actual,
+    reason
+  };
+}
+
+function isBooleanMatrix(value) {
+  return Array.isArray(value) &&
+    value.length > 0 &&
+    value.every((row) => Array.isArray(row) && row.length > 0 && row.every((module) => typeof module === "boolean"));
+}
+
+function matrixShape(matrix) {
+  if (!isBooleanMatrix(matrix)) {
+    return null;
+  }
+
+  const rows = matrix.length;
+  const columns = matrix[0].length;
+  return {
+    rows,
+    columns,
+    size: rows === columns ? rows : null,
+    square: rows === columns
+  };
+}
+
+function renderSummary(value) {
+  if (value instanceof Uint8Array) {
+    return {
+      type: "Uint8Array",
+      byteLength: value.length,
+      prefix: Array.from(value.slice(0, 8))
+    };
+  }
+
+  if (typeof value === "string") {
+    return {
+      type: "string",
+      length: value.length,
+      prefix: value.slice(0, 64)
+    };
+  }
+
+  const shape = matrixShape(value);
+  if (shape) {
+    return {
+      type: "matrix",
+      ...shape
+    };
+  }
+
+  if (value && typeof value === "object") {
+    return {
+      type: "object",
+      keys: Object.keys(value)
+    };
+  }
+
+  return value;
+}
+
+function evaluateMatrixRender(expected = {}, actual, path = "$.render.matrix") {
+  const shape = matrixShape(actual);
+  if (!shape) {
+    return renderFailure(path, "boolean[][]", renderSummary(actual), "render output is not a boolean matrix");
+  }
+
+  for (const [key, expectedValue] of Object.entries(expected)) {
+    if (!Object.hasOwn(shape, key)) {
+      continue;
+    }
+    const result = deepSubsetMatch(expectedValue, shape[key], `${path}.${key}`);
+    if (!result.ok) {
+      return result;
+    }
+  }
+
+  return { ok: true, actual: shape };
+}
+
+function rootElement(svg) {
+  const match = String(svg).trimStart().match(/^<([A-Za-z][A-Za-z0-9:._-]*)(\s[^>]*)?>/);
+  if (!match) {
+    return null;
+  }
+
+  const attrs = {};
+  const source = match[2] ?? "";
+  const attrPattern = /\s([A-Za-z_:][A-Za-z0-9:._-]*)="([^"]*)"/g;
+  let attrMatch = attrPattern.exec(source);
+  while (attrMatch) {
+    attrs[attrMatch[1]] = attrMatch[2];
+    attrMatch = attrPattern.exec(source);
+  }
+
+  return {
+    name: match[1],
+    attrs
+  };
+}
+
+function compareSvgAttribute(root, name, expectedValue, path) {
+  const actualValue = root?.attrs?.[name];
+  if (String(actualValue) !== String(expectedValue)) {
+    return renderFailure(path, String(expectedValue), actualValue, `${name} differs`);
+  }
+  return { ok: true };
+}
+
+function evaluateSvgRender(expected = {}, svg, path = "$.render.svg") {
+  if (typeof svg !== "string") {
+    return renderFailure(path, "SVG string", renderSummary(svg), "render output is not a string");
+  }
+
+  if (Object.hasOwn(expected, "prefix") && !svg.trimStart().startsWith(expected.prefix)) {
+    return renderFailure(`${path}.prefix`, expected.prefix, svg.slice(0, expected.prefix.length), "SVG prefix differs");
+  }
+
+  const root = rootElement(svg);
+  if (Object.hasOwn(expected, "rootElement")) {
+    const result = deepSubsetMatch(expected.rootElement, root?.name, `${path}.rootElement`);
+    if (!result.ok) {
+      return result;
+    }
+  }
+
+  for (const name of ["width", "height", "viewBox"]) {
+    if (Object.hasOwn(expected, name)) {
+      const result = compareSvgAttribute(root, name, expected[name], `${path}.${name}`);
+      if (!result.ok) {
+        return result;
+      }
+    }
+  }
+
+  if (Array.isArray(expected.contains)) {
+    for (const [index, text] of expected.contains.entries()) {
+      if (!svg.includes(text)) {
+        return renderFailure(`${path}.contains[${index}]`, text, null, "SVG does not include expected text");
+      }
+    }
+  }
+
+  return {
+    ok: true,
+    actual: {
+      rootElement: root?.name ?? null,
+      width: root?.attrs?.width ?? null,
+      height: root?.attrs?.height ?? null,
+      viewBox: root?.attrs?.viewBox ?? null,
+      length: svg.length
+    }
+  };
+}
+
+function hasPngSignature(bytes) {
+  return bytes instanceof Uint8Array && pngSignature.every((byte, index) => bytes[index] === byte);
+}
+
+function evaluatePngRender(expected = {}, bytes, path = "$.render.png") {
+  if (!(bytes instanceof Uint8Array)) {
+    return renderFailure(path, "PNG Uint8Array", renderSummary(bytes), "render output is not a Uint8Array");
+  }
+
+  if (expected.signature !== false && !hasPngSignature(bytes)) {
+    return renderFailure(`${path}.signature`, pngSignature, Array.from(bytes.slice(0, 8)), "PNG signature differs");
+  }
+
+  let image = null;
+  if (Object.hasOwn(expected, "width") || Object.hasOwn(expected, "height") || Object.hasOwn(expected, "hasTransparentPixels")) {
+    try {
+      image = pngToRgba(bytes);
+    } catch (error) {
+      return renderFailure(path, "parseable PNG", error.message, "PNG reader failed");
+    }
+  }
+
+  if (Object.hasOwn(expected, "width")) {
+    const result = deepSubsetMatch(expected.width, image.width, `${path}.width`);
+    if (!result.ok) {
+      return result;
+    }
+  }
+
+  if (Object.hasOwn(expected, "height")) {
+    const result = deepSubsetMatch(expected.height, image.height, `${path}.height`);
+    if (!result.ok) {
+      return result;
+    }
+  }
+
+  if (Object.hasOwn(expected, "hasTransparentPixels")) {
+    const hasTransparentPixels = Array.from({ length: image.width * image.height }).some((_, index) => {
+      return image.rgba[index * 4 + 3] < 255;
+    });
+    const result = deepSubsetMatch(expected.hasTransparentPixels, hasTransparentPixels, `${path}.hasTransparentPixels`);
+    if (!result.ok) {
+      return result;
+    }
+  }
+
+  return {
+    ok: true,
+    actual: {
+      byteLength: bytes.length,
+      signature: true,
+      width: image?.width ?? null,
+      height: image?.height ?? null
+    }
+  };
+}
+
+function parseDataUrl(value) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const match = value.match(/^data:([^,]*),(.*)$/s);
+  if (!match) {
+    return null;
+  }
+
+  const header = match[1];
+  const parts = header.split(";");
+  return {
+    header,
+    mediaType: parts[0] || "text/plain",
+    base64: parts.includes("base64"),
+    data: match[2]
+  };
+}
+
+function dataUrlBytes(info) {
+  return info.base64
+    ? new Uint8Array(Buffer.from(info.data, "base64"))
+    : new TextEncoder().encode(decodeURIComponent(info.data));
+}
+
+function dataUrlText(info) {
+  return info.base64
+    ? Buffer.from(info.data, "base64").toString("utf8")
+    : decodeURIComponent(info.data);
+}
+
+function evaluateDataUrlRender(expected = {}, actual, path = "$.render.dataUrl") {
+  if (typeof actual !== "string") {
+    return renderFailure(path, "Data URL string", renderSummary(actual), "render output is not a string");
+  }
+
+  if (Object.hasOwn(expected, "prefix") && !actual.startsWith(expected.prefix)) {
+    return renderFailure(`${path}.prefix`, expected.prefix, actual.slice(0, expected.prefix.length), "Data URL prefix differs");
+  }
+
+  const info = parseDataUrl(actual);
+  if (!info) {
+    return renderFailure(path, "valid Data URL", actual.slice(0, 64), "render output is not a Data URL");
+  }
+
+  if (Object.hasOwn(expected, "mediaType")) {
+    const result = deepSubsetMatch(expected.mediaType, info.mediaType, `${path}.mediaType`);
+    if (!result.ok) {
+      return result;
+    }
+  }
+
+  return {
+    ok: true,
+    actual: {
+      mediaType: info.mediaType,
+      base64: info.base64,
+      length: actual.length
+    },
+    info
+  };
+}
+
+function renderDetails(actual) {
+  const shape = matrixShape(actual);
+  if (shape) {
+    return {
+      format: "matrix",
+      ...shape
+    };
+  }
+
+  if (actual instanceof Uint8Array) {
+    const details = {
+      format: "png",
+      byteLength: actual.length,
+      pngSignature: hasPngSignature(actual)
+    };
+    try {
+      const image = pngToRgba(actual);
+      details.width = image.width;
+      details.height = image.height;
+    } catch {
+      details.width = null;
+      details.height = null;
+    }
+    return details;
+  }
+
+  if (typeof actual === "string") {
+    const dataUrl = parseDataUrl(actual);
+    if (dataUrl) {
+      return {
+        format: dataUrl.mediaType === "image/png" ? "png-data-url" : "svg-data-url",
+        mediaType: dataUrl.mediaType,
+        base64: dataUrl.base64,
+        length: actual.length
+      };
+    }
+
+    if (!actual.trimStart().startsWith("<svg")) {
+      return null;
+    }
+
+    const root = rootElement(actual);
+    return {
+      format: "svg",
+      length: actual.length,
+      rootElement: root?.name ?? null,
+      width: root?.attrs?.width ?? null,
+      height: root?.attrs?.height ?? null,
+      viewBox: root?.attrs?.viewBox ?? null
+    };
+  }
+
+  return null;
+}
+
+function evaluateRenderExpectation(expected, execution) {
+  const checks = [];
+  const actual = execution.actual;
+
+  if (!expected || typeof expected !== "object" || Array.isArray(expected)) {
+    return [checkResult("render", renderFailure("$.render", "object", expected, "render expectation must be an object"))];
+  }
+
+  const format = expected.format;
+  if (!["matrix", "svg", "png", "svg-data-url", "png-data-url"].includes(format)) {
+    return [checkResult("render.format", renderFailure("$.render.format", "known render format", format, "unsupported render expectation format"))];
+  }
+
+  const actualSummary = renderSummary(actual);
+  let formatOk = false;
+  if (format === "matrix") {
+    formatOk = Boolean(matrixShape(actual));
+  } else if (format === "svg") {
+    formatOk = typeof actual === "string" && !parseDataUrl(actual);
+  } else if (format === "png") {
+    formatOk = actual instanceof Uint8Array;
+  } else if (format === "svg-data-url" || format === "png-data-url") {
+    const info = parseDataUrl(actual);
+    formatOk = Boolean(info) && (
+      (format === "svg-data-url" && info.mediaType === "image/svg+xml") ||
+      (format === "png-data-url" && info.mediaType === "image/png")
+    );
+  }
+
+  checks.push(checkResult(
+    "render.format",
+    formatOk
+      ? { ok: true }
+      : renderFailure("$.render.format", format, actualSummary, "render output format differs"),
+    { format }
+  ));
+
+  if (!formatOk) {
+    return checks;
+  }
+
+  if (format === "matrix") {
+    checks.push(checkResult("render.matrix", evaluateMatrixRender(expected.matrix ?? {}, actual)));
+  }
+
+  if (format === "svg") {
+    checks.push(checkResult("render.svg", evaluateSvgRender(expected.svg ?? {}, actual)));
+  }
+
+  if (format === "png") {
+    checks.push(checkResult("render.png", evaluatePngRender(expected.png ?? {}, actual)));
+  }
+
+  if (format === "svg-data-url" || format === "png-data-url") {
+    const dataUrlResult = evaluateDataUrlRender(expected.dataUrl ?? {}, actual);
+    checks.push(checkResult("render.dataUrl", dataUrlResult));
+    if (dataUrlResult.ok && format === "svg-data-url") {
+      checks.push(checkResult("render.svg", evaluateSvgRender(expected.svg ?? {}, dataUrlText(dataUrlResult.info))));
+    }
+    if (dataUrlResult.ok && format === "png-data-url") {
+      checks.push(checkResult("render.png", evaluatePngRender(expected.png ?? {}, dataUrlBytes(dataUrlResult.info))));
+    }
+  }
+
+  if (Object.hasOwn(expected, "diagnosticsSubset")) {
+    const diagnostics = getExecutionDiagnostics(execution);
+    checks.push(checkResult(
+      "render.diagnosticsSubset",
+      diagnostics
+        ? deepSubsetMatch(expected.diagnosticsSubset, diagnostics, "$.render.diagnostics")
+        : renderFailure("$.render.diagnostics", expected.diagnosticsSubset, null, "additional diagnostics were not available")
+    ));
+  }
+
+  return checks;
+}
+
+function needsAdditionalDiagnostics(vector) {
+  if (!hasRenderExpectation(vector)) {
+    return false;
+  }
+
+  return Object.hasOwn(vector.expect, "diagnostics") || Object.hasOwn(vector.expect.render ?? {}, "diagnosticsSubset");
 }
 
 function selectedVersion(actual) {
@@ -614,9 +1103,29 @@ export function evaluateExpectations(expect, execution) {
     ));
   }
 
+  if (execution.diagnosticsGenerated) {
+    if (execution.diagnosticError) {
+      checks.push({
+        name: "diagnostics.generation",
+        status: "error",
+        reason: "render vector の diagnostics subset 評価用 generation が失敗しました。",
+        error: errorDetails(execution.diagnosticError)
+      });
+    } else {
+      checks.push(createPassedCheck("diagnostics.generation", {
+        mode: "additional",
+        reason: "render output を変えないため、diagnostics subset は追加の matrix generation で評価しました。"
+      }));
+    }
+  }
+
+  if (Object.hasOwn(expect, "render")) {
+    checks.push(...evaluateRenderExpectation(expect.render, execution));
+  }
+
   if (Object.hasOwn(expect, "matrixHash")) {
     try {
-      const actualHash = matrixHash(execution.actual?.matrix, expect.matrixHash);
+      const actualHash = matrixHash(actualMatrix(execution.actual), expect.matrixHash);
       checks.push(checkResult("matrixHash", deepSubsetMatch(expect.matrixHash.value, actualHash, "$.matrixHash.value"), {
         algorithm: expect.matrixHash.algorithm ?? "sha256",
         encoding: expect.matrixHash.encoding ?? "row-major-bits"
@@ -631,7 +1140,7 @@ export function evaluateExpectations(expect, execution) {
   }
 
   if (Object.hasOwn(expect, "diagnostics")) {
-    const diagnostics = getActualDiagnostics(execution.actual);
+    const diagnostics = getExecutionDiagnostics(execution);
     if (!diagnostics) {
       checks.push({
         name: "diagnostics.subset",
@@ -684,7 +1193,21 @@ export function summarizeChecks(checks) {
   return "skipped";
 }
 
-function resultDetails(actual) {
+function resultDetails(actual, execution = {}) {
+  const render = renderDetails(actual);
+  if (render) {
+    const details = {
+      render
+    };
+    if (execution.diagnosticsGenerated) {
+      details.diagnosticsGeneration = {
+        mode: "additional",
+        ok: !execution.diagnosticError
+      };
+    }
+    return details;
+  }
+
   if (typeof actual === "string") {
     return {
       value: actual
@@ -769,11 +1292,26 @@ export const adapter = {
       };
     }
 
-    const execution = { actual: null, error: null };
+    const execution = {
+      actual: null,
+      error: null,
+      diagnosticActual: null,
+      diagnosticError: null,
+      diagnosticsGenerated: false
+    };
     try {
       execution.actual = executeOperation(vector);
     } catch (error) {
       execution.error = error;
+    }
+
+    if (!execution.error && needsAdditionalDiagnostics(vector)) {
+      execution.diagnosticsGenerated = true;
+      try {
+        execution.diagnosticActual = executeOperation(vector, "diagnostics");
+      } catch (error) {
+        execution.diagnosticError = error;
+      }
     }
 
     const checks = evaluateExpectations(vector.expect, execution);
@@ -791,7 +1329,7 @@ export const adapter = {
       checks,
       ...(unexpectedError ? { reason: unexpectedError.reason, error: unexpectedError.error } : {}),
       ...(status === "failed" ? { reason: "one or more expectation checks failed" } : {}),
-      details: resultDetails(execution.actual)
+      details: resultDetails(execution.actual, execution)
     };
   }
 };

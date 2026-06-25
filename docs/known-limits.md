@@ -7,6 +7,7 @@
 - SpecQR adapter は published `specqr@2.4.0` の GS1 helper / Digital Link helper を実行する。ただし対象は SpecQR がサポートする AI subset であり、GS1 full catalog の conformance ではない。
 - SpecQR adapter は published `specqr@2.4.0` の Structured Append generation / manual segment splitting / merge helper を実行する。
 - SpecQR adapter は published `specqr@2.4.0` の Kanji mode、ECI UTF-8、manual ECI segment、raw binary payload、関連 negative reject case を実行する。
+- SpecQR adapter は published `specqr@2.4.0` の renderer output surface として matrix、SVG、PNG、SVG Data URL、PNG Data URL を Node 上で確認する。
 - jsQR adapter は `generate` / `generateSegments` vector の decode readability に対応している。
 - zbarimg adapter は local `zbarimg` command がある環境だけで `generate` / `generateSegments` vector の decode readability に対応する。command がない場合は expected skip であり、CI failure ではない。
 - ZXing CLI adapter は local `ZXingReader`, `zxing`, `zxing-cpp`, `zxingscan` のいずれかがある環境だけで `generate` / `generateSegments` vector の decode readability に対応する。command がない場合は expected skip であり、CI failure ではない。
@@ -22,6 +23,7 @@
 - 何を検証していないか: rMQR。
 - 何を検証していないか: full GS1 catalog。現時点の GS1 vector は AI `00`, `01`, `10`, `17` と Digital Link の代表的な validation/normalization case を中心にする。
 - 何を検証していないか: full QR reader。
+- 何を検証していないか: Canvas / browser helper validation。`drawToCanvas()`、browser Blob / ImageData / Object URL helper、DOM integration はこの Node-only suite の対象外。
 - 何を検証していないか: scanner metadata merge support。Structured Append の scanner metadata decoding や decoder merge support は実装しない。metadata-returning decoder がある前提で `mergeStructuredAppendParts()` helper の入力検証だけを確認する。
 - 何を検証していないか: logo/styled QR。
 - SpecQR target は npm package `specqr@2.4.0`。SpecQR core repository の source tree や local checkout は検証入力として使わない。

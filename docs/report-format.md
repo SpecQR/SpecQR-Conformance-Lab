@@ -17,7 +17,7 @@
 
 report schema は `reports/latest.json` の安定 field を定義します。top-level には `schemaVersion`, `labVersion`, `status`, `metadata`, `run`, `target`, `adapters`, `suites`, `summary`, `results` を持ちます。
 
-`target.requested` は requested npm package spec、`target.resolvedVersion` は実際に installed package から読んだ version、`target.source` は package source を表します。`summary` は total count、adapter summary、GS1 / DL、Structured Append、Planning / Diagnostics、Kanji / ECI / binary の主要 scope summary を持ちます。
+`target.requested` は requested npm package spec、`target.resolvedVersion` は実際に installed package から読んだ version、`target.source` は package source を表します。`summary` は total count、adapter summary、GS1 / DL、Structured Append、Planning / Diagnostics、Kanji / ECI / binary、Rendering / Output の主要 scope summary を持ちます。
 
 filtered run は full run と同じ schema です。filter 条件は `run.mode: "filtered"` と `run.filters.suites`, `run.filters.categories`, `run.filters.adapters`, `run.filters.vectors` に記録します。full run は `run.mode: "full"` です。
 

@@ -378,6 +378,7 @@
         "structuredAppend",
         "planningDiagnostics",
         "kanjiEciBinary",
+        "renderingOutput",
         "executed",
         "passed",
         "failed",
@@ -414,6 +415,9 @@
           "$ref": "#/$defs/scopeSummary"
         },
         "kanjiEciBinary": {
+          "$ref": "#/$defs/scopeSummary"
+        },
+        "renderingOutput": {
           "$ref": "#/$defs/scopeSummary"
         },
         "executed": {

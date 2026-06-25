@@ -292,6 +292,10 @@ function isKanjiEciBinaryCategory(category) {
   return category === "kanji-eci-binary";
 }
 
+function isRenderingOutputCategory(category) {
+  return typeof category === "string" && category.startsWith("rendering-output");
+}
+
 export function createSummary(suites, vectors, adapters, results) {
   const statusCounts = createStatusCounts(results);
   const adapterSummary = Object.fromEntries(
@@ -312,6 +316,7 @@ export function createSummary(suites, vectors, adapters, results) {
     structuredAppend: createScopedSummary(vectors, results, adapters, isStructuredAppendCategory),
     planningDiagnostics: createScopedSummary(vectors, results, adapters, isPlanningDiagnosticsCategory),
     kanjiEciBinary: createScopedSummary(vectors, results, adapters, isKanjiEciBinaryCategory),
+    renderingOutput: createScopedSummary(vectors, results, adapters, isRenderingOutputCategory),
     executed: results.filter((result) => result.status !== "skipped").length,
     passed: statusCounts.passed,
     failed: statusCounts.failed,

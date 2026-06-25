@@ -3,7 +3,7 @@
   "labVersion": "0.1.0",
   "status": "executed",
   "metadata": {
-    "generatedAt": "2026-06-25T17:08:23.810Z",
+    "generatedAt": "2026-06-25T17:30:35.979Z",
     "runtime": {
       "node": "v25.9.0",
       "platform": "darwin",
@@ -136,6 +136,14 @@
       "vectorCount": 6
     },
     {
+      "file": "vectors/rendering-output.json",
+      "id": "rendering-output",
+      "name": "Rendering / output vectors",
+      "description": "SpecQR renderer output surfaces for matrix, SVG, PNG, and Data URL formats.",
+      "category": "rendering-output",
+      "vectorCount": 11
+    },
+    {
       "file": "vectors/schema.example.json",
       "id": "schema-example",
       "name": "Schema example",
@@ -153,9 +161,9 @@
     }
   ],
   "summary": {
-    "suiteCount": 7,
-    "totalVectors": 75,
-    "totalResults": 375,
+    "suiteCount": 8,
+    "totalVectors": 86,
+    "totalResults": 430,
     "categories": {
       "core": 3,
       "segments": 1,
@@ -166,11 +174,13 @@
       "kanji-eci-binary": 12,
       "planning-diagnostics": 23,
       "reference-matrix": 6,
+      "rendering-output": 9,
+      "rendering-output-negative": 2,
       "example": 1,
       "structured-append": 12
     },
     "operations": {
-      "generate": 18,
+      "generate": 29,
       "generateSegments": 5,
       "estimate": 14,
       "gs1.createElementString": 4,
@@ -189,9 +199,9 @@
         "id": "specqr",
         "name": "SpecQR",
         "status": "active",
-        "total": 75,
-        "executed": 69,
-        "passed": 69,
+        "total": 86,
+        "executed": 80,
+        "passed": 80,
         "failed": 0,
         "skipped": 6,
         "error": 0
@@ -200,44 +210,44 @@
         "id": "jsqr",
         "name": "jsQR",
         "status": "active",
-        "total": 75,
-        "executed": 14,
-        "passed": 14,
+        "total": 86,
+        "executed": 15,
+        "passed": 15,
         "failed": 0,
-        "skipped": 61,
+        "skipped": 71,
         "error": 0
       },
       "nayuki": {
         "id": "nayuki",
         "name": "Nayuki QR Code generator",
         "status": "active",
-        "total": 75,
+        "total": 86,
         "executed": 6,
         "passed": 6,
         "failed": 0,
-        "skipped": 69,
+        "skipped": 80,
         "error": 0
       },
       "zbarimg": {
         "id": "zbarimg",
         "name": "zbarimg",
         "status": "optional",
-        "total": 75,
+        "total": 86,
         "executed": 0,
         "passed": 0,
         "failed": 0,
-        "skipped": 75,
+        "skipped": 86,
         "error": 0
       },
       "zxing-cli": {
         "id": "zxing-cli",
         "name": "ZXing CLI",
         "status": "optional",
-        "total": 75,
+        "total": 86,
         "executed": 0,
         "passed": 0,
         "failed": 0,
-        "skipped": 75,
+        "skipped": 86,
         "error": 0
       }
     },
@@ -519,10 +529,78 @@
         }
       }
     },
-    "executed": 89,
-    "passed": 89,
+    "renderingOutput": {
+      "categories": {
+        "rendering-output": 9,
+        "rendering-output-negative": 2
+      },
+      "operations": {
+        "generate": 11
+      },
+      "vectorCount": 11,
+      "resultCount": 55,
+      "executed": 12,
+      "passed": 12,
+      "failed": 0,
+      "skipped": 43,
+      "error": 0,
+      "adapterSummary": {
+        "specqr": {
+          "id": "specqr",
+          "name": "SpecQR",
+          "total": 11,
+          "executed": 11,
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0
+        },
+        "jsqr": {
+          "id": "jsqr",
+          "name": "jsQR",
+          "total": 11,
+          "executed": 1,
+          "passed": 1,
+          "failed": 0,
+          "skipped": 10,
+          "error": 0
+        },
+        "nayuki": {
+          "id": "nayuki",
+          "name": "Nayuki QR Code generator",
+          "total": 11,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 11,
+          "error": 0
+        },
+        "zbarimg": {
+          "id": "zbarimg",
+          "name": "zbarimg",
+          "total": 11,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 11,
+          "error": 0
+        },
+        "zxing-cli": {
+          "id": "zxing-cli",
+          "name": "ZXing CLI",
+          "total": 11,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 11,
+          "error": 0
+        }
+      }
+    },
+    "executed": 101,
+    "passed": 101,
     "failed": 0,
-    "skipped": 286,
+    "skipped": 329,
     "error": 0
   },
   "results": [
@@ -10803,6 +10881,1151 @@
       "title": "Binary 0041ff4200 fixed Version 1-Q mask 7",
       "adapterId": "zxing-cli",
       "category": "reference-matrix",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.matrix.simple-text",
+      "title": "Matrix output shape for simple text",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "matrix"
+        },
+        {
+          "name": "render.matrix",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "matrix",
+          "rows": 21,
+          "columns": 21,
+          "size": 21,
+          "square": true
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.matrix.simple-text",
+      "title": "Matrix output shape for simple text",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.matrix.simple-text",
+      "title": "Matrix output shape for simple text",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.matrix.simple-text",
+      "title": "Matrix output shape for simple text",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.matrix.simple-text",
+      "title": "Matrix output shape for simple text",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.default-margin-scale",
+      "title": "SVG output with default margin and scale",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "svg"
+        },
+        {
+          "name": "render.svg",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "svg",
+          "length": 3693,
+          "rootElement": "svg",
+          "width": "232",
+          "height": "232",
+          "viewBox": "0 0 232 232"
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.default-margin-scale",
+      "title": "SVG output with default margin and scale",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.default-margin-scale",
+      "title": "SVG output with default margin and scale",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.default-margin-scale",
+      "title": "SVG output with default margin and scale",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.default-margin-scale",
+      "title": "SVG output with default margin and scale",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.custom-colors",
+      "title": "SVG output with custom foreground and background colors",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "diagnostics.generation",
+          "status": "passed",
+          "mode": "additional",
+          "reason": "render output を変えないため、diagnostics subset は追加の matrix generation で評価しました。"
+        },
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "svg"
+        },
+        {
+          "name": "render.svg",
+          "status": "passed"
+        },
+        {
+          "name": "render.diagnosticsSubset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "svg",
+          "length": 3505,
+          "rootElement": "svg",
+          "width": "232",
+          "height": "232",
+          "viewBox": "0 0 232 232"
+        },
+        "diagnosticsGeneration": {
+          "mode": "additional",
+          "ok": true
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.custom-colors",
+      "title": "SVG output with custom foreground and background colors",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.custom-colors",
+      "title": "SVG output with custom foreground and background colors",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.custom-colors",
+      "title": "SVG output with custom foreground and background colors",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.custom-colors",
+      "title": "SVG output with custom foreground and background colors",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.data-url",
+      "title": "SVG Data URL output",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "svg-data-url"
+        },
+        {
+          "name": "render.dataUrl",
+          "status": "passed"
+        },
+        {
+          "name": "render.svg",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "svg-data-url",
+          "mediaType": "image/svg+xml",
+          "base64": false,
+          "length": 4384
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.data-url",
+      "title": "SVG Data URL output",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.data-url",
+      "title": "SVG Data URL output",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.data-url",
+      "title": "SVG Data URL output",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.data-url",
+      "title": "SVG Data URL output",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.dimensions",
+      "title": "PNG output with expected dimensions",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "diagnostics.generation",
+          "status": "passed",
+          "mode": "additional",
+          "reason": "render output を変えないため、diagnostics subset は追加の matrix generation で評価しました。"
+        },
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "png"
+        },
+        {
+          "name": "render.png",
+          "status": "passed"
+        },
+        {
+          "name": "render.diagnosticsSubset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "png",
+          "byteLength": 40168,
+          "pngSignature": true,
+          "width": 100,
+          "height": 100
+        },
+        "diagnosticsGeneration": {
+          "mode": "additional",
+          "ok": true
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.dimensions",
+      "title": "PNG output with expected dimensions",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.dimensions",
+      "title": "PNG output with expected dimensions",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.dimensions",
+      "title": "PNG output with expected dimensions",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.dimensions",
+      "title": "PNG output with expected dimensions",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.data-url",
+      "title": "PNG Data URL output",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "png-data-url"
+        },
+        {
+          "name": "render.dataUrl",
+          "status": "passed"
+        },
+        {
+          "name": "render.png",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "png-data-url",
+          "mediaType": "image/png",
+          "base64": true,
+          "length": 53582
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.data-url",
+      "title": "PNG Data URL output",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.data-url",
+      "title": "PNG Data URL output",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.data-url",
+      "title": "PNG Data URL output",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.data-url",
+      "title": "PNG Data URL output",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.transparent-background",
+      "title": "SVG output with transparent background",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "diagnostics.generation",
+          "status": "passed",
+          "mode": "additional",
+          "reason": "render output を変えないため、diagnostics subset は追加の matrix generation で評価しました。"
+        },
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "svg"
+        },
+        {
+          "name": "render.svg",
+          "status": "passed"
+        },
+        {
+          "name": "render.diagnosticsSubset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "svg",
+          "length": 3552,
+          "rootElement": "svg",
+          "width": "232",
+          "height": "232",
+          "viewBox": "0 0 232 232"
+        },
+        "diagnosticsGeneration": {
+          "mode": "additional",
+          "ok": true
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.transparent-background",
+      "title": "SVG output with transparent background",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.transparent-background",
+      "title": "SVG output with transparent background",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.transparent-background",
+      "title": "SVG output with transparent background",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.svg.transparent-background",
+      "title": "SVG output with transparent background",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.transparent-background",
+      "title": "PNG output with transparent background",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "diagnostics.generation",
+          "status": "passed",
+          "mode": "additional",
+          "reason": "render output を変えないため、diagnostics subset は追加の matrix generation で評価しました。"
+        },
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "png"
+        },
+        {
+          "name": "render.png",
+          "status": "passed"
+        },
+        {
+          "name": "render.diagnosticsSubset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "png",
+          "byteLength": 54008,
+          "pngSignature": true,
+          "width": 116,
+          "height": 116
+        },
+        "diagnosticsGeneration": {
+          "mode": "additional",
+          "ok": true
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.transparent-background",
+      "title": "PNG output with transparent background",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.transparent-background",
+      "title": "PNG output with transparent background",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.transparent-background",
+      "title": "PNG output with transparent background",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.transparent-background",
+      "title": "PNG output with transparent background",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.decode-readable",
+      "title": "PNG output remains readable by jsQR",
+      "adapterId": "specqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation は jsQR などの decoder lane で評価するため、SpecQR adapter では未評価です。"
+        },
+        {
+          "name": "render.format",
+          "status": "passed",
+          "format": "png"
+        },
+        {
+          "name": "render.png",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "render": {
+          "format": "png",
+          "byteLength": 215611,
+          "pngSignature": true,
+          "width": 232,
+          "height": 232
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.decode-readable",
+      "title": "PNG output remains readable by jsQR",
+      "adapterId": "jsqr",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "decode.text",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "image": {
+          "width": 232,
+          "height": 232
+        },
+        "decoded": {
+          "text": "PNG DECODE",
+          "binaryHex": "504e47204445434f4445",
+          "version": 1,
+          "chunks": [
+            {
+              "type": "alphanumeric",
+              "text": "PNG DECODE"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.decode-readable",
+      "title": "PNG output remains readable by jsQR",
+      "adapterId": "nayuki",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.decode-readable",
+      "title": "PNG output remains readable by jsQR",
+      "adapterId": "zbarimg",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane."
+        }
+      ],
+      "reason": "zbarimg command is not available; install one of zbarimg to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "zbarimg"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.png.decode-readable",
+      "title": "PNG output remains readable by jsQR",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "availability",
+          "status": "skipped",
+          "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane."
+        }
+      ],
+      "reason": "ZXing CLI command is not available; install one of ZXingReader, zxing, zxing-cpp, zxingscan to enable this optional lane.",
+      "details": {
+        "availability": {
+          "optional": true,
+          "commands": [
+            "ZXingReader",
+            "zxing",
+            "zxing-cpp",
+            "zxingscan"
+          ]
+        }
+      }
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-foreground-png",
+      "title": "Invalid foreground color rejects for PNG output",
+      "adapterId": "specqr",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "rejects",
+          "status": "passed"
+        }
+      ],
+      "details": {}
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-foreground-png",
+      "title": "Invalid foreground color rejects for PNG output",
+      "adapterId": "jsqr",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-foreground-png",
+      "title": "Invalid foreground color rejects for PNG output",
+      "adapterId": "nayuki",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-foreground-png",
+      "title": "Invalid foreground color rejects for PNG output",
+      "adapterId": "zbarimg",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-foreground-png",
+      "title": "Invalid foreground color rejects for PNG output",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-output",
+      "title": "Invalid output option rejects",
+      "adapterId": "specqr",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "rejects",
+          "status": "passed"
+        }
+      ],
+      "details": {}
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-output",
+      "title": "Invalid output option rejects",
+      "adapterId": "jsqr",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため jsQR lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-output",
+      "title": "Invalid output option rejects",
+      "adapterId": "nayuki",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "referenceMatrix",
+          "status": "skipped",
+          "reason": "expect.referenceMatrix.adapter が nayuki ではないため実行しません。"
+        }
+      ],
+      "reason": "No Nayuki referenceMatrix expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-output",
+      "title": "Invalid output option rejects",
+      "adapterId": "zbarimg",
+      "category": "rendering-output-negative",
+      "operation": "generate",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "decode",
+          "status": "skipped",
+          "reason": "decode expectation がないため optional CLI decoder lane は実行しません。"
+        }
+      ],
+      "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "rendering-output",
+      "vectorId": "rendering.reject.invalid-output",
+      "title": "Invalid output option rejects",
+      "adapterId": "zxing-cli",
+      "category": "rendering-output-negative",
       "operation": "generate",
       "status": "skipped",
       "checks": [

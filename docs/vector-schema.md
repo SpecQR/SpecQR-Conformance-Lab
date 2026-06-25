@@ -244,6 +244,77 @@ hash の入力形式は `encoding` で明示します。v1 の推奨値は `row-
 
 `row-major-bits` は、matrix の各 row を左から右へ `true = "1"`, `false = "0"` として文字列化し、row 同士を `\n` で連結した UTF-8 文字列を hash 入力にします。`algorithm: "sha256"` の場合は、その文字列の SHA-256 digest を lowercase hexadecimal で比較します。
 
+### Render Expectation
+
+`expect.render` は SpecQR の renderer / output surface を外部から確認するために使います。v1 で扱う `format` は `matrix`, `svg`, `png`, `svg-data-url`, `png-data-url` です。SpecQR adapter は render vector では `options.output` を保って実行し、diagnostics subset が必要な場合だけ追加の matrix diagnostics generation を行います。
+
+```json
+{
+  "options": {
+    "output": "png",
+    "scale": 4,
+    "margin": 2
+  },
+  "expect": {
+    "render": {
+      "format": "png",
+      "png": {
+        "signature": true,
+        "width": 100,
+        "height": 100
+      },
+      "diagnosticsSubset": {
+        "print": {
+          "modulePixels": 4
+        }
+      }
+    }
+  }
+}
+```
+
+`expect.render` では次の field を使えます。
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `format` | string | 必須。`matrix`, `svg`, `png`, `svg-data-url`, `png-data-url` のいずれか。 |
+| `matrix.size` | number | matrix が正方形の場合の module 数。 |
+| `matrix.rows`, `matrix.columns` | number | matrix の行数と列数。 |
+| `matrix.square` | boolean | matrix が正方形であること。 |
+| `svg.prefix` | string | SVG text の先頭。通常は `<svg`。 |
+| `svg.rootElement` | string | root element 名。通常は `svg`。 |
+| `svg.width`, `svg.height` | number / string | root SVG の width / height attribute。 |
+| `svg.viewBox` | string | root SVG の viewBox attribute。 |
+| `svg.contains` | string[] | SVG text に含まれるべき stable fragment。色 attribute などに使う。 |
+| `png.signature` | boolean | PNG signature を確認する。省略時も true として扱う。 |
+| `png.width`, `png.height` | number | existing PNG reader で読んだ pixel dimensions。 |
+| `png.hasTransparentPixels` | boolean | PNG RGBA pixel に alpha 255 未満があるか。 |
+| `dataUrl.prefix` | string | Data URL の先頭。 |
+| `dataUrl.mediaType` | string | `image/svg+xml` または `image/png` などの media type。 |
+| `diagnosticsSubset` | object | render output を変えない追加 diagnostics generation の subset。 |
+
+Data URL format では、`dataUrl` を検査したうえで decode した中身にも `svg` または `png` expectation を適用できます。
+
+```json
+{
+  "expect": {
+    "render": {
+      "format": "svg-data-url",
+      "dataUrl": {
+        "prefix": "data:image/svg+xml;charset=utf-8,",
+        "mediaType": "image/svg+xml"
+      },
+      "svg": {
+        "rootElement": "svg",
+        "viewBox": "0 0 232 232"
+      }
+    }
+  }
+}
+```
+
+PNG の decode readability を確認したい場合は、同じ vector に `expect.decode` も置きます。SpecQR adapter は render shape を確認し、jsQR lane が PNG readability を確認します。
+
 ### Diagnostics Subset Expectation
 
 adapter が返す diagnostics の一部だけを比較したい場合に使います。

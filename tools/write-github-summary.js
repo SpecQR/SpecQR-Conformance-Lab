@@ -9,7 +9,8 @@ const keyScopes = [
   ["GS1 / DL", "gs1DigitalLink"],
   ["Structured Append", "structuredAppend"],
   ["Planning / Diagnostics", "planningDiagnostics"],
-  ["Kanji / ECI / binary", "kanjiEciBinary"]
+  ["Kanji / ECI / binary", "kanjiEciBinary"],
+  ["Rendering / Output", "renderingOutput"]
 ];
 
 function count(value) {

@@ -126,6 +126,32 @@
         }
       }
     },
+    "renderExpectation": {
+      "type": "object",
+      "required": ["format"],
+      "additionalProperties": true,
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["matrix", "svg", "png", "svg-data-url", "png-data-url"]
+        },
+        "matrix": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "svg": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "png": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "dataUrl": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "diagnosticsSubset": {
+          "$ref": "#/$defs/jsonObject"
+        }
+      }
+    },
     "expect": {
       "type": "object",
       "additionalProperties": true,
@@ -153,6 +179,9 @@
         },
         "validation": {
           "$ref": "#/$defs/validationExpectation"
+        },
+        "render": {
+          "$ref": "#/$defs/renderExpectation"
         },
         "rejects": {
           "$ref": "#/$defs/jsonObject"

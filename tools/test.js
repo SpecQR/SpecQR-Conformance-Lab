@@ -44,6 +44,7 @@ const requiredPaths = [
   "vectors/structured-append.json",
   "vectors/planning-diagnostics.json",
   "vectors/kanji-eci-binary.json",
+  "vectors/rendering-output.json",
   "adapters/README.md",
   "adapters/specqr.js",
   "adapters/jsqr.js",
@@ -272,10 +273,14 @@ try {
     "ZXing CLI",
     "Kanji / ECI / binary suite",
     "Kanji mode、ECI UTF-8、raw binary payload",
+    "Rendering / Output suite",
+    "matrix、SVG、PNG、SVG Data URL、PNG Data URL",
+    "Canvas / browser helper",
     "missing `zbarimg` / ZXing CLI は CI failure ではありません",
     "reports/latest.json",
     "reports/latest.html",
     "badges/overall.json",
+    "badges/rendering-output.json",
     "npm run summary",
     "npm run verify:target",
     "npm run compare:reports",
@@ -305,6 +310,7 @@ try {
     "npm run pages:build",
     "public/",
     "GitHub Step Summary",
+    "Rendering / Output",
     "conformance-report-node-22",
     ".github/workflows/conformance-filtered.yml",
     ".github/workflows/specqr-target.yml",
@@ -411,6 +417,8 @@ try {
     "何を検証していないか: logo/styled QR",
     "zbarimg adapter",
     "ZXing CLI adapter",
+    "renderer output surface",
+    "Canvas / browser helper validation",
     "output format",
     "ECI assignment",
     "decode.binaryHex"
@@ -428,6 +436,9 @@ try {
     "matrixHash",
     "diagnostics",
     "referenceMatrix",
+    "expect.render",
+    "svg-data-url",
+    "png-data-url",
     "planning",
     "Planning / Diagnostics",
     "GS1",
@@ -448,6 +459,7 @@ try {
     "badge-v1.schema.json",
     "report-comparison-v1.schema.json",
     "run.mode: \"filtered\"",
+    "Rendering / Output",
     "Compatibility policy",
     "additive field"
   ]) {
@@ -808,6 +820,7 @@ try {
   assert(summaryMarkdown.includes("Structured Append"), "summary markdown must include Structured Append scope");
   assert(summaryMarkdown.includes("Planning / Diagnostics"), "summary markdown must include Planning / Diagnostics scope");
   assert(summaryMarkdown.includes("Kanji / ECI / binary"), "summary markdown must include Kanji / ECI / binary scope");
+  assert(summaryMarkdown.includes("Rendering / Output"), "summary markdown must include Rendering / Output scope");
 
   const optionalUnavailableReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
   optionalUnavailableReport.adapters.push({
@@ -978,6 +991,7 @@ try {
     },
     gs1DigitalLink: passingCounts,
     kanjiEciBinary: passingCounts,
+    renderingOutput: passingCounts,
     structuredAppend: {
       executed: 0,
       passed: 0,
@@ -994,6 +1008,7 @@ try {
   }
   assert(badgeSet["overall.json"].color === "green", "overall badge with expected skips must stay green");
   assert(badgeSet["kanji-eci-binary.json"].color === "green", "Kanji / ECI / binary passing scope badge must be green");
+  assert(badgeSet["rendering-output.json"].color === "green", "Rendering / Output passing scope badge must be green");
   assert(badgeSet["structured-append.json"].color === "yellow", "skipped-only scope badge must be yellow");
   assert(badgeSet["zbarimg.json"].color === "yellow", "missing optional zbarimg lane badge must be yellow");
   assert(badgeSet["zxing-cli.json"].color === "yellow", "missing optional ZXing lane badge must be yellow");
@@ -1256,6 +1271,62 @@ try {
     "SpecQR adapter decode expectation must be represented as a skipped check"
   );
 
+  const renderingSuite = JSON.parse(await readFile("vectors/rendering-output.json", "utf8"));
+  const renderingVector = (vectorId) => {
+    const vector = renderingSuite.vectors.find((item) => item.id === vectorId);
+    assert(vector, `${vectorId} must exist`);
+    return vector;
+  };
+
+  const svgRenderResult = await specqrAdapter.run(renderingVector("rendering.svg.default-margin-scale"));
+  assert(svgRenderResult.status === "passed", "SpecQR SVG render vector must pass");
+  assert(
+    svgRenderResult.checks.some((check) => check.name === "render.svg" && check.status === "passed"),
+    "SpecQR SVG render vector must pass render.svg check"
+  );
+
+  const pngDimensionResult = await specqrAdapter.run(renderingVector("rendering.png.dimensions"));
+  assert(pngDimensionResult.status === "passed", "SpecQR PNG dimension vector must pass");
+  assert(
+    pngDimensionResult.checks.some((check) => check.name === "render.png" && check.status === "passed"),
+    "SpecQR PNG dimension vector must pass render.png check"
+  );
+  assert(pngDimensionResult.details?.render?.width === 100, "PNG render details must include expected width");
+  assert(pngDimensionResult.details?.render?.height === 100, "PNG render details must include expected height");
+
+  const dataUrlResult = await specqrAdapter.run(renderingVector("rendering.png.data-url"));
+  assert(dataUrlResult.status === "passed", "SpecQR PNG Data URL vector must pass");
+  assert(
+    dataUrlResult.checks.some((check) => check.name === "render.dataUrl" && check.status === "passed"),
+    "SpecQR PNG Data URL vector must pass render.dataUrl check"
+  );
+  assert(dataUrlResult.details?.render?.mediaType === "image/png", "PNG Data URL details must include image/png media type");
+
+  for (const vectorId of [
+    "rendering.reject.invalid-foreground-png",
+    "rendering.reject.invalid-output"
+  ]) {
+    const rejectResult = await specqrAdapter.run(renderingVector(vectorId));
+    assert(rejectResult.status === "passed", `${vectorId} must pass by rejecting`);
+    assert(
+      rejectResult.checks.some((check) => check.name === "rejects" && check.status === "passed"),
+      `${vectorId} must pass rejects check`
+    );
+  }
+
+  const renderingReport = await createConformanceReport({
+    filters: {
+      suites: ["rendering-output"],
+      adapters: ["specqr"]
+    }
+  });
+  assert(renderingReport.report.summary.renderingOutput.vectorCount === 11, "rendering report summary must count rendering vectors");
+  assert(renderingReport.report.summary.renderingOutput.failed === 0, "rendering report summary must have no failures");
+  assert(
+    createBadgeSet(renderingReport.report.summary)["rendering-output.json"].color === "green",
+    "rendering-output badge must be generated as green for passing rendering scope"
+  );
+
   const pngImage = pngToRgba(generate("PNG TEST", { output: "png", scale: 12, margin: 4 }));
   assert(pngImage.width > 0 && pngImage.height > 0, "pngToRgba must parse SpecQR-generated PNG dimensions");
   assert(pngImage.rgba.length === pngImage.width * pngImage.height * 4, "pngToRgba must return RGBA pixels");
@@ -1304,6 +1375,13 @@ try {
   assert(
     binaryCheck.status === "passed" || (binaryCheck.status === "skipped" && /raw byte|raw/i.test(binaryCheck.reason ?? "")),
     "jsQR binary decode must pass via raw bytes or skip with a raw byte limitation reason"
+  );
+
+  const jsqrRenderingPngResult = await jsqrAdapter.run(renderingVector("rendering.png.decode-readable"));
+  assert(jsqrRenderingPngResult.status === "passed", "jsQR must decode the rendering PNG readability vector");
+  assert(
+    jsqrRenderingPngResult.checks.some((check) => check.name === "decode.text" && check.status === "passed"),
+    "jsQR rendering PNG vector must pass decode.text check"
   );
 
   const kanjiEciBinarySuite = JSON.parse(await readFile("vectors/kanji-eci-binary.json", "utf8"));

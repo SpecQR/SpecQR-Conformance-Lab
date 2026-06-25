@@ -79,6 +79,12 @@ function validateBinaryHexFields(value, label) {
   }
 }
 
+function assertIntegerWhenPresent(value, key, label) {
+  if (Object.hasOwn(value, key) && !Number.isInteger(value[key])) {
+    throw new Error(`${label}.${key}: must be an integer when present`);
+  }
+}
+
 function validateTags(vector, label) {
   if (!Object.hasOwn(vector, "tags")) {
     return;
@@ -105,6 +111,66 @@ function hasNegativeMarker(vector) {
   const category = String(vector.category ?? "").toLowerCase();
   const tags = Array.isArray(vector.tags) ? vector.tags.map((tag) => tag.toLowerCase()) : [];
   return category.includes("negative") || category.includes("reject") || tags.includes("negative") || tags.includes("reject");
+}
+
+function validateRenderExpectation(render, label) {
+  assertObject(render, `${label}.expect.render`);
+  const allowedFormats = new Set(["matrix", "svg", "png", "svg-data-url", "png-data-url"]);
+  if (!allowedFormats.has(render.format)) {
+    throw new Error(`${label}.expect.render.format: must be one of ${Array.from(allowedFormats).join(", ")}`);
+  }
+
+  if (Object.hasOwn(render, "matrix")) {
+    assertObject(render.matrix, `${label}.expect.render.matrix`);
+    for (const key of ["size", "rows", "columns"]) {
+      assertIntegerWhenPresent(render.matrix, key, `${label}.expect.render.matrix`);
+    }
+    if (Object.hasOwn(render.matrix, "square") && typeof render.matrix.square !== "boolean") {
+      throw new Error(`${label}.expect.render.matrix.square: must be a boolean when present`);
+    }
+  }
+
+  if (Object.hasOwn(render, "svg")) {
+    assertObject(render.svg, `${label}.expect.render.svg`);
+    for (const key of ["prefix", "rootElement", "viewBox"]) {
+      if (Object.hasOwn(render.svg, key) && typeof render.svg[key] !== "string") {
+        throw new Error(`${label}.expect.render.svg.${key}: must be a string when present`);
+      }
+    }
+    for (const key of ["width", "height"]) {
+      if (Object.hasOwn(render.svg, key) && !(typeof render.svg[key] === "string" || Number.isInteger(render.svg[key]))) {
+        throw new Error(`${label}.expect.render.svg.${key}: must be a string or integer when present`);
+      }
+    }
+    if (Object.hasOwn(render.svg, "contains") && !Array.isArray(render.svg.contains)) {
+      throw new Error(`${label}.expect.render.svg.contains: must be an array when present`);
+    }
+  }
+
+  if (Object.hasOwn(render, "png")) {
+    assertObject(render.png, `${label}.expect.render.png`);
+    for (const key of ["width", "height"]) {
+      assertIntegerWhenPresent(render.png, key, `${label}.expect.render.png`);
+    }
+    for (const key of ["signature", "hasTransparentPixels"]) {
+      if (Object.hasOwn(render.png, key) && typeof render.png[key] !== "boolean") {
+        throw new Error(`${label}.expect.render.png.${key}: must be a boolean when present`);
+      }
+    }
+  }
+
+  if (Object.hasOwn(render, "dataUrl")) {
+    assertObject(render.dataUrl, `${label}.expect.render.dataUrl`);
+    for (const key of ["prefix", "mediaType"]) {
+      if (Object.hasOwn(render.dataUrl, key) && typeof render.dataUrl[key] !== "string") {
+        throw new Error(`${label}.expect.render.dataUrl.${key}: must be a string when present`);
+      }
+    }
+  }
+
+  if (Object.hasOwn(render, "diagnosticsSubset")) {
+    assertObject(render.diagnosticsSubset, `${label}.expect.render.diagnosticsSubset`);
+  }
 }
 
 function validateExpectation(expect, label) {
@@ -200,6 +266,10 @@ function validateExpectation(expect, label) {
     if (Object.hasOwn(expect.validation, "warnings") && !Array.isArray(expect.validation.warnings)) {
       throw new Error(`${label}.expect.validation.warnings: must be an array when present`);
     }
+  }
+
+  if (Object.hasOwn(expect, "render")) {
+    validateRenderExpectation(expect.render, label);
   }
 
   if (Object.hasOwn(expect, "rejects")) {
