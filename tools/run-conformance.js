@@ -296,6 +296,10 @@ function isRenderingOutputCategory(category) {
   return typeof category === "string" && category.startsWith("rendering-output");
 }
 
+function isPackageSurfaceCategory(category) {
+  return typeof category === "string" && category.startsWith("package-surface");
+}
+
 export function createSummary(suites, vectors, adapters, results) {
   const statusCounts = createStatusCounts(results);
   const adapterSummary = Object.fromEntries(
@@ -317,6 +321,7 @@ export function createSummary(suites, vectors, adapters, results) {
     planningDiagnostics: createScopedSummary(vectors, results, adapters, isPlanningDiagnosticsCategory),
     kanjiEciBinary: createScopedSummary(vectors, results, adapters, isKanjiEciBinaryCategory),
     renderingOutput: createScopedSummary(vectors, results, adapters, isRenderingOutputCategory),
+    packageSurface: createScopedSummary(vectors, results, adapters, isPackageSurfaceCategory),
     executed: results.filter((result) => result.status !== "skipped").length,
     passed: statusCounts.passed,
     failed: statusCounts.failed,

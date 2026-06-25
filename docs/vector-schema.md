@@ -34,7 +34,7 @@ suite は次の field を必須とします。
 | `id` | string | yes | suite の安定 ID。file 名から独立してよい。 |
 | `name` | string | yes | 人間向けの suite 名。 |
 | `description` | string | yes | suite の目的と範囲。 |
-| `category` | string | yes | `core`, `segments`, `planning`, `gs1`, `structured-append`, `negative` などの大分類。 |
+| `category` | string | yes | `core`, `segments`, `planning`, `gs1`, `structured-append`, `package-surface`, `negative` などの大分類。 |
 | `vectors` | array | yes | vector object の配列。 |
 
 `suite.id` は repository 内で一意にすることを推奨します。validator は v1 で `vector.id` の重複を全 file 横断で reject します。
@@ -96,6 +96,11 @@ v1 で許可する `operation` は次の値です。
 | `structuredAppend.generate` | `{ "text": "..." }` または `{ "binaryHex": "..." }` | Structured Append generation。 |
 | `structuredAppend.generateSegments` | `{ "segments": [...] }` | Structured Append with manual segments。 |
 | `structuredAppend.mergeParts` | `{ "parts": [...] }` | Structured Append merge helper。 |
+| `package.metadata` | `{}` | published package metadata の subset。 |
+| `package.importRoot` | `{}` | root import `specqr` の public export smoke。 |
+| `package.importBrowser` | `{}` | `specqr/browser` subpath の helper availability smoke。 |
+| `package.importNode` | `{}` | `specqr/node` subpath の helper availability と PNG Buffer smoke。 |
+| `package.typescriptConsumer` | `{}` | TypeScript consumer fixture の `tsc --noEmit` smoke。 |
 
 adapter は未対応 operation を `skipped` として返してよい。ただし validator は enum 外の typo を reject します。
 
@@ -606,6 +611,43 @@ negative case は既存の `expect.rejects` を使います。
 ```
 
 jsQR lane は readable payload の decode 確認だけを目的にします。Structured Append header、sequence、parity、merge metadata の検証は行いません。Nayuki lane も固定 Version/ECC/mask の single-symbol matrix 比較だけを扱い、Structured Append は対象外として `skipped` にします。
+
+### Package Surface Expectation
+
+`expect.package` は published `specqr@2.4.0` の package surface を外部から確認するために使います。SpecQR adapter は `specqr`, `specqr/browser`, `specqr/node` の package import だけを使い、SpecQR core repository の source file は import しません。
+
+```json
+{
+  "operation": "package.importNode",
+  "input": {},
+  "options": {
+    "scale": 4,
+    "margin": 2
+  },
+  "expect": {
+    "package": {
+      "helpers": ["toPngBuffer"],
+      "pngBuffer": {
+        "isBuffer": true,
+        "signature": true
+      }
+    }
+  }
+}
+```
+
+`expect.package` では次の field を使えます。
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `metadataSubset` | object | installed package metadata の subset。`name`, `version`, `type`, `exports`, `engines` などを確認する。 |
+| `exportedSymbols` | string[] | module namespace に含まれるべき export 名。 |
+| `helpers` | string[] | subpath import で `function` として存在すべき helper 名。 |
+| `pngBuffer` | object | `specqr/node` の `toPngBuffer()` が返す Buffer / PNG signature subset。 |
+| `typescript` | object | TypeScript consumer fixture の compile result subset。 |
+| `subset` | object | package surface result 全体に対する追加 subset。 |
+
+Package Surface suite の TypeScript check は `fixtures/typescript-consumer/tsconfig.json` を `tsc --noEmit` で compile します。browser helper は Node 上で import / type check し、browser automation や DOM integration の実行は行いません。
 
 ### Reject Expectation
 

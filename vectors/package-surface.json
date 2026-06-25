@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "id": "package-surface",
+  "name": "Package surface vectors",
+  "description": "Published specqr package metadata, export subpaths, Node helpers, and TypeScript consumer surface.",
+  "category": "package-surface",
+  "vectors": [
+    {
+      "id": "package.metadata.published-surface",
+      "title": "Package metadata exposes ESM root and subpath exports",
+      "category": "package-surface",
+      "operation": "package.metadata",
+      "input": {},
+      "options": {},
+      "expect": {
+        "package": {
+          "metadataSubset": {
+            "name": "specqr",
+            "version": "2.4.0",
+            "type": "module",
+            "main": "./src/index.js",
+            "types": "./src/index.d.ts",
+            "exports": {
+              ".": {
+                "types": "./src/index.d.ts",
+                "import": "./src/index.js"
+              },
+              "./browser": {
+                "types": "./src/browser.d.ts",
+                "import": "./src/browser.js"
+              },
+              "./node": {
+                "types": "./src/node.d.ts",
+                "import": "./src/node.js"
+              }
+            },
+            "engines": {
+              "node": ">=18"
+            }
+          }
+        }
+      },
+      "tags": ["package-surface", "metadata"]
+    },
+    {
+      "id": "package.import-root.public-symbols",
+      "title": "Root import exposes public API symbols",
+      "category": "package-surface",
+      "operation": "package.importRoot",
+      "input": {},
+      "options": {},
+      "expect": {
+        "package": {
+          "exportedSymbols": [
+            "QRCode",
+            "generate",
+            "generateSegments",
+            "estimate",
+            "analyzeSegments",
+            "getCapacity",
+            "createGs1ElementString",
+            "createGs1DigitalLink",
+            "validateGs1DigitalLink",
+            "generateStructuredAppend",
+            "generateSegmentsStructuredAppend",
+            "mergeStructuredAppendParts",
+            "InvalidOutputError",
+            "SpecQRError"
+          ],
+          "subset": {
+            "exports": {
+              "generate": "function",
+              "QRCode": "function",
+              "estimate": "function",
+              "generateStructuredAppend": "function"
+            }
+          }
+        }
+      },
+      "tags": ["package-surface", "root-import"]
+    },
+    {
+      "id": "package.import-browser.helpers",
+      "title": "Browser subpath import exposes helper functions",
+      "category": "package-surface",
+      "operation": "package.importBrowser",
+      "input": {},
+      "options": {},
+      "expect": {
+        "package": {
+          "helpers": [
+            "toBlob",
+            "toBlobFromSegments",
+            "toObjectURL",
+            "toObjectURLFromSegments",
+            "toImageData",
+            "toImageDataFromSegments"
+          ]
+        }
+      },
+      "tags": ["package-surface", "browser-subpath"]
+    },
+    {
+      "id": "package.import-node.png-buffer",
+      "title": "Node subpath import exposes PNG helpers and returns Buffer",
+      "category": "package-surface",
+      "operation": "package.importNode",
+      "input": {},
+      "options": {
+        "scale": 4,
+        "margin": 2
+      },
+      "expect": {
+        "package": {
+          "helpers": [
+            "toPngBuffer",
+            "toPngBufferFromSegments",
+            "writePngFile",
+            "writePngFileFromSegments"
+          ],
+          "pngBuffer": {
+            "isBuffer": true,
+            "signature": true
+          }
+        }
+      },
+      "tags": ["package-surface", "node-subpath", "png"]
+    },
+    {
+      "id": "package.typescript-consumer.compile",
+      "title": "TypeScript consumer fixture compiles against public package types",
+      "category": "package-surface",
+      "operation": "package.typescriptConsumer",
+      "input": {},
+      "options": {
+        "project": "fixtures/typescript-consumer/tsconfig.json"
+      },
+      "expect": {
+        "package": {
+          "typescript": {
+            "ok": true,
+            "exitCode": 0
+          }
+        }
+      },
+      "tags": ["package-surface", "typescript"]
+    }
+  ]
+}

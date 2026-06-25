@@ -15,7 +15,12 @@ const allowedOperations = new Set([
   "gs1.normalizeDigitalLink",
   "structuredAppend.generate",
   "structuredAppend.generateSegments",
-  "structuredAppend.mergeParts"
+  "structuredAppend.mergeParts",
+  "package.metadata",
+  "package.importRoot",
+  "package.importBrowser",
+  "package.importNode",
+  "package.typescriptConsumer"
 ]);
 
 function fail(message, details = {}) {
@@ -173,6 +178,27 @@ function validateRenderExpectation(render, label) {
   }
 }
 
+function validatePackageExpectation(value, label) {
+  assertObject(value, `${label}.expect.package`);
+
+  for (const key of ["metadataSubset", "pngBuffer", "typescript", "subset"]) {
+    if (Object.hasOwn(value, key)) {
+      assertObject(value[key], `${label}.expect.package.${key}`);
+    }
+  }
+
+  for (const key of ["exportedSymbols", "helpers"]) {
+    if (Object.hasOwn(value, key)) {
+      if (!Array.isArray(value[key])) {
+        throw new Error(`${label}.expect.package.${key}: must be an array when present`);
+      }
+      for (const [index, item] of value[key].entries()) {
+        assertString(item, `${label}.expect.package.${key}[${index}]`);
+      }
+    }
+  }
+}
+
 function validateExpectation(expect, label) {
   if (Object.hasOwn(expect, "decode")) {
     assertObject(expect.decode, `${label}.expect.decode`);
@@ -270,6 +296,10 @@ function validateExpectation(expect, label) {
 
   if (Object.hasOwn(expect, "render")) {
     validateRenderExpectation(expect.render, label);
+  }
+
+  if (Object.hasOwn(expect, "package")) {
+    validatePackageExpectation(expect.package, label);
   }
 
   if (Object.hasOwn(expect, "rejects")) {

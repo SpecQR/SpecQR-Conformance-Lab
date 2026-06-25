@@ -58,6 +58,7 @@ async function readReport() {
         planningDiagnostics: {},
         kanjiEciBinary: {},
         renderingOutput: {},
+        packageSurface: {},
         executed: 0,
         passed: 0,
         failed: 0,
@@ -198,6 +199,7 @@ const structuredAppend = summary.structuredAppend ?? {};
 const planningDiagnostics = summary.planningDiagnostics ?? {};
 const kanjiEciBinary = summary.kanjiEciBinary ?? {};
 const renderingOutput = summary.renderingOutput ?? {};
+const packageSurface = summary.packageSurface ?? {};
 const optionalDecoderAdapters = adapters.filter((adapter) => {
   return adapter.lane === "optional-decode-readability" || adapter.required === false;
 });
@@ -223,7 +225,8 @@ const statusBands = [
   statusBand("Structured Append", "generation と merge helper の scope", structuredAppend),
   statusBand("Planning / Diagnostics", "estimate / analyzeSegments / getCapacity と warnings", planningDiagnostics),
   statusBand("Kanji / ECI / Binary", "Kanji mode、ECI UTF-8、raw byte payload の scope", kanjiEciBinary),
-  statusBand("Rendering / Output", "matrix / SVG / PNG / Data URL output surface", renderingOutput)
+  statusBand("Rendering / Output", "matrix / SVG / PNG / Data URL output surface", renderingOutput),
+  statusBand("Package Surface", "root / browser / node subpath と TypeScript consumer", packageSurface)
 ].join("\n");
 
 function commandCandidates(adapter) {
@@ -384,7 +387,13 @@ ${scopeSection(
   renderingOutput,
   "Rendering / Output categories"
 )}
-  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append/Kanji/ECI/Binary/Rendering checks</h2>
+${scopeSection(
+  "Package Surface 集計",
+  "この集計は published specqr@2.4.0 の root export、browser subpath、node subpath、package metadata、TypeScript consumer compile を確認します。browser helper は Node 上で import / type check し、browser automation は行いません。",
+  packageSurface,
+  "Package Surface categories"
+)}
+  <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append/Kanji/ECI/Binary/Rendering/Package checks</h2>
   <table>
     <thead>
       <tr><th>Vector</th><th>Operation</th><th>状態</th><th>Checks</th><th>理由</th></tr>

@@ -10,7 +10,8 @@ const keyScopes = [
   ["Structured Append", "structuredAppend"],
   ["Planning / Diagnostics", "planningDiagnostics"],
   ["Kanji / ECI / binary", "kanjiEciBinary"],
-  ["Rendering / Output", "renderingOutput"]
+  ["Rendering / Output", "renderingOutput"],
+  ["Package Surface", "packageSurface"]
 ];
 
 function count(value) {

@@ -89,7 +89,12 @@
         "gs1.normalizeDigitalLink",
         "structuredAppend.generate",
         "structuredAppend.generateSegments",
-        "structuredAppend.mergeParts"
+        "structuredAppend.mergeParts",
+        "package.metadata",
+        "package.importRoot",
+        "package.importBrowser",
+        "package.importNode",
+        "package.typescriptConsumer"
       ]
     },
     "runtime": {
@@ -379,6 +384,7 @@
         "planningDiagnostics",
         "kanjiEciBinary",
         "renderingOutput",
+        "packageSurface",
         "executed",
         "passed",
         "failed",
@@ -418,6 +424,9 @@
           "$ref": "#/$defs/scopeSummary"
         },
         "renderingOutput": {
+          "$ref": "#/$defs/scopeSummary"
+        },
+        "packageSurface": {
           "$ref": "#/$defs/scopeSummary"
         },
         "executed": {

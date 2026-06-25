@@ -37,8 +37,10 @@
     "vectors"
   ],
   "devDependencies": {
+    "@types/node": "25.9.1",
     "jsqr": "1.4.0",
     "nayuki-qr-code-generator": "1.8.0",
-    "specqr": "2.4.0"
+    "specqr": "2.4.0",
+    "typescript": "6.0.3"
   }
 }

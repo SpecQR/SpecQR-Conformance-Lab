@@ -56,7 +56,12 @@
         "gs1.normalizeDigitalLink",
         "structuredAppend.generate",
         "structuredAppend.generateSegments",
-        "structuredAppend.mergeParts"
+        "structuredAppend.mergeParts",
+        "package.metadata",
+        "package.importRoot",
+        "package.importBrowser",
+        "package.importNode",
+        "package.typescriptConsumer"
       ]
     },
     "tags": {
@@ -152,6 +157,36 @@
         }
       }
     },
+    "packageExpectation": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "metadataSubset": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "exportedSymbols": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "helpers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "pngBuffer": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "typescript": {
+          "$ref": "#/$defs/jsonObject"
+        },
+        "subset": {
+          "$ref": "#/$defs/jsonObject"
+        }
+      }
+    },
     "expect": {
       "type": "object",
       "additionalProperties": true,
@@ -182,6 +217,9 @@
         },
         "render": {
           "$ref": "#/$defs/renderExpectation"
+        },
+        "package": {
+          "$ref": "#/$defs/packageExpectation"
         },
         "rejects": {
           "$ref": "#/$defs/jsonObject"

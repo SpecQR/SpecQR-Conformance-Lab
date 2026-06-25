@@ -3,7 +3,7 @@
   "labVersion": "0.1.0",
   "status": "executed",
   "metadata": {
-    "generatedAt": "2026-06-25T17:30:35.979Z",
+    "generatedAt": "2026-06-25T18:03:18.016Z",
     "runtime": {
       "node": "v25.9.0",
       "platform": "darwin",
@@ -120,6 +120,14 @@
       "vectorCount": 12
     },
     {
+      "file": "vectors/package-surface.json",
+      "id": "package-surface",
+      "name": "Package surface vectors",
+      "description": "Published specqr package metadata, export subpaths, Node helpers, and TypeScript consumer surface.",
+      "category": "package-surface",
+      "vectorCount": 5
+    },
+    {
       "file": "vectors/planning-diagnostics.json",
       "id": "planning-diagnostics",
       "name": "Planning and Diagnostics API vectors",
@@ -161,9 +169,9 @@
     }
   ],
   "summary": {
-    "suiteCount": 8,
-    "totalVectors": 86,
-    "totalResults": 430,
+    "suiteCount": 9,
+    "totalVectors": 91,
+    "totalResults": 455,
     "categories": {
       "core": 3,
       "segments": 1,
@@ -172,6 +180,7 @@
       "gs1": 8,
       "gs1-digital-link": 7,
       "kanji-eci-binary": 12,
+      "package-surface": 5,
       "planning-diagnostics": 23,
       "reference-matrix": 6,
       "rendering-output": 9,
@@ -188,6 +197,11 @@
       "gs1.createDigitalLink": 1,
       "gs1.validateDigitalLink": 5,
       "gs1.normalizeDigitalLink": 1,
+      "package.metadata": 1,
+      "package.importRoot": 1,
+      "package.importBrowser": 1,
+      "package.importNode": 1,
+      "package.typescriptConsumer": 1,
       "analyzeSegments": 5,
       "getCapacity": 6,
       "structuredAppend.generate": 4,
@@ -199,9 +213,9 @@
         "id": "specqr",
         "name": "SpecQR",
         "status": "active",
-        "total": 86,
-        "executed": 80,
-        "passed": 80,
+        "total": 91,
+        "executed": 85,
+        "passed": 85,
         "failed": 0,
         "skipped": 6,
         "error": 0
@@ -210,44 +224,44 @@
         "id": "jsqr",
         "name": "jsQR",
         "status": "active",
-        "total": 86,
+        "total": 91,
         "executed": 15,
         "passed": 15,
         "failed": 0,
-        "skipped": 71,
+        "skipped": 76,
         "error": 0
       },
       "nayuki": {
         "id": "nayuki",
         "name": "Nayuki QR Code generator",
         "status": "active",
-        "total": 86,
+        "total": 91,
         "executed": 6,
         "passed": 6,
         "failed": 0,
-        "skipped": 80,
+        "skipped": 85,
         "error": 0
       },
       "zbarimg": {
         "id": "zbarimg",
         "name": "zbarimg",
         "status": "optional",
-        "total": 86,
+        "total": 91,
         "executed": 0,
         "passed": 0,
         "failed": 0,
-        "skipped": 86,
+        "skipped": 91,
         "error": 0
       },
       "zxing-cli": {
         "id": "zxing-cli",
         "name": "ZXing CLI",
         "status": "optional",
-        "total": 86,
+        "total": 91,
         "executed": 0,
         "passed": 0,
         "failed": 0,
-        "skipped": 86,
+        "skipped": 91,
         "error": 0
       }
     },
@@ -597,10 +611,81 @@
         }
       }
     },
-    "executed": 101,
-    "passed": 101,
+    "packageSurface": {
+      "categories": {
+        "package-surface": 5
+      },
+      "operations": {
+        "package.metadata": 1,
+        "package.importRoot": 1,
+        "package.importBrowser": 1,
+        "package.importNode": 1,
+        "package.typescriptConsumer": 1
+      },
+      "vectorCount": 5,
+      "resultCount": 25,
+      "executed": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 20,
+      "error": 0,
+      "adapterSummary": {
+        "specqr": {
+          "id": "specqr",
+          "name": "SpecQR",
+          "total": 5,
+          "executed": 5,
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "error": 0
+        },
+        "jsqr": {
+          "id": "jsqr",
+          "name": "jsQR",
+          "total": 5,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 5,
+          "error": 0
+        },
+        "nayuki": {
+          "id": "nayuki",
+          "name": "Nayuki QR Code generator",
+          "total": 5,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 5,
+          "error": 0
+        },
+        "zbarimg": {
+          "id": "zbarimg",
+          "name": "zbarimg",
+          "total": 5,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 5,
+          "error": 0
+        },
+        "zxing-cli": {
+          "id": "zxing-cli",
+          "name": "ZXing CLI",
+          "total": 5,
+          "executed": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 5,
+          "error": 0
+        }
+      }
+    },
+    "executed": 106,
+    "passed": 106,
     "failed": 0,
-    "skipped": 329,
+    "skipped": 349,
     "error": 0
   },
   "results": [
@@ -5850,6 +5935,618 @@
         }
       ],
       "reason": "No decode expectation"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.metadata.published-surface",
+      "title": "Package metadata exposes ESM root and subpath exports",
+      "adapterId": "specqr",
+      "category": "package-surface",
+      "operation": "package.metadata",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "package.metadataSubset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "packageSurface": {
+          "kind": "metadata",
+          "metadata": {
+            "name": "specqr",
+            "version": "2.4.0",
+            "type": "module",
+            "main": "./src/index.js",
+            "types": "./src/index.d.ts",
+            "exports": {
+              ".": {
+                "types": "./src/index.d.ts",
+                "import": "./src/index.js"
+              },
+              "./browser": {
+                "types": "./src/browser.d.ts",
+                "import": "./src/browser.js"
+              },
+              "./node": {
+                "types": "./src/node.d.ts",
+                "import": "./src/node.js"
+              }
+            },
+            "engines": {
+              "node": ">=18"
+            },
+            "sideEffects": false
+          }
+        }
+      }
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.metadata.published-surface",
+      "title": "Package metadata exposes ESM root and subpath exports",
+      "adapterId": "jsqr",
+      "category": "package-surface",
+      "operation": "package.metadata",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "jsQR lane は package.metadata を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for jsQR lane: package.metadata"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.metadata.published-surface",
+      "title": "Package metadata exposes ESM root and subpath exports",
+      "adapterId": "nayuki",
+      "category": "package-surface",
+      "operation": "package.metadata",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "Nayuki reference lane は package.metadata を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for Nayuki lane: package.metadata"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.metadata.published-surface",
+      "title": "Package metadata exposes ESM root and subpath exports",
+      "adapterId": "zbarimg",
+      "category": "package-surface",
+      "operation": "package.metadata",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は package.metadata を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: package.metadata"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.metadata.published-surface",
+      "title": "Package metadata exposes ESM root and subpath exports",
+      "adapterId": "zxing-cli",
+      "category": "package-surface",
+      "operation": "package.metadata",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は package.metadata を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: package.metadata"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-root.public-symbols",
+      "title": "Root import exposes public API symbols",
+      "adapterId": "specqr",
+      "category": "package-surface",
+      "operation": "package.importRoot",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "package.exportedSymbols",
+          "status": "passed"
+        },
+        {
+          "name": "package.subset",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "packageSurface": {
+          "kind": "importRoot",
+          "exportedSymbols": [
+            "DataTooLongError",
+            "GS1_FNC1_SEPARATOR",
+            "InvalidCanvasTargetError",
+            "InvalidColorError",
+            "InvalidEciError",
+            "InvalidGs1Error",
+            "InvalidInputError",
+            "InvalidModeError",
+            "InvalidOutputError",
+            "InvalidVersionError",
+            "QRCode",
+            "SpecQRError",
+            "analyzeSegments",
+            "appendGtinCheckDigit",
+            "appendSsccCheckDigit",
+            "calculateGs1CheckDigit",
+            "calculateGtinCheckDigit",
+            "calculateSsccCheckDigit",
+            "calculateStructuredAppendParity",
+            "calculateStructuredAppendSegmentsParity",
+            "createGs1DigitalLink",
+            "createGs1ElementString",
+            "drawToCanvas",
+            "estimate",
+            "generate",
+            "generateSegments",
+            "generateSegmentsStructuredAppend",
+            "generateStructuredAppend",
+            "getCapacity",
+            "getGs1AiInfo",
+            "getSupportedGs1Ais",
+            "mergeStructuredAppendParts",
+            "normalizeGs1DigitalLink",
+            "parseGs1DigitalLink",
+            "parseGs1ElementString",
+            "parseGs1HumanReadable",
+            "validateGs1CheckDigit",
+            "validateGs1DigitalLink",
+            "validateGs1ElementString",
+            "validateGs1Elements",
+            "validateGtinCheckDigit",
+            "validateSsccCheckDigit"
+          ],
+          "exports": {
+            "DataTooLongError": "function",
+            "GS1_FNC1_SEPARATOR": "string",
+            "InvalidCanvasTargetError": "function",
+            "InvalidColorError": "function",
+            "InvalidEciError": "function",
+            "InvalidGs1Error": "function",
+            "InvalidInputError": "function",
+            "InvalidModeError": "function",
+            "InvalidOutputError": "function",
+            "InvalidVersionError": "function",
+            "QRCode": "function",
+            "SpecQRError": "function",
+            "analyzeSegments": "function",
+            "appendGtinCheckDigit": "function",
+            "appendSsccCheckDigit": "function",
+            "calculateGs1CheckDigit": "function",
+            "calculateGtinCheckDigit": "function",
+            "calculateSsccCheckDigit": "function",
+            "calculateStructuredAppendParity": "function",
+            "calculateStructuredAppendSegmentsParity": "function",
+            "createGs1DigitalLink": "function",
+            "createGs1ElementString": "function",
+            "drawToCanvas": "function",
+            "estimate": "function",
+            "generate": "function",
+            "generateSegments": "function",
+            "generateSegmentsStructuredAppend": "function",
+            "generateStructuredAppend": "function",
+            "getCapacity": "function",
+            "getGs1AiInfo": "function",
+            "getSupportedGs1Ais": "function",
+            "mergeStructuredAppendParts": "function",
+            "normalizeGs1DigitalLink": "function",
+            "parseGs1DigitalLink": "function",
+            "parseGs1ElementString": "function",
+            "parseGs1HumanReadable": "function",
+            "validateGs1CheckDigit": "function",
+            "validateGs1DigitalLink": "function",
+            "validateGs1ElementString": "function",
+            "validateGs1Elements": "function",
+            "validateGtinCheckDigit": "function",
+            "validateSsccCheckDigit": "function"
+          }
+        }
+      }
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-root.public-symbols",
+      "title": "Root import exposes public API symbols",
+      "adapterId": "jsqr",
+      "category": "package-surface",
+      "operation": "package.importRoot",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "jsQR lane は package.importRoot を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for jsQR lane: package.importRoot"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-root.public-symbols",
+      "title": "Root import exposes public API symbols",
+      "adapterId": "nayuki",
+      "category": "package-surface",
+      "operation": "package.importRoot",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "Nayuki reference lane は package.importRoot を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for Nayuki lane: package.importRoot"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-root.public-symbols",
+      "title": "Root import exposes public API symbols",
+      "adapterId": "zbarimg",
+      "category": "package-surface",
+      "operation": "package.importRoot",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は package.importRoot を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: package.importRoot"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-root.public-symbols",
+      "title": "Root import exposes public API symbols",
+      "adapterId": "zxing-cli",
+      "category": "package-surface",
+      "operation": "package.importRoot",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は package.importRoot を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: package.importRoot"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-browser.helpers",
+      "title": "Browser subpath import exposes helper functions",
+      "adapterId": "specqr",
+      "category": "package-surface",
+      "operation": "package.importBrowser",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "package.helpers",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "packageSurface": {
+          "kind": "importBrowser",
+          "exportedSymbols": [
+            "toBlob",
+            "toBlobFromSegments",
+            "toImageData",
+            "toImageDataFromSegments",
+            "toObjectURL",
+            "toObjectURLFromSegments"
+          ],
+          "helpers": {
+            "toBlob": "function",
+            "toBlobFromSegments": "function",
+            "toObjectURL": "function",
+            "toObjectURLFromSegments": "function",
+            "toImageData": "function",
+            "toImageDataFromSegments": "function"
+          }
+        }
+      }
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-browser.helpers",
+      "title": "Browser subpath import exposes helper functions",
+      "adapterId": "jsqr",
+      "category": "package-surface",
+      "operation": "package.importBrowser",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "jsQR lane は package.importBrowser を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for jsQR lane: package.importBrowser"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-browser.helpers",
+      "title": "Browser subpath import exposes helper functions",
+      "adapterId": "nayuki",
+      "category": "package-surface",
+      "operation": "package.importBrowser",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "Nayuki reference lane は package.importBrowser を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for Nayuki lane: package.importBrowser"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-browser.helpers",
+      "title": "Browser subpath import exposes helper functions",
+      "adapterId": "zbarimg",
+      "category": "package-surface",
+      "operation": "package.importBrowser",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は package.importBrowser を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: package.importBrowser"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-browser.helpers",
+      "title": "Browser subpath import exposes helper functions",
+      "adapterId": "zxing-cli",
+      "category": "package-surface",
+      "operation": "package.importBrowser",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は package.importBrowser を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: package.importBrowser"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-node.png-buffer",
+      "title": "Node subpath import exposes PNG helpers and returns Buffer",
+      "adapterId": "specqr",
+      "category": "package-surface",
+      "operation": "package.importNode",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "package.helpers",
+          "status": "passed"
+        },
+        {
+          "name": "package.pngBuffer",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "packageSurface": {
+          "kind": "importNode",
+          "exportedSymbols": [
+            "toPngBuffer",
+            "toPngBufferFromSegments",
+            "writePngFile",
+            "writePngFileFromSegments"
+          ],
+          "helpers": {
+            "toPngBuffer": "function",
+            "toPngBufferFromSegments": "function",
+            "writePngFile": "function",
+            "writePngFileFromSegments": "function"
+          },
+          "pngBuffer": {
+            "isBuffer": true,
+            "byteLength": 40168,
+            "signature": true,
+            "prefix": [
+              137,
+              80,
+              78,
+              71,
+              13,
+              10,
+              26,
+              10
+            ]
+          }
+        }
+      }
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-node.png-buffer",
+      "title": "Node subpath import exposes PNG helpers and returns Buffer",
+      "adapterId": "jsqr",
+      "category": "package-surface",
+      "operation": "package.importNode",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "jsQR lane は package.importNode を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for jsQR lane: package.importNode"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-node.png-buffer",
+      "title": "Node subpath import exposes PNG helpers and returns Buffer",
+      "adapterId": "nayuki",
+      "category": "package-surface",
+      "operation": "package.importNode",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "Nayuki reference lane は package.importNode を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for Nayuki lane: package.importNode"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-node.png-buffer",
+      "title": "Node subpath import exposes PNG helpers and returns Buffer",
+      "adapterId": "zbarimg",
+      "category": "package-surface",
+      "operation": "package.importNode",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は package.importNode を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: package.importNode"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.import-node.png-buffer",
+      "title": "Node subpath import exposes PNG helpers and returns Buffer",
+      "adapterId": "zxing-cli",
+      "category": "package-surface",
+      "operation": "package.importNode",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は package.importNode を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: package.importNode"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.typescript-consumer.compile",
+      "title": "TypeScript consumer fixture compiles against public package types",
+      "adapterId": "specqr",
+      "category": "package-surface",
+      "operation": "package.typescriptConsumer",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "package.typescript",
+          "status": "passed"
+        }
+      ],
+      "details": {
+        "packageSurface": {
+          "kind": "typescriptConsumer",
+          "typescript": {
+            "ok": true,
+            "project": "fixtures/typescript-consumer/tsconfig.json",
+            "exitCode": 0,
+            "signal": null,
+            "stdout": "",
+            "stderr": ""
+          }
+        }
+      }
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.typescript-consumer.compile",
+      "title": "TypeScript consumer fixture compiles against public package types",
+      "adapterId": "jsqr",
+      "category": "package-surface",
+      "operation": "package.typescriptConsumer",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "jsQR lane は package.typescriptConsumer を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for jsQR lane: package.typescriptConsumer"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.typescript-consumer.compile",
+      "title": "TypeScript consumer fixture compiles against public package types",
+      "adapterId": "nayuki",
+      "category": "package-surface",
+      "operation": "package.typescriptConsumer",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "Nayuki reference lane は package.typescriptConsumer を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for Nayuki lane: package.typescriptConsumer"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.typescript-consumer.compile",
+      "title": "TypeScript consumer fixture compiles against public package types",
+      "adapterId": "zbarimg",
+      "category": "package-surface",
+      "operation": "package.typescriptConsumer",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "zbarimg optional lane は package.typescriptConsumer を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zbarimg lane: package.typescriptConsumer"
+    },
+    {
+      "suiteId": "package-surface",
+      "vectorId": "package.typescript-consumer.compile",
+      "title": "TypeScript consumer fixture compiles against public package types",
+      "adapterId": "zxing-cli",
+      "category": "package-surface",
+      "operation": "package.typescriptConsumer",
+      "status": "skipped",
+      "checks": [
+        {
+          "name": "operation",
+          "status": "skipped",
+          "reason": "ZXing CLI optional lane は package.typescriptConsumer を対象外にします。"
+        }
+      ],
+      "reason": "Unsupported operation for zxing-cli lane: package.typescriptConsumer"
     },
     {
       "suiteId": "planning-diagnostics",

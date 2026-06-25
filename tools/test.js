@@ -45,6 +45,9 @@ const requiredPaths = [
   "vectors/planning-diagnostics.json",
   "vectors/kanji-eci-binary.json",
   "vectors/rendering-output.json",
+  "vectors/package-surface.json",
+  "fixtures/typescript-consumer/tsconfig.json",
+  "fixtures/typescript-consumer/usage.ts",
   "adapters/README.md",
   "adapters/specqr.js",
   "adapters/jsqr.js",
@@ -88,7 +91,12 @@ const allowedOperations = [
   "gs1.normalizeDigitalLink",
   "structuredAppend.generate",
   "structuredAppend.generateSegments",
-  "structuredAppend.mergeParts"
+  "structuredAppend.mergeParts",
+  "package.metadata",
+  "package.importRoot",
+  "package.importBrowser",
+  "package.importNode",
+  "package.typescriptConsumer"
 ];
 
 function fail(message) {
@@ -250,6 +258,14 @@ try {
     throw new Error("Nayuki reference target must be exact devDependency nayuki-qr-code-generator@1.8.0");
   }
 
+  if (packageJson.devDependencies?.typescript !== "6.0.3") {
+    throw new Error("TypeScript consumer lane must use exact devDependency typescript@6.0.3");
+  }
+
+  if (packageJson.devDependencies?.["@types/node"] !== "25.9.1") {
+    throw new Error("TypeScript consumer lane must use exact devDependency @types/node@25.9.1");
+  }
+
   for (const script of requiredScripts) {
     if (typeof packageJson.scripts?.[script] !== "string") {
       throw new Error(`missing npm script ${script}`);
@@ -276,11 +292,19 @@ try {
     "Rendering / Output suite",
     "matrix、SVG、PNG、SVG Data URL、PNG Data URL",
     "Canvas / browser helper",
+    "Package Surface suite",
+    "package-surface",
+    "root export",
+    "specqr/browser",
+    "specqr/node",
+    "fixtures/typescript-consumer/tsconfig.json",
+    "browser helper は Node 上で import / type check",
     "missing `zbarimg` / ZXing CLI は CI failure ではありません",
     "reports/latest.json",
     "reports/latest.html",
     "badges/overall.json",
     "badges/rendering-output.json",
+    "badges/package-surface.json",
     "npm run summary",
     "npm run verify:target",
     "npm run compare:reports",
@@ -311,6 +335,7 @@ try {
     "public/",
     "GitHub Step Summary",
     "Rendering / Output",
+    "Package Surface",
     "conformance-report-node-22",
     ".github/workflows/conformance-filtered.yml",
     ".github/workflows/specqr-target.yml",
@@ -419,6 +444,9 @@ try {
     "ZXing CLI adapter",
     "renderer output surface",
     "Canvas / browser helper validation",
+    "browser helper",
+    "import / type check",
+    "browser automation",
     "output format",
     "ECI assignment",
     "decode.binaryHex"
@@ -437,6 +465,7 @@ try {
     "diagnostics",
     "referenceMatrix",
     "expect.render",
+    "expect.package",
     "svg-data-url",
     "png-data-url",
     "planning",
@@ -446,7 +475,12 @@ try {
     "Structured Append",
     "ECI assignment",
     "expect.rejects",
-    "expect.validation"
+    "expect.validation",
+    "metadataSubset",
+    "exportedSymbols",
+    "helpers",
+    "pngBuffer",
+    "typescript"
   ]) {
     requireText(schemaDoc, text, "docs/vector-schema.md");
   }
@@ -460,6 +494,7 @@ try {
     "report-comparison-v1.schema.json",
     "run.mode: \"filtered\"",
     "Rendering / Output",
+    "Package Surface",
     "Compatibility policy",
     "additive field"
   ]) {
@@ -593,6 +628,10 @@ try {
   assert(
     listedSuites.suites.some((suite) => suite.id === "kanji-eci-binary"),
     "--list-suites must include kanji-eci-binary"
+  );
+  assert(
+    listedSuites.suites.some((suite) => suite.id === "package-surface"),
+    "--list-suites must include package-surface"
   );
 
   const listAdaptersRun = spawnSync(process.execPath, ["tools/run-conformance.js", "--list-adapters"], {
@@ -821,6 +860,7 @@ try {
   assert(summaryMarkdown.includes("Planning / Diagnostics"), "summary markdown must include Planning / Diagnostics scope");
   assert(summaryMarkdown.includes("Kanji / ECI / binary"), "summary markdown must include Kanji / ECI / binary scope");
   assert(summaryMarkdown.includes("Rendering / Output"), "summary markdown must include Rendering / Output scope");
+  assert(summaryMarkdown.includes("Package Surface"), "summary markdown must include Package Surface scope");
 
   const optionalUnavailableReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
   optionalUnavailableReport.adapters.push({
@@ -992,6 +1032,7 @@ try {
     gs1DigitalLink: passingCounts,
     kanjiEciBinary: passingCounts,
     renderingOutput: passingCounts,
+    packageSurface: passingCounts,
     structuredAppend: {
       executed: 0,
       passed: 0,
@@ -1009,6 +1050,7 @@ try {
   assert(badgeSet["overall.json"].color === "green", "overall badge with expected skips must stay green");
   assert(badgeSet["kanji-eci-binary.json"].color === "green", "Kanji / ECI / binary passing scope badge must be green");
   assert(badgeSet["rendering-output.json"].color === "green", "Rendering / Output passing scope badge must be green");
+  assert(badgeSet["package-surface.json"].color === "green", "Package Surface passing scope badge must be green");
   assert(badgeSet["structured-append.json"].color === "yellow", "skipped-only scope badge must be yellow");
   assert(badgeSet["zbarimg.json"].color === "yellow", "missing optional zbarimg lane badge must be yellow");
   assert(badgeSet["zxing-cli.json"].color === "yellow", "missing optional ZXing lane badge must be yellow");
@@ -1326,6 +1368,63 @@ try {
     createBadgeSet(renderingReport.report.summary)["rendering-output.json"].color === "green",
     "rendering-output badge must be generated as green for passing rendering scope"
   );
+
+  const packageSurfaceSuite = JSON.parse(await readFile("vectors/package-surface.json", "utf8"));
+  const packageSurfaceVector = (vectorId) => {
+    const vector = packageSurfaceSuite.vectors.find((item) => item.id === vectorId);
+    assert(vector, `${vectorId} must exist`);
+    return vector;
+  };
+
+  const packageRootResult = await specqrAdapter.run(packageSurfaceVector("package.import-root.public-symbols"));
+  assert(packageRootResult.status === "passed", "SpecQR package root import vector must pass");
+  assert(
+    packageRootResult.checks.some((check) => check.name === "package.exportedSymbols" && check.status === "passed"),
+    "SpecQR package root import vector must pass exported symbol check"
+  );
+
+  const packageBrowserResult = await specqrAdapter.run(packageSurfaceVector("package.import-browser.helpers"));
+  assert(packageBrowserResult.status === "passed", "SpecQR browser subpath import vector must pass");
+  assert(
+    packageBrowserResult.checks.some((check) => check.name === "package.helpers" && check.status === "passed"),
+    "SpecQR browser subpath import vector must pass helper availability check"
+  );
+
+  const packageNodeResult = await specqrAdapter.run(packageSurfaceVector("package.import-node.png-buffer"));
+  assert(packageNodeResult.status === "passed", "SpecQR node subpath PNG buffer vector must pass");
+  assert(
+    packageNodeResult.checks.some((check) => check.name === "package.pngBuffer" && check.status === "passed"),
+    "SpecQR node subpath vector must pass PNG buffer check"
+  );
+
+  const packageTypescriptResult = await specqrAdapter.run(packageSurfaceVector("package.typescript-consumer.compile"));
+  assert(packageTypescriptResult.status === "passed", "SpecQR TypeScript consumer fixture vector must pass");
+  assert(
+    packageTypescriptResult.checks.some((check) => check.name === "package.typescript" && check.status === "passed"),
+    "SpecQR TypeScript consumer fixture vector must pass TypeScript compile check"
+  );
+
+  const packageSurfaceReport = await createConformanceReport({
+    filters: {
+      suites: ["package-surface"],
+      adapters: ["specqr"]
+    }
+  });
+  assert(packageSurfaceReport.report.summary.packageSurface.vectorCount === 5, "package surface report summary must count package vectors");
+  assert(packageSurfaceReport.report.summary.packageSurface.failed === 0, "package surface report summary must have no failures");
+  assert(
+    createBadgeSet(packageSurfaceReport.report.summary)["package-surface.json"].color === "green",
+    "package-surface badge must be generated as green for passing package surface scope"
+  );
+
+  const packageMetadataVector = packageSurfaceVector("package.metadata.published-surface");
+  const jsqrPackageSkipResult = await jsqrAdapter.run(packageMetadataVector);
+  assert(jsqrPackageSkipResult.status === "skipped", "jsQR must skip package surface vectors");
+  assert(/Unsupported operation/.test(jsqrPackageSkipResult.reason ?? ""), "jsQR package-surface skip reason must mention unsupported operation");
+
+  const nayukiPackageSkipResult = await nayukiAdapter.run(packageMetadataVector);
+  assert(nayukiPackageSkipResult.status === "skipped", "Nayuki must skip package surface vectors");
+  assert(/Unsupported operation/.test(nayukiPackageSkipResult.reason ?? ""), "Nayuki package-surface skip reason must mention unsupported operation");
 
   const pngImage = pngToRgba(generate("PNG TEST", { output: "png", scale: 12, margin: 4 }));
   assert(pngImage.width > 0 && pngImage.height > 0, "pngToRgba must parse SpecQR-generated PNG dimensions");

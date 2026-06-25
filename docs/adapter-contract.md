@@ -117,6 +117,8 @@ SpecQR adapter は Structured Append helper vector も実行できます。`stru
 
 SpecQR adapter は Planning / Diagnostics vector も実行できます。`estimate`, `analyzeSegments`, `getCapacity` を published package に渡し、`expect.planning` の subset を評価します。Planning API の `{ ok: false, reason: "data-too-long" }` は non-throwing failure ですが、negative vector では `expect.rejects` と `expect.planning` を組み合わせて確認できます。warning は message text ではなく `code` の存在を確認します。
 
+SpecQR adapter は Package Surface vector も実行できます。`package.metadata`, `package.importRoot`, `package.importBrowser`, `package.importNode`, `package.typescriptConsumer` を published package import だけで確認し、`expect.package.metadataSubset`, `exportedSymbols`, `helpers`, `pngBuffer`, `typescript`, `subset` を subset match として評価します。browser helper は Node 上で import / type check までを扱い、browser automation は行いません。
+
 ## 未実装時の扱い
 
 現在の SpecQR adapter は published package `specqr@2.4.0` を実行します。jsQR adapter は decoder lane として active です。Nayuki adapter は fixed-condition reference matrix lane として active です。未実装 operation は `skipped` として report に記録します。adapter 本実装を入れるときは、schema validation を通過した vector だけを実行対象にします。

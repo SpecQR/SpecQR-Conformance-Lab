@@ -72,6 +72,7 @@ function requiredSummaryFields(summary) {
     planningDiagnostics: summary.planningDiagnostics,
     kanjiEciBinary: summary.kanjiEciBinary,
     renderingOutput: summary.renderingOutput,
+    packageSurface: summary.packageSurface,
     executed: summary.executed,
     passed: summary.passed,
     failed: summary.failed,

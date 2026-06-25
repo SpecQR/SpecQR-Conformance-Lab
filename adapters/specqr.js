@@ -1,4 +1,10 @@
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import path from "node:path";
+import process from "node:process";
+import * as specqrRoot from "specqr";
+import * as specqrBrowser from "specqr/browser";
+import * as specqrNode from "specqr/node";
 import {
   analyzeSegments,
   createGs1DigitalLink,
@@ -15,6 +21,7 @@ import {
   validateGs1ElementString
 } from "specqr";
 import { pngToRgba } from "../tools/png-rgba.js";
+import { readInstalledPackageMetadata } from "../tools/report-metadata.js";
 
 const supportedOperations = new Set([
   "generate",
@@ -29,7 +36,12 @@ const supportedOperations = new Set([
   "gs1.normalizeDigitalLink",
   "structuredAppend.generate",
   "structuredAppend.generateSegments",
-  "structuredAppend.mergeParts"
+  "structuredAppend.mergeParts",
+  "package.metadata",
+  "package.importRoot",
+  "package.importBrowser",
+  "package.importNode",
+  "package.typescriptConsumer"
 ]);
 
 export function supportsOperation(operation) {
@@ -205,7 +217,131 @@ function normalizeStructuredAppendParts(parts) {
   });
 }
 
-function executeOperation(vector, mode = "primary") {
+function trimProcessOutput(value) {
+  const text = String(value ?? "").replaceAll(process.cwd(), ".");
+  return text.length > 4000 ? `${text.slice(0, 4000)}...` : text;
+}
+
+function packageMetadataSubset(packageJson) {
+  return {
+    name: packageJson.name,
+    version: packageJson.version,
+    type: packageJson.type,
+    main: packageJson.main,
+    types: packageJson.types,
+    exports: packageJson.exports,
+    engines: packageJson.engines,
+    sideEffects: packageJson.sideEffects
+  };
+}
+
+function exportTypes(moduleNamespace) {
+  return Object.fromEntries(
+    Object.keys(moduleNamespace).sort().map((name) => [name, typeof moduleNamespace[name]])
+  );
+}
+
+function helperTypes(moduleNamespace, helperNames) {
+  return Object.fromEntries(helperNames.map((name) => [name, typeof moduleNamespace[name]]));
+}
+
+function pngSignatureDetails(bytes) {
+  const prefix = bytes instanceof Uint8Array ? Array.from(bytes.slice(0, 8)) : [];
+  return {
+    isBuffer: Buffer.isBuffer(bytes),
+    byteLength: bytes?.length ?? 0,
+    signature: prefix.join(",") === "137,80,78,71,13,10,26,10",
+    prefix
+  };
+}
+
+async function executePackageOperation(vector) {
+  switch (vector.operation) {
+    case "package.metadata": {
+      const metadata = await readInstalledPackageMetadata("specqr");
+      return {
+        packageSurface: {
+          kind: "metadata",
+          metadata: packageMetadataSubset(metadata)
+        }
+      };
+    }
+    case "package.importRoot":
+      return {
+        packageSurface: {
+          kind: "importRoot",
+          exportedSymbols: Object.keys(specqrRoot).sort(),
+          exports: exportTypes(specqrRoot)
+        }
+      };
+    case "package.importBrowser": {
+      const helpers = [
+        "toBlob",
+        "toBlobFromSegments",
+        "toObjectURL",
+        "toObjectURLFromSegments",
+        "toImageData",
+        "toImageDataFromSegments"
+      ];
+      return {
+        packageSurface: {
+          kind: "importBrowser",
+          exportedSymbols: Object.keys(specqrBrowser).sort(),
+          helpers: helperTypes(specqrBrowser, helpers)
+        }
+      };
+    }
+    case "package.importNode": {
+      const helpers = [
+        "toPngBuffer",
+        "toPngBufferFromSegments",
+        "writePngFile",
+        "writePngFileFromSegments"
+      ];
+      const png = specqrNode.toPngBuffer("HELLO", {
+        scale: vector.options.scale ?? 4,
+        margin: vector.options.margin ?? 2
+      });
+      return {
+        packageSurface: {
+          kind: "importNode",
+          exportedSymbols: Object.keys(specqrNode).sort(),
+          helpers: helperTypes(specqrNode, helpers),
+          pngBuffer: pngSignatureDetails(png)
+        }
+      };
+    }
+    case "package.typescriptConsumer": {
+      const project = vector.options.project ?? "fixtures/typescript-consumer/tsconfig.json";
+      const tscPath = path.join(process.cwd(), "node_modules", "typescript", "bin", "tsc");
+      const run = spawnSync(process.execPath, [tscPath, "-p", project, "--noEmit"], {
+        cwd: process.cwd(),
+        encoding: "utf8"
+      });
+      return {
+        packageSurface: {
+          kind: "typescriptConsumer",
+          typescript: {
+            ok: run.status === 0,
+            project,
+            exitCode: run.status,
+            signal: run.signal ?? null,
+            stdout: trimProcessOutput(run.stdout),
+            stderr: trimProcessOutput(run.stderr)
+          }
+        }
+      };
+    }
+    default:
+      throw new Error(`Unsupported package operation: ${vector.operation}`);
+  }
+}
+
+async function executeOperation(vector, mode = "primary") {
+  if (typeof vector.operation === "string" && vector.operation.startsWith("package.")) {
+    return executePackageOperation(vector);
+  }
+
   switch (vector.operation) {
     case "generate":
       return generate(normalizeInput(vector.input), operationOptions(vector, mode));
@@ -1079,6 +1215,94 @@ function evaluateValidationExpectation(expected, execution) {
   return { ok: true };
 }
 
+function missingItems(expectedItems, actualItems) {
+  const actualSet = new Set(actualItems ?? []);
+  return expectedItems.filter((item) => !actualSet.has(item));
+}
+
+function evaluateStringMembership(expectedItems, actualItems, path) {
+  if (!Array.isArray(expectedItems)) {
+    return renderFailure(path, "array", expectedItems, "expectation must be an array");
+  }
+
+  const missing = missingItems(expectedItems, actualItems);
+  if (missing.length > 0) {
+    return renderFailure(path, expectedItems, actualItems, "expected symbols are missing");
+  }
+
+  return { ok: true };
+}
+
+function evaluateHelperAvailability(expectedHelpers, actualHelpers, path) {
+  if (!Array.isArray(expectedHelpers)) {
+    return renderFailure(path, "array", expectedHelpers, "helper expectation must be an array");
+  }
+
+  const unavailable = expectedHelpers.filter((name) => actualHelpers?.[name] !== "function");
+  if (unavailable.length > 0) {
+    return renderFailure(path, "function helpers", actualHelpers, `missing helper functions: ${unavailable.join(", ")}`);
+  }
+
+  return { ok: true };
+}
+
+function evaluatePackageExpectation(expected, execution) {
+  const actual = execution.actual?.packageSurface;
+  if (!actual) {
+    return [checkResult("package", renderFailure("$.package", "package surface result", execution.actual, "operation did not return package surface details"))];
+  }
+
+  const checks = [];
+
+  if (Object.hasOwn(expected, "metadataSubset")) {
+    checks.push(checkResult(
+      "package.metadataSubset",
+      deepSubsetMatch(expected.metadataSubset, actual.metadata, "$.package.metadata")
+    ));
+  }
+
+  if (Object.hasOwn(expected, "exportedSymbols")) {
+    checks.push(checkResult(
+      "package.exportedSymbols",
+      evaluateStringMembership(expected.exportedSymbols, actual.exportedSymbols, "$.package.exportedSymbols")
+    ));
+  }
+
+  if (Object.hasOwn(expected, "helpers")) {
+    checks.push(checkResult(
+      "package.helpers",
+      evaluateHelperAvailability(expected.helpers, actual.helpers, "$.package.helpers")
+    ));
+  }
+
+  if (Object.hasOwn(expected, "pngBuffer")) {
+    checks.push(checkResult(
+      "package.pngBuffer",
+      deepSubsetMatch(expected.pngBuffer, actual.pngBuffer, "$.package.pngBuffer")
+    ));
+  }
+
+  if (Object.hasOwn(expected, "typescript")) {
+    checks.push(checkResult(
+      "package.typescript",
+      deepSubsetMatch(expected.typescript, actual.typescript, "$.package.typescript")
+    ));
+  }
+
+  if (Object.hasOwn(expected, "subset")) {
+    checks.push(checkResult(
+      "package.subset",
+      deepSubsetMatch(expected.subset, actual, "$.package")
+    ));
+  }
+
+  if (checks.length === 0) {
+    checks.push(createSkippedCheck("package", "この package expectation には SpecQR adapter が比較できる field がありません。"));
+  }
+
+  return checks;
+}
+
 export function evaluateExpectations(expect, execution) {
   const checks = [];
 
@@ -1174,6 +1398,10 @@ export function evaluateExpectations(expect, execution) {
     checks.push(checkResult("validation", evaluateValidationExpectation(expect.validation, execution)));
   }
 
+  if (Object.hasOwn(expect, "package")) {
+    checks.push(...evaluatePackageExpectation(expect.package, execution));
+  }
+
   return checks;
 }
 
@@ -1194,6 +1422,12 @@ export function summarizeChecks(checks) {
 }
 
 function resultDetails(actual, execution = {}) {
+  if (actual?.packageSurface) {
+    return {
+      packageSurface: actual.packageSurface
+    };
+  }
+
   const render = renderDetails(actual);
   if (render) {
     const details = {
@@ -1300,7 +1534,7 @@ export const adapter = {
       diagnosticsGenerated: false
     };
     try {
-      execution.actual = executeOperation(vector);
+      execution.actual = await executeOperation(vector);
     } catch (error) {
       execution.error = error;
     }
@@ -1308,7 +1542,7 @@ export const adapter = {
     if (!execution.error && needsAdditionalDiagnostics(vector)) {
       execution.diagnosticsGenerated = true;
       try {
-        execution.diagnosticActual = executeOperation(vector, "diagnostics");
+        execution.diagnosticActual = await executeOperation(vector, "diagnostics");
       } catch (error) {
         execution.diagnosticError = error;
       }
