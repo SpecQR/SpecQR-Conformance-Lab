@@ -10,11 +10,13 @@ import zbarAdapter, { parseZbarOutput } from "../adapters/zbar.js";
 import zxingCliAdapter, { parseZxingOutput } from "../adapters/zxing-cli.js";
 import { buildPages } from "./build-pages.js";
 import { compareReportFiles, compareReports, renderComparisonMarkdown } from "./compare-reports.js";
+import { readCoverageClaimsFile } from "./coverage-claims.js";
 import { pngToRgba } from "./png-rgba.js";
 import { createReportMetadata, readInstalledPackageMetadata } from "./report-metadata.js";
 import { badgeFileNames, createBadge, createBadgeSet, summarizeStatus } from "./report-utils.js";
 import { activeAdapters, createConformanceReport } from "./run-conformance.js";
 import { loadSchemas, schemaFiles, validateAllSchemas, validateSchemaValue } from "./validate-schemas.js";
+import { verifyCoverageClaimsFile, verifyCoverageClaimsObject } from "./verify-coverage-claims.js";
 import { verifyReportObject } from "./verify-report.js";
 import { verifySpecqrTarget } from "./verify-specqr-target.js";
 import { renderGithubSummary, writeGithubSummary } from "./write-github-summary.js";
@@ -25,6 +27,7 @@ const requiredPaths = [
   "LICENSE",
   "CONTRIBUTING.md",
   "SECURITY.md",
+  "coverage/claims-v1.json",
   "docs/vector-schema.md",
   "docs/report-format.md",
   "docs/adapter-contract.md",
@@ -37,6 +40,7 @@ const requiredPaths = [
   "schemas/conformance-report-v1.schema.json",
   "schemas/badge-v1.schema.json",
   "schemas/report-comparison-v1.schema.json",
+  "schemas/coverage-claims-v1.schema.json",
   "vectors/schema.example.json",
   "vectors/core.json",
   "vectors/reference-nayuki.json",
@@ -57,6 +61,8 @@ const requiredPaths = [
   "adapters/zxing-cli.js",
   "tools/validate-vectors.js",
   "tools/validate-schemas.js",
+  "tools/coverage-claims.js",
+  "tools/verify-coverage-claims.js",
   "tools/compare-reports.js",
   "tools/run-conformance.js",
   "tools/report.js",
@@ -77,7 +83,7 @@ const requiredPaths = [
   ".github/dependabot.yml"
 ];
 
-const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:target", "validate:schemas", "compare:reports", "summary", "pages:build", "verify"];
+const requiredScripts = ["test", "validate:vectors", "conformance", "report", "verify:report", "verify:claims", "verify:target", "validate:schemas", "compare:reports", "summary", "pages:build", "verify"];
 const allowedOperations = [
   "generate",
   "generateSegments",
@@ -157,6 +163,7 @@ async function collectPublicFacingFiles() {
     "README.md",
     "CONTRIBUTING.md",
     "SECURITY.md",
+    "coverage/claims-v1.json",
     "adapters/README.md",
     "docs/vector-schema.md",
     "docs/report-format.md",
@@ -176,7 +183,8 @@ async function collectPublicFacingFiles() {
   for (const relativePath of [
     "public/index.html",
     "public/reports/latest.json",
-    "public/reports/latest.html"
+    "public/reports/latest.html",
+    "public/coverage/claims-v1.json"
   ]) {
     if (await fileExists(relativePath)) {
       files.push(relativePath);
@@ -294,6 +302,8 @@ try {
     "Canvas / browser helper",
     "Package Surface suite",
     "package-surface",
+    "Coverage claims",
+    "coverage/claims-v1.json",
     "root export",
     "specqr/browser",
     "specqr/node",
@@ -316,8 +326,11 @@ try {
     "schemas/conformance-report-v1.schema.json",
     "schemas/badge-v1.schema.json",
     "schemas/report-comparison-v1.schema.json",
+    "schemas/coverage-claims-v1.schema.json",
     "npm run validate:schemas",
+    "npm run verify:claims",
     "public/schemas/",
+    "public/coverage/claims-v1.json",
     "CONTRIBUTING.md",
     "SECURITY.md",
     "docs/release-readiness.md",
@@ -444,6 +457,7 @@ try {
     "ZXing CLI adapter",
     "renderer output surface",
     "Canvas / browser helper validation",
+    "coverage/claims-v1.json",
     "browser helper",
     "import / type check",
     "browser automation",
@@ -492,7 +506,10 @@ try {
     "conformance-report-v1.schema.json",
     "badge-v1.schema.json",
     "report-comparison-v1.schema.json",
+    "coverage-claims-v1.schema.json",
+    "coverage/claims-v1.json",
     "run.mode: \"filtered\"",
+    "Coverage claims",
     "Rendering / Output",
     "Package Surface",
     "Compatibility policy",
@@ -506,6 +523,9 @@ try {
     "現時点では release",
     "Verify workflow",
     "Pages workflow",
+    "npm run verify:claims",
+    "coverage/claims-v1.json",
+    "schemas/coverage-claims-v1.schema.json",
     "reports/latest.json",
     "schemas/vector-suite-v1.schema.json",
     "failed` / `error",
@@ -723,8 +743,60 @@ try {
 
   const reportSchemaResult = validateSchemaValue(fullReportForIntegrity.report, schemas.conformanceReport);
   assert(reportSchemaResult.ok, "latest report shape must pass JSON Schema validation");
+  const coverageClaims = await readCoverageClaimsFile();
+  const coverageClaimsSchemaResult = validateSchemaValue(coverageClaims, schemas.coverageClaims);
+  assert(coverageClaimsSchemaResult.ok, "coverage claims map must pass JSON Schema validation");
+  const validClaimsResult = await verifyCoverageClaimsObject(coverageClaims, {
+    report: fullReportForIntegrity.report
+  });
+  assert(validClaimsResult.ok, "valid coverage claims map must pass reference validation");
+  assert(validClaimsResult.statusCounts.verified > 0, "coverage claims must include verified claims");
+  assert(validClaimsResult.statusCounts.partial > 0, "coverage claims must include partial claims");
+  assert(validClaimsResult.statusCounts["not-claimed"] > 0, "coverage claims must include explicit non-claims");
+
+  const missingSuiteClaims = cloneJson(coverageClaims);
+  missingSuiteClaims.claims[0].suites = ["missing-suite"];
+  const missingSuiteClaimsResult = await verifyCoverageClaimsObject(missingSuiteClaims, {
+    report: fullReportForIntegrity.report
+  });
+  assert(!missingSuiteClaimsResult.ok, "coverage claims verifier must fail on missing referenced suite");
+  assert(
+    missingSuiteClaimsResult.errors.some((error) => error.label === "claims.suites"),
+    "missing suite failure must be reported clearly"
+  );
+
+  const missingBadgeClaims = cloneJson(coverageClaims);
+  missingBadgeClaims.claims[0].badges = ["badges/missing-badge.json"];
+  const missingBadgeClaimsResult = await verifyCoverageClaimsObject(missingBadgeClaims, {
+    report: fullReportForIntegrity.report
+  });
+  assert(!missingBadgeClaimsResult.ok, "coverage claims verifier must fail on missing referenced badge");
+  assert(
+    missingBadgeClaimsResult.errors.some((error) => error.label === "claims.badges"),
+    "missing badge failure must be reported clearly"
+  );
+
+  const nonClaimCoverageClaims = cloneJson(coverageClaims);
+  nonClaimCoverageClaims.nonClaims[0].suites = ["core"];
+  nonClaimCoverageClaims.nonClaims[0].adapters = ["specqr"];
+  nonClaimCoverageClaims.nonClaims[0].badges = ["badges/specqr.json"];
+  const nonClaimCoverageResult = await verifyCoverageClaimsObject(nonClaimCoverageClaims, {
+    report: fullReportForIntegrity.report
+  });
+  assert(!nonClaimCoverageResult.ok, "coverage claims verifier must fail when non-claims reference passing coverage");
+  assert(
+    nonClaimCoverageResult.errors.some((error) => error.label === "claims.notClaimedCoverage"),
+    "non-claim coverage failure must be reported clearly"
+  );
+
+  const claimsFileResult = await verifyCoverageClaimsFile();
+  assert(claimsFileResult.ok, "coverage claims CLI verifier target must pass for repository claims file");
   const allSchemaValidation = await validateAllSchemas();
   assert(allSchemaValidation.ok, "current vectors, latest report, badges, and self-comparison must pass schema validation");
+  assert(
+    allSchemaValidation.validated.some((entry) => entry.schema === schemaFiles.coverageClaims && entry.file === "coverage/claims-v1.json"),
+    "schema validation must include coverage claims map"
+  );
   assert(
     allSchemaValidation.validated.filter((entry) => entry.schema === schemaFiles.badge).length >= badgeFileNames.length,
     "current badge files must pass schema validation"
@@ -1079,8 +1151,10 @@ try {
     await mkdir(path.join(tmpRoot, "reports"), { recursive: true });
     await mkdir(path.join(tmpRoot, "badges"), { recursive: true });
     await mkdir(path.join(tmpRoot, "schemas"), { recursive: true });
+    await mkdir(path.join(tmpRoot, "coverage"), { recursive: true });
     await writeFile(path.join(tmpRoot, "reports/latest.html"), "<!doctype html><title>report</title>", "utf8");
     await writeFile(path.join(tmpRoot, "reports/latest.json"), `${JSON.stringify({ schemaVersion: 1 })}\n`, "utf8");
+    await writeFile(path.join(tmpRoot, "coverage/claims-v1.json"), `${JSON.stringify({ schemaVersion: 1 })}\n`, "utf8");
     for (const [fileName, badge] of Object.entries(badgeSet)) {
       await writeFile(path.join(tmpRoot, "badges", fileName), `${JSON.stringify(badge)}\n`, "utf8");
     }
@@ -1095,9 +1169,19 @@ try {
       pagesResult.files.includes("schemas/vector-suite-v1.schema.json"),
       "Pages artifact must include public schema files"
     );
+    assert(
+      pagesResult.files.includes("schemas/coverage-claims-v1.schema.json"),
+      "Pages artifact must include public coverage claims schema"
+    );
+    assert(
+      pagesResult.files.includes("coverage/claims-v1.json"),
+      "Pages artifact must include public coverage claims map"
+    );
     await access(path.join(tmpRoot, "public/index.html"));
     await access(path.join(tmpRoot, "public/reports/latest.json"));
     await access(path.join(tmpRoot, "public/schemas/vector-suite-v1.schema.json"));
+    await access(path.join(tmpRoot, "public/schemas/coverage-claims-v1.schema.json"));
+    await access(path.join(tmpRoot, "public/coverage/claims-v1.json"));
     for (const fileName of badgeFileNames) {
       await access(path.join(tmpRoot, "public/badges", fileName));
     }

@@ -208,6 +208,50 @@
     </section>
   </div>
   <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip と、任意 CLI decoder が未導入の expected skip は、失敗やエラーとは別に扱います。</p>
+  <h2>Coverage claims / non-claims</h2>
+  <p>機械可読な claims map は <code>coverage/claims-v1.json</code> にあります。この report では verified / partial / not-claimed を分け、既存 vector や adapter が支えない scope を release claim として扱わないようにします。</p>
+  <table>
+    <tbody>
+      <tr><th>Claims file</th><td>coverage/claims-v1.json</td></tr>
+      <tr><th>Total claims</th><td>17</td></tr>
+      <tr><th>Verified</th><td>5</td></tr>
+      <tr><th>Partial</th><td>5</td></tr>
+      <tr><th>Not claimed</th><td>7</td></tr>
+    </tbody>
+  </table>
+  <h3>Verified / partial claims</h3>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Status</th><th>Summary</th><th>Suites</th><th>Adapters</th><th>Badges</th><th>Report key</th><th>Limits</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>qr-model2-core-generation</td><td>QR Code Model 2 core generation</td><td>verified</td><td>Core vectors verify published SpecQR generation behavior for representative QR Code Model 2 payloads and options.</td><td>core</td><td>specqr, jsqr</td><td>badges/specqr.json, badges/jsqr.json</td><td>-</td><td>Representative vector coverage only; this is not a proof of every QR Code Model 2 combination. / SpecQR adapter evaluates generation and diagnostics; jsQR observes decode readability for supported generated PNGs.</td></tr>
+      <tr><td>data-modes-kanji-eci-binary</td><td>Numeric / Alphanumeric / Byte / Kanji / ECI / binary payloads</td><td>partial</td><td>The Lab covers representative numeric, alphanumeric, byte, Kanji, ECI UTF-8, and raw binary payload vectors.</td><td>core, kanji-eci-binary</td><td>specqr, jsqr</td><td>badges/kanji-eci-binary.json</td><td>kanjiEciBinary</td><td>The mode suite is representative and does not exhaust every character set, ECI assignment, version, ECC level, or mask combination. / Reader lanes observe payload readability and do not claim complete scanner metadata conformance.</td></tr>
+      <tr><td>gs1-digital-link-supported-subset</td><td>GS1 supported AI subset / Digital Link helper</td><td>partial</td><td>GS1 vectors verify the AI subset and Digital Link helper behavior supported by published SpecQR.</td><td>gs1-digital-link</td><td>specqr</td><td>badges/gs1-digital-link.json</td><td>gs1DigitalLink</td><td>This claim is limited to the AI subset represented by the vectors. / The Lab does not claim conformance for the full GS1 AI catalog.</td></tr>
+      <tr><td>structured-append-helper-behavior</td><td>Structured Append helper behavior</td><td>partial</td><td>Structured Append vectors verify published SpecQR generation, manual segment splitting, parity, and merge helper behavior.</td><td>structured-append</td><td>specqr</td><td>badges/structured-append.json</td><td>structuredAppend</td><td>The Lab does not decode Structured Append scanner metadata from third-party readers. / Scanner metadata merge support is not claimed.</td></tr>
+      <tr><td>planning-diagnostics-api</td><td>Planning / Diagnostics API</td><td>verified</td><td>Planning vectors verify estimate, analyzeSegments, getCapacity, warning code, and diagnostics subset behavior.</td><td>planning-diagnostics</td><td>specqr</td><td>badges/planning-diagnostics.json</td><td>planningDiagnostics</td><td>Warning message prose is not matched exactly; stable warning codes and selected diagnostics fields are compared.</td></tr>
+      <tr><td>rendering-output-surfaces</td><td>Rendering output surfaces</td><td>verified</td><td>Rendering vectors verify matrix, SVG, PNG, SVG Data URL, and PNG Data URL output surfaces in Node.</td><td>rendering-output</td><td>specqr, jsqr</td><td>badges/rendering-output.json</td><td>renderingOutput</td><td>Canvas and browser DOM automation are not covered. / jsQR readability is used only where generated PNG readability is meaningful.</td></tr>
+      <tr><td>package-exports-typescript-surface</td><td>Package exports / TypeScript surface</td><td>verified</td><td>Package Surface vectors verify package metadata, root exports, browser and node subpath helpers, PNG Buffer output, and TypeScript consumer compile.</td><td>package-surface</td><td>specqr</td><td>badges/package-surface.json</td><td>packageSurface</td><td>Browser helpers are imported and type-checked in Node; browser automation is not executed. / The TypeScript fixture is a smoke consumer, not an exhaustive public type API proof.</td></tr>
+      <tr><td>jsqr-decode-readability</td><td>jsQR decode readability</td><td>partial</td><td>The jsQR lane checks whether selected SpecQR-generated PNGs are readable as expected text or raw bytes when jsQR exposes them.</td><td>core, kanji-eci-binary, rendering-output</td><td>jsqr</td><td>badges/jsqr.json</td><td>-</td><td>This is a readability lane, not a full QR reader conformance claim. / FNC1, Structured Append, ECI, and other scanner metadata are not fully exposed by jsQR.</td></tr>
+      <tr><td>nayuki-fixed-matrix-reference</td><td>Nayuki fixed matrix reference comparison</td><td>verified</td><td>Nayuki vectors verify exact matrix equality for fixed Version/ECC/mask reference cases.</td><td>reference-nayuki</td><td>nayuki</td><td>badges/nayuki.json</td><td>-</td><td>The reference lane is limited to fixed Version/ECC/mask vectors. / It does not claim equivalence for auto segmentation, GS1, Kanji, Structured Append, or renderer output.</td></tr>
+      <tr><td>optional-cli-decoder-lanes</td><td>Optional CLI decoder lanes</td><td>partial</td><td>Optional zbarimg and ZXing CLI lanes provide local decode readability checks when the commands are available.</td><td>core, kanji-eci-binary, rendering-output</td><td>zbarimg, zxing-cli</td><td>badges/zbarimg.json, badges/zxing-cli.json</td><td>-</td><td>Missing optional commands are expected skips and do not fail CI. / CLI output parsing is conservative and does not claim raw byte or scanner metadata conformance.</td></tr>
+    </tbody>
+  </table>
+  <h3>Explicit non-claims</h3>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Reason</th><th>Future direction</th><th>Limits</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>micro-qr</td><td>Micro QR</td><td>The current target is QR Code Model 2.</td><td>A future suite would need explicit Micro QR vectors, adapters, and report scope.</td><td>No Micro QR vector suite or adapter lane is present.</td></tr>
+      <tr><td>rmqr</td><td>rMQR</td><td>The current target is QR Code Model 2.</td><td>A future suite would need explicit rMQR vectors, adapters, and report scope.</td><td>No rMQR vector suite or adapter lane is present.</td></tr>
+      <tr><td>full-gs1-ai-catalog</td><td>Full GS1 AI catalog</td><td>The current GS1 suite intentionally tracks the subset implemented by published SpecQR.</td><td>A full catalog claim would require catalog-scale AI data and dedicated vectors.</td><td>Existing GS1 vectors cover a supported representative subset only.</td></tr>
+      <tr><td>full-qr-reader</td><td>Full QR reader</td><td>The Lab is external conformance/report infrastructure and does not implement a full reader.</td><td>A full reader claim would need reader-specific vectors, metadata assertions, and scanner semantics.</td><td>Reader lanes are decode readability checks, not full scanner conformance tests.</td></tr>
+      <tr><td>scanner-metadata-merge-support</td><td>Scanner metadata merge support</td><td>Current decoder lanes do not provide a stable scanner metadata surface for this claim.</td><td>A future metadata-returning decoder lane could add explicit scanner metadata vectors.</td><td>Structured Append merge helper inputs are tested, but scanner-emitted metadata merge is not.</td></tr>
+      <tr><td>logo-styled-qr</td><td>Logo / styled QR</td><td>Logo/styled QR output is outside the current SpecQR conformance scope.</td><td>A future visual styling claim would need explicit output semantics and scan-risk expectations.</td><td>Rendering vectors cover standard output surfaces, not visual styling overlays or logo placement.</td></tr>
+      <tr><td>browser-canvas-automation</td><td>Browser Canvas automation</td><td>The current suite is Node-only and intentionally avoids browser automation.</td><td>A future browser lane would need explicit browser runner infrastructure and Canvas/DOM assertions.</td><td>Package Surface imports and type-checks browser helpers in Node, but does not automate a real browser Canvas or DOM lifecycle.</td></tr>
+    </tbody>
+  </table>
   <h2>何を検証していないか</h2>
   <ul>
     <li>Micro QR</li>
@@ -234,7 +278,7 @@
   <h2>実行メタデータ</h2>
   <table>
     <tbody>
-      <tr><th>generatedAt</th><td>2026-06-25T18:03:18.016Z</td></tr>
+      <tr><th>generatedAt</th><td>2026-07-03T18:01:16.648Z</td></tr>
       <tr><th>target.requested</th><td>specqr@2.4.0</td></tr>
       <tr><th>target.resolvedVersion</th><td>2.4.0</td></tr>
       <tr><th>target.source</th><td>npm</td></tr>

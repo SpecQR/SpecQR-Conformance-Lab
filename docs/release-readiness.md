@@ -12,7 +12,10 @@
   - `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/conformance-report-v1.schema.json`
   - `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/badge-v1.schema.json`
   - `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/report-comparison-v1.schema.json`
+  - `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/coverage-claims-v1.schema.json`
+- public coverage claims map が到達可能: `https://specqr.github.io/SpecQR-Conformance-Lab/coverage/claims-v1.json`
 - `reports/latest.json` に required adapter の `failed` / `error` result がない。
+- `npm run verify:claims` が green で、non-claim が vector / adapter / badge / report summary coverage を装っていない。
 - optional decoder の expected skip が README と [docs/known-limits.md](known-limits.md) に書かれている。
 - `package.json` は `"private": true` のまま。npm package release を意図する場合だけ変更を検討する。
 - tag / GitHub release / npm publish は明示的に承認されている場合だけ実施する。
@@ -31,6 +34,7 @@ npm run conformance
 npm run report
 npm run compare:reports -- --base reports/latest.json --candidate reports/latest.json --json-output reports/comparison.json
 npm run validate:schemas
+npm run verify:claims
 npm run verify:report
 npm run pages:build
 npm run verify

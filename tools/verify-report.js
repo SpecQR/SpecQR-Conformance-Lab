@@ -10,6 +10,7 @@ import {
   readSuites,
   selectRunScope
 } from "./run-conformance.js";
+import { readCoverageClaimsFile, summarizeCoverageClaims } from "./coverage-claims.js";
 
 function stableStringify(value) {
   if (Array.isArray(value)) {
@@ -73,6 +74,7 @@ function requiredSummaryFields(summary) {
     kanjiEciBinary: summary.kanjiEciBinary,
     renderingOutput: summary.renderingOutput,
     packageSurface: summary.packageSurface,
+    coverageClaims: summary.coverageClaims,
     executed: summary.executed,
     passed: summary.passed,
     failed: summary.failed,
@@ -177,7 +179,10 @@ export async function verifyReportObject(report, options = {}) {
   const expectedSuites = scope.suites.map(suiteMetadata);
   addMismatch(errors, "suites", expectedSuites, report.suites ?? []);
 
-  const expectedSummary = createSummary(scope.suites, scope.vectors, scope.adapters, results);
+  const coverageClaims = await readCoverageClaimsFile({ cwd });
+  const expectedSummary = createSummary(scope.suites, scope.vectors, scope.adapters, results, {
+    coverageClaims: summarizeCoverageClaims(coverageClaims)
+  });
   addMismatch(
     errors,
     "summary",

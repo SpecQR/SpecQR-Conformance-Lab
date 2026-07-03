@@ -7,6 +7,7 @@ import nayukiAdapter from "../adapters/nayuki.js";
 import specqrAdapter from "../adapters/specqr.js";
 import zbarAdapter from "../adapters/zbar.js";
 import zxingCliAdapter from "../adapters/zxing-cli.js";
+import { readCoverageClaimsFile, summarizeCoverageClaims } from "./coverage-claims.js";
 import { createReportMetadata } from "./report-metadata.js";
 
 export const defaultReportPath = "reports/latest.json";
@@ -300,7 +301,7 @@ function isPackageSurfaceCategory(category) {
   return typeof category === "string" && category.startsWith("package-surface");
 }
 
-export function createSummary(suites, vectors, adapters, results) {
+export function createSummary(suites, vectors, adapters, results, options = {}) {
   const statusCounts = createStatusCounts(results);
   const adapterSummary = Object.fromEntries(
     adapters.map((activeAdapter) => [
@@ -322,6 +323,7 @@ export function createSummary(suites, vectors, adapters, results) {
     kanjiEciBinary: createScopedSummary(vectors, results, adapters, isKanjiEciBinaryCategory),
     renderingOutput: createScopedSummary(vectors, results, adapters, isRenderingOutputCategory),
     packageSurface: createScopedSummary(vectors, results, adapters, isPackageSurfaceCategory),
+    coverageClaims: options.coverageClaims ?? summarizeCoverageClaims(),
     executed: results.filter((result) => result.status !== "skipped").length,
     passed: statusCounts.passed,
     failed: statusCounts.failed,
@@ -368,6 +370,8 @@ export async function createConformanceReport(options = {}) {
   const filters = normalizeFilters(options.filters);
   const scope = selectRunScope(allSuites, options.adapters ?? activeAdapters, filters);
   const metadata = await createReportMetadata(options.metadataOptions);
+  const coverageClaims = options.coverageClaims ?? await readCoverageClaimsFile({ cwd });
+  const coverageClaimsSummary = summarizeCoverageClaims(coverageClaims);
 
   const results = [];
   for (const vector of scope.vectors) {
@@ -409,7 +413,9 @@ export async function createConformanceReport(options = {}) {
     },
     adapters: scope.adapters.map((activeAdapter) => createAdapterReportMetadata(activeAdapter, metadata)),
     suites: scope.suites.map(suiteReportMetadata),
-    summary: createSummary(scope.suites, scope.vectors, scope.adapters, results),
+    summary: createSummary(scope.suites, scope.vectors, scope.adapters, results, {
+      coverageClaims: coverageClaimsSummary
+    }),
     results
   };
 

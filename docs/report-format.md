@@ -10,14 +10,17 @@
 | Conformance report v1 | [../schemas/conformance-report-v1.schema.json](../schemas/conformance-report-v1.schema.json) | `reports/latest.json`, filtered report artifacts |
 | Badge v1 | [../schemas/badge-v1.schema.json](../schemas/badge-v1.schema.json) | `badges/*.json` |
 | Report comparison v1 | [../schemas/report-comparison-v1.schema.json](../schemas/report-comparison-v1.schema.json) | `reports/comparison.json` |
+| Coverage claims v1 | [../schemas/coverage-claims-v1.schema.json](../schemas/coverage-claims-v1.schema.json) | `coverage/claims-v1.json` |
 
-`npm run validate:schemas` は現行の vector suite、latest report、badge file、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
+`npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
 
 ## Conformance report
 
 report schema は `reports/latest.json` の安定 field を定義します。top-level には `schemaVersion`, `labVersion`, `status`, `metadata`, `run`, `target`, `adapters`, `suites`, `summary`, `results` を持ちます。
 
-`target.requested` は requested npm package spec、`target.resolvedVersion` は実際に installed package から読んだ version、`target.source` は package source を表します。`summary` は total count、adapter summary、GS1 / DL、Structured Append、Planning / Diagnostics、Kanji / ECI / binary、Rendering / Output、Package Surface の主要 scope summary を持ちます。
+`target.requested` は requested npm package spec、`target.resolvedVersion` は実際に installed package から読んだ version、`target.source` は package source を表します。`summary` は total count、adapter summary、GS1 / DL、Structured Append、Planning / Diagnostics、Kanji / ECI / binary、Rendering / Output、Package Surface、Coverage claims の主要 scope summary を持ちます。
+
+`summary.coverageClaims` は `coverage/claims-v1.json` から作る要約です。`claimCount`, `verified`, `partial`, `notClaimed`, `statusCounts`, `claims` を含み、report consumer が「何を検証済みと言い、何を claim していないか」を machine-readable に確認できます。
 
 filtered run は full run と同じ schema です。filter 条件は `run.mode: "filtered"` と `run.filters.suites`, `run.filters.categories`, `run.filters.adapters`, `run.filters.vectors` に記録します。full run は `run.mode: "full"` です。
 
@@ -32,6 +35,12 @@ badge は report の結果を短く表す derived artifact です。scope skip �
 comparison schema は `tools/compare-reports.js` の JSON output を定義します。`base` と `candidate` の target/summary、target metadata delta、summary count delta、adapter summary delta、主要 suite summary delta、vector/adapter status change、failed/error に関わる check-level change、regression list を持ちます。
 
 default の comparison は count difference だけで失敗しません。`--fail-on-regression` を使う CLI 実行では、新しい failed/error result または required adapter の passed check 喪失がある場合に nonzero exit になります。JSON output では `hasRegression` と `regressions` を見れば機械的に判定できます。
+
+## Coverage claims
+
+`coverage/claims-v1.json` は Lab 全体の coverage claim map です。各 claim は `id`, `title`, `status`, `summary`, `suites`, `adapters`, `badges`, `reportSummaryKey`, `limits` を持ちます。`status` は `verified`, `partial`, `not-claimed` のいずれかです。
+
+`not-claimed` entry は vector / adapter / badge / report summary coverage を参照しません。`npm run verify:claims` は schema validation に加えて、参照された suite が vectors と report の両方に存在すること、adapter が report に存在すること、badge file が存在すること、non-claim が passing vector coverage を装わないことを確認します。
 
 ## Compatibility policy
 

@@ -370,6 +370,60 @@
         }
       }
     },
+    "coverageClaimEntry": {
+      "type": "object",
+      "required": ["id", "title", "status", "reportSummaryKey"],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["verified", "partial", "not-claimed"]
+        },
+        "reportSummaryKey": {
+          "$ref": "#/$defs/nullableString"
+        }
+      }
+    },
+    "coverageClaimsSummary": {
+      "type": "object",
+      "required": ["file", "schemaVersion", "claimCount", "verified", "partial", "notClaimed", "statusCounts", "claims"],
+      "additionalProperties": true,
+      "properties": {
+        "file": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "schemaVersion": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "claimCount": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "verified": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "partial": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "notClaimed": {
+          "$ref": "#/$defs/nonNegativeInteger"
+        },
+        "statusCounts": {
+          "$ref": "#/$defs/countMap"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coverageClaimEntry"
+          }
+        }
+      }
+    },
     "summary": {
       "type": "object",
       "required": [
@@ -385,6 +439,7 @@
         "kanjiEciBinary",
         "renderingOutput",
         "packageSurface",
+        "coverageClaims",
         "executed",
         "passed",
         "failed",
@@ -428,6 +483,9 @@
         },
         "packageSurface": {
           "$ref": "#/$defs/scopeSummary"
+        },
+        "coverageClaims": {
+          "$ref": "#/$defs/coverageClaimsSummary"
         },
         "executed": {
           "$ref": "#/$defs/nonNegativeInteger"

@@ -13,6 +13,7 @@ SpecQR core repository の source tree や local checkout には依存しませ�
 - Kanji mode、ECI UTF-8、raw binary payload の representative vector を外部から確認する。
 - matrix、SVG、PNG、SVG Data URL、PNG Data URL の renderer output surface を Node 上で確認する。
 - Package Surface suite で root export、`specqr/browser`、`specqr/node`、package metadata、TypeScript consumer fixture を確認する。
+- Coverage claims map で検証済み scope、partial scope、明示的な non-claims を machine-readable に公開する。
 
 ## 非目標
 
@@ -47,16 +48,19 @@ vector schema v1 は [docs/vector-schema.md](docs/vector-schema.md) と machine-
 
 ## Data format schemas
 
-Lab が生成・公開する machine-readable data format は `schemas/*.schema.json` に JSON Schema draft 2020-12 として置いています。対象は vector suite、conformance report、badge、report comparison です。形式の詳細と互換性方針は [docs/report-format.md](docs/report-format.md) にまとめています。
+Lab が生成・公開する machine-readable data format は `schemas/*.schema.json` に JSON Schema draft 2020-12 として置いています。対象は vector suite、conformance report、badge、report comparison、coverage claims です。形式の詳細と互換性方針は [docs/report-format.md](docs/report-format.md) にまとめています。
 
 - `schemas/vector-suite-v1.schema.json`
 - `schemas/conformance-report-v1.schema.json`
 - `schemas/badge-v1.schema.json`
 - `schemas/report-comparison-v1.schema.json`
+- `schemas/coverage-claims-v1.schema.json`
 
-`npm run validate:schemas` は `vectors/*.json`、`reports/latest.json`、`badges/*.json`、report self-comparison を schema に対して検査します。`reports/comparison.json` が存在する場合はそれも検査します。filtered report も同じ report schema を使い、`run.mode: "filtered"` と `run.filters` で filter 条件を表します。
+`coverage/claims-v1.json` は、Lab が検証すると言える scope と、まだ claim しない scope を分けて公開する claims map です。`npm run verify:claims` は claims map の schema、suite / adapter / badge / report summary reference、non-claim の誤った coverage reference を検査します。
 
-`npm run pages:build` は schema file を `public/schemas/` にコピーします。Pages deploy 後は `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json` のような URL で参照できます。
+`npm run validate:schemas` は `vectors/*.json`、`reports/latest.json`、`badges/*.json`、`coverage/claims-v1.json`、report self-comparison を schema に対して検査します。`reports/comparison.json` が存在する場合はそれも検査します。filtered report も同じ report schema を使い、`run.mode: "filtered"` と `run.filters` で filter 条件を表します。
+
+`npm run pages:build` は schema file を `public/schemas/` に、claims map を `public/coverage/claims-v1.json` にコピーします。Pages deploy 後は `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json` や `https://specqr.github.io/SpecQR-Conformance-Lab/coverage/claims-v1.json` のような URL で参照できます。
 
 ## 最初に予定している Adapter
 
@@ -83,7 +87,7 @@ optional decoder lane は CLI command が見つからない場合、clear reason
 - `reports/latest.json`: machine-readable な conformance report。
 - `reports/latest.html`: 人間がざっと確認するための summary。
 
-`npm run conformance` は `reports/latest.json` を生成します。JSON には `generatedAt`、Node version、platform/arch、`specqr` / `jsqr` / `nayuki-qr-code-generator` の installed package version を含めます。`target.requested` は requested package spec、`target.resolvedVersion` は実際に `node_modules/specqr/package.json` から読んだ installed version、`target.source` は package source を表します。通常の full run は pinned dependency の `specqr@2.4.0` を requested target として記録します。
+`npm run conformance` は `reports/latest.json` を生成します。JSON には `generatedAt`、Node version、platform/arch、`specqr` / `jsqr` / `nayuki-qr-code-generator` の installed package version、`summary.coverageClaims` を含めます。`target.requested` は requested package spec、`target.resolvedVersion` は実際に `node_modules/specqr/package.json` から読んだ installed version、`target.source` は package source を表します。通常の full run は pinned dependency の `specqr@2.4.0` を requested target として記録します。
 
 default の conformance run は unfiltered full run として記録されます。`--suite`, `--category`, `--adapter`, `--vector`, `--output` を使うと filtered run を作れます。filtered run は `reports/latest.json` の `run.mode` と `run.filters` に記録されます。
 
@@ -132,6 +136,7 @@ npm run validate:vectors
 npm run conformance
 npm run report
 npm run verify:report
+npm run verify:claims
 npm run verify:target
 npm run validate:schemas
 npm run compare:reports -- --base reports/latest.json --candidate reports/latest.json
@@ -162,7 +167,7 @@ npm run conformance -- --adapter specqr --output reports/specqr.local.json
 npm run conformance -- --vector core.generate.byte-text --output reports/vector.local.json
 ```
 
-`npm run verify:report` は生成済み `reports/latest.json` の summary / adapter summary / suite count / result coverage を検査します。`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation、schema validation、report integrity validation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
+`npm run verify:report` は生成済み `reports/latest.json` の summary / adapter summary / suite count / result coverage を検査します。`npm run verify:claims` は `coverage/claims-v1.json` の scope reference と non-claim reference を検査します。`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation、claims validation、schema validation、report integrity validation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
 
 ## 現在の状態
 

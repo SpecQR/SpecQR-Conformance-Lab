@@ -1,0 +1,262 @@
+{
+  "$schema": "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/coverage-claims-v1.schema.json",
+  "schemaVersion": 1,
+  "id": "specqr-conformance-claims-v1",
+  "title": "SpecQR Conformance Lab coverage claims",
+  "target": {
+    "package": "specqr",
+    "requested": "specqr@2.4.0",
+    "source": "npm"
+  },
+  "claims": [
+    {
+      "id": "qr-model2-core-generation",
+      "title": "QR Code Model 2 core generation",
+      "status": "verified",
+      "summary": "Core vectors verify published SpecQR generation behavior for representative QR Code Model 2 payloads and options.",
+      "suites": ["core"],
+      "adapters": ["specqr", "jsqr"],
+      "badges": ["badges/specqr.json", "badges/jsqr.json"],
+      "reportSummaryKey": null,
+      "limits": [
+        "Representative vector coverage only; this is not a proof of every QR Code Model 2 combination.",
+        "SpecQR adapter evaluates generation and diagnostics; jsQR observes decode readability for supported generated PNGs."
+      ],
+      "publicDocs": ["README.md", "docs/vector-schema.md", "docs/report-format.md"]
+    },
+    {
+      "id": "data-modes-kanji-eci-binary",
+      "title": "Numeric / Alphanumeric / Byte / Kanji / ECI / binary payloads",
+      "status": "partial",
+      "summary": "The Lab covers representative numeric, alphanumeric, byte, Kanji, ECI UTF-8, and raw binary payload vectors.",
+      "suites": ["core", "kanji-eci-binary"],
+      "adapters": ["specqr", "jsqr"],
+      "badges": ["badges/kanji-eci-binary.json"],
+      "reportSummaryKey": "kanjiEciBinary",
+      "limits": [
+        "The mode suite is representative and does not exhaust every character set, ECI assignment, version, ECC level, or mask combination.",
+        "Reader lanes observe payload readability and do not claim complete scanner metadata conformance."
+      ],
+      "publicDocs": ["README.md", "docs/known-limits.md", "docs/vector-schema.md"]
+    },
+    {
+      "id": "gs1-digital-link-supported-subset",
+      "title": "GS1 supported AI subset / Digital Link helper",
+      "status": "partial",
+      "summary": "GS1 vectors verify the AI subset and Digital Link helper behavior supported by published SpecQR.",
+      "suites": ["gs1-digital-link"],
+      "adapters": ["specqr"],
+      "badges": ["badges/gs1-digital-link.json"],
+      "reportSummaryKey": "gs1DigitalLink",
+      "limits": [
+        "This claim is limited to the AI subset represented by the vectors.",
+        "The Lab does not claim conformance for the full GS1 AI catalog."
+      ],
+      "publicDocs": ["README.md", "docs/known-limits.md", "docs/vector-schema.md"]
+    },
+    {
+      "id": "structured-append-helper-behavior",
+      "title": "Structured Append helper behavior",
+      "status": "partial",
+      "summary": "Structured Append vectors verify published SpecQR generation, manual segment splitting, parity, and merge helper behavior.",
+      "suites": ["structured-append"],
+      "adapters": ["specqr"],
+      "badges": ["badges/structured-append.json"],
+      "reportSummaryKey": "structuredAppend",
+      "limits": [
+        "The Lab does not decode Structured Append scanner metadata from third-party readers.",
+        "Scanner metadata merge support is not claimed."
+      ],
+      "publicDocs": ["README.md", "docs/adapter-contract.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "planning-diagnostics-api",
+      "title": "Planning / Diagnostics API",
+      "status": "verified",
+      "summary": "Planning vectors verify estimate, analyzeSegments, getCapacity, warning code, and diagnostics subset behavior.",
+      "suites": ["planning-diagnostics"],
+      "adapters": ["specqr"],
+      "badges": ["badges/planning-diagnostics.json"],
+      "reportSummaryKey": "planningDiagnostics",
+      "limits": [
+        "Warning message prose is not matched exactly; stable warning codes and selected diagnostics fields are compared."
+      ],
+      "publicDocs": ["README.md", "docs/vector-schema.md", "docs/report-format.md"]
+    },
+    {
+      "id": "rendering-output-surfaces",
+      "title": "Rendering output surfaces",
+      "status": "verified",
+      "summary": "Rendering vectors verify matrix, SVG, PNG, SVG Data URL, and PNG Data URL output surfaces in Node.",
+      "suites": ["rendering-output"],
+      "adapters": ["specqr", "jsqr"],
+      "badges": ["badges/rendering-output.json"],
+      "reportSummaryKey": "renderingOutput",
+      "limits": [
+        "Canvas and browser DOM automation are not covered.",
+        "jsQR readability is used only where generated PNG readability is meaningful."
+      ],
+      "publicDocs": ["README.md", "docs/known-limits.md", "docs/vector-schema.md"]
+    },
+    {
+      "id": "package-exports-typescript-surface",
+      "title": "Package exports / TypeScript surface",
+      "status": "verified",
+      "summary": "Package Surface vectors verify package metadata, root exports, browser and node subpath helpers, PNG Buffer output, and TypeScript consumer compile.",
+      "suites": ["package-surface"],
+      "adapters": ["specqr"],
+      "badges": ["badges/package-surface.json"],
+      "reportSummaryKey": "packageSurface",
+      "limits": [
+        "Browser helpers are imported and type-checked in Node; browser automation is not executed.",
+        "The TypeScript fixture is a smoke consumer, not an exhaustive public type API proof."
+      ],
+      "publicDocs": ["README.md", "docs/adapter-contract.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "jsqr-decode-readability",
+      "title": "jsQR decode readability",
+      "status": "partial",
+      "summary": "The jsQR lane checks whether selected SpecQR-generated PNGs are readable as expected text or raw bytes when jsQR exposes them.",
+      "suites": ["core", "kanji-eci-binary", "rendering-output"],
+      "adapters": ["jsqr"],
+      "badges": ["badges/jsqr.json"],
+      "reportSummaryKey": null,
+      "limits": [
+        "This is a readability lane, not a full QR reader conformance claim.",
+        "FNC1, Structured Append, ECI, and other scanner metadata are not fully exposed by jsQR."
+      ],
+      "publicDocs": ["README.md", "docs/adapter-contract.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "nayuki-fixed-matrix-reference",
+      "title": "Nayuki fixed matrix reference comparison",
+      "status": "verified",
+      "summary": "Nayuki vectors verify exact matrix equality for fixed Version/ECC/mask reference cases.",
+      "suites": ["reference-nayuki"],
+      "adapters": ["nayuki"],
+      "badges": ["badges/nayuki.json"],
+      "reportSummaryKey": null,
+      "limits": [
+        "The reference lane is limited to fixed Version/ECC/mask vectors.",
+        "It does not claim equivalence for auto segmentation, GS1, Kanji, Structured Append, or renderer output."
+      ],
+      "publicDocs": ["README.md", "docs/adapter-contract.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "optional-cli-decoder-lanes",
+      "title": "Optional CLI decoder lanes",
+      "status": "partial",
+      "summary": "Optional zbarimg and ZXing CLI lanes provide local decode readability checks when the commands are available.",
+      "suites": ["core", "kanji-eci-binary", "rendering-output"],
+      "adapters": ["zbarimg", "zxing-cli"],
+      "badges": ["badges/zbarimg.json", "badges/zxing-cli.json"],
+      "reportSummaryKey": null,
+      "limits": [
+        "Missing optional commands are expected skips and do not fail CI.",
+        "CLI output parsing is conservative and does not claim raw byte or scanner metadata conformance."
+      ],
+      "publicDocs": ["README.md", "docs/adapter-contract.md", "docs/known-limits.md"]
+    }
+  ],
+  "nonClaims": [
+    {
+      "id": "micro-qr",
+      "title": "Micro QR",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim Micro QR coverage.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["No Micro QR vector suite or adapter lane is present."],
+      "reason": "The current target is QR Code Model 2.",
+      "futureDirection": "A future suite would need explicit Micro QR vectors, adapters, and report scope.",
+      "publicDocs": ["README.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "rmqr",
+      "title": "rMQR",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim rMQR coverage.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["No rMQR vector suite or adapter lane is present."],
+      "reason": "The current target is QR Code Model 2.",
+      "futureDirection": "A future suite would need explicit rMQR vectors, adapters, and report scope.",
+      "publicDocs": ["README.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "full-gs1-ai-catalog",
+      "title": "Full GS1 AI catalog",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim full GS1 AI catalog conformance.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["Existing GS1 vectors cover a supported representative subset only."],
+      "reason": "The current GS1 suite intentionally tracks the subset implemented by published SpecQR.",
+      "futureDirection": "A full catalog claim would require catalog-scale AI data and dedicated vectors.",
+      "publicDocs": ["README.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "full-qr-reader",
+      "title": "Full QR reader",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim full QR reader conformance.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["Reader lanes are decode readability checks, not full scanner conformance tests."],
+      "reason": "The Lab is external conformance/report infrastructure and does not implement a full reader.",
+      "futureDirection": "A full reader claim would need reader-specific vectors, metadata assertions, and scanner semantics.",
+      "publicDocs": ["README.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "scanner-metadata-merge-support",
+      "title": "Scanner metadata merge support",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim scanner metadata merge support.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["Structured Append merge helper inputs are tested, but scanner-emitted metadata merge is not."],
+      "reason": "Current decoder lanes do not provide a stable scanner metadata surface for this claim.",
+      "futureDirection": "A future metadata-returning decoder lane could add explicit scanner metadata vectors.",
+      "publicDocs": ["docs/adapter-contract.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "logo-styled-qr",
+      "title": "Logo / styled QR",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim logo or styled QR conformance.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["Rendering vectors cover standard output surfaces, not visual styling overlays or logo placement."],
+      "reason": "Logo/styled QR output is outside the current SpecQR conformance scope.",
+      "futureDirection": "A future visual styling claim would need explicit output semantics and scan-risk expectations.",
+      "publicDocs": ["README.md", "docs/known-limits.md"]
+    },
+    {
+      "id": "browser-canvas-automation",
+      "title": "Browser Canvas automation",
+      "status": "not-claimed",
+      "summary": "The Lab does not claim browser Canvas automation coverage.",
+      "suites": [],
+      "adapters": [],
+      "badges": [],
+      "reportSummaryKey": null,
+      "limits": ["Package Surface imports and type-checks browser helpers in Node, but does not automate a real browser Canvas or DOM lifecycle."],
+      "reason": "The current suite is Node-only and intentionally avoids browser automation.",
+      "futureDirection": "A future browser lane would need explicit browser runner infrastructure and Canvas/DOM assertions.",
+      "publicDocs": ["README.md", "docs/known-limits.md"]
+    }
+  ]
+}

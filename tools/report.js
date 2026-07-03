@@ -1,5 +1,10 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import {
+  allCoverageClaims,
+  readCoverageClaimsFile,
+  summarizeCoverageClaims
+} from "./coverage-claims.js";
 import { createBadgeSet, normalizeCounts, summarizeStatus } from "./report-utils.js";
 
 const jsonReportPath = path.resolve("reports/latest.json");
@@ -59,6 +64,7 @@ async function readReport() {
         kanjiEciBinary: {},
         renderingOutput: {},
         packageSurface: {},
+        coverageClaims: summarizeCoverageClaims(),
         executed: 0,
         passed: 0,
         failed: 0,
@@ -182,7 +188,36 @@ ${objectRows(summary?.categories)}
   </table>`;
 }
 
+function claimList(value) {
+  return Array.isArray(value) && value.length > 0 ? value.join(", ") : "-";
+}
+
+function claimLimits(value) {
+  return Array.isArray(value) && value.length > 0 ? value.join(" / ") : "-";
+}
+
+function coverageClaimRows(claims) {
+  return claims
+    .map((claim) => {
+      return `      <tr><td>${escapeHtml(claim.id)}</td><td>${escapeHtml(claim.title)}</td><td>${escapeHtml(claim.status)}</td><td>${escapeHtml(claim.summary)}</td><td>${escapeHtml(claimList(claim.suites))}</td><td>${escapeHtml(claimList(claim.adapters))}</td><td>${escapeHtml(claimList(claim.badges))}</td><td>${escapeHtml(claim.reportSummaryKey ?? "-")}</td><td>${escapeHtml(claimLimits(claim.limits))}</td></tr>`;
+    })
+    .join("\n");
+}
+
+function nonClaimRows(nonClaims) {
+  return nonClaims
+    .map((claim) => {
+      return `      <tr><td>${escapeHtml(claim.id)}</td><td>${escapeHtml(claim.title)}</td><td>${escapeHtml(claim.reason ?? claim.summary)}</td><td>${escapeHtml(claim.futureDirection ?? "-")}</td><td>${escapeHtml(claimLimits(claim.limits))}</td></tr>`;
+    })
+    .join("\n");
+}
+
 const report = await readReport();
+const coverageClaimsMap = await readCoverageClaimsFile().catch(() => ({
+  schemaVersion: 1,
+  claims: [],
+  nonClaims: []
+}));
 const summary = report.summary ?? {};
 const target = report.target ?? {};
 const adapters = Array.isArray(report.adapters) ? report.adapters : [];
@@ -200,6 +235,10 @@ const planningDiagnostics = summary.planningDiagnostics ?? {};
 const kanjiEciBinary = summary.kanjiEciBinary ?? {};
 const renderingOutput = summary.renderingOutput ?? {};
 const packageSurface = summary.packageSurface ?? {};
+const coverageClaims = summary.coverageClaims ?? summarizeCoverageClaims(coverageClaimsMap);
+const coverageClaimRowsHtml = coverageClaimRows(coverageClaimsMap.claims ?? []);
+const nonClaimRowsHtml = nonClaimRows(coverageClaimsMap.nonClaims ?? []);
+const coverageClaimList = allCoverageClaims(coverageClaimsMap);
 const optionalDecoderAdapters = adapters.filter((adapter) => {
   return adapter.lane === "optional-decode-readability" || adapter.required === false;
 });
@@ -323,6 +362,35 @@ const html = `<!doctype html>
 ${statusBands}
   </div>
   <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip と、任意 CLI decoder が未導入の expected skip は、失敗やエラーとは別に扱います。</p>
+  <h2>Coverage claims / non-claims</h2>
+  <p>機械可読な claims map は <code>coverage/claims-v1.json</code> にあります。この report では verified / partial / not-claimed を分け、既存 vector や adapter が支えない scope を release claim として扱わないようにします。</p>
+  <table>
+    <tbody>
+      <tr><th>Claims file</th><td>${escapeHtml(coverageClaims.file ?? "coverage/claims-v1.json")}</td></tr>
+      <tr><th>Total claims</th><td>${escapeHtml(coverageClaims.claimCount ?? coverageClaimList.length)}</td></tr>
+      <tr><th>Verified</th><td>${escapeHtml(coverageClaims.verified ?? 0)}</td></tr>
+      <tr><th>Partial</th><td>${escapeHtml(coverageClaims.partial ?? 0)}</td></tr>
+      <tr><th>Not claimed</th><td>${escapeHtml(coverageClaims.notClaimed ?? 0)}</td></tr>
+    </tbody>
+  </table>
+  <h3>Verified / partial claims</h3>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Status</th><th>Summary</th><th>Suites</th><th>Adapters</th><th>Badges</th><th>Report key</th><th>Limits</th></tr>
+    </thead>
+    <tbody>
+${coverageClaimRowsHtml}
+    </tbody>
+  </table>
+  <h3>Explicit non-claims</h3>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Title</th><th>Reason</th><th>Future direction</th><th>Limits</th></tr>
+    </thead>
+    <tbody>
+${nonClaimRowsHtml}
+    </tbody>
+  </table>
   <h2>何を検証していないか</h2>
   <ul>
     <li>Micro QR</li>

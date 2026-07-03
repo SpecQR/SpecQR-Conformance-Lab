@@ -8,7 +8,8 @@ export const schemaFiles = {
   vectorSuite: "schemas/vector-suite-v1.schema.json",
   conformanceReport: "schemas/conformance-report-v1.schema.json",
   badge: "schemas/badge-v1.schema.json",
-  reportComparison: "schemas/report-comparison-v1.schema.json"
+  reportComparison: "schemas/report-comparison-v1.schema.json",
+  coverageClaims: "schemas/coverage-claims-v1.schema.json"
 };
 
 const draft = "https://json-schema.org/draft/2020-12/schema";
@@ -323,6 +324,12 @@ export async function validateAllSchemas(options = {}) {
     pushResult(summary, await validateJsonFile(filePath, schemas.badge, schemaFiles.badge, options));
   }
 
+  const coverageClaimsPath = options.coverageClaimsPath ?? "coverage/claims-v1.json";
+  pushResult(
+    summary,
+    await validateJsonFile(coverageClaimsPath, schemas.coverageClaims, schemaFiles.coverageClaims, options)
+  );
+
   const report = reportValidation.value;
   const selfComparison = compareReports(report, report);
   const selfComparisonResult = validateSchemaValue(selfComparison, schemas.reportComparison);
@@ -354,7 +361,8 @@ function summarize(summary) {
     vectors: summary.validated.filter((entry) => entry.schema === schemaFiles.vectorSuite).length,
     reports: summary.validated.filter((entry) => entry.schema === schemaFiles.conformanceReport).length,
     badges: summary.validated.filter((entry) => entry.schema === schemaFiles.badge).length,
-    comparisons: summary.validated.filter((entry) => entry.schema === schemaFiles.reportComparison).length
+    comparisons: summary.validated.filter((entry) => entry.schema === schemaFiles.reportComparison).length,
+    coverageClaims: summary.validated.filter((entry) => entry.schema === schemaFiles.coverageClaims).length
   };
 
   return {

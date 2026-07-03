@@ -2,6 +2,8 @@
 
 この repository は SpecQR を外部から検証する conformance lab であり、SpecQR core そのものではありません。npm に公開された package を対象に、外部から観測できる結果を記録します。現時点の制限は次の通りです。
 
+machine-readable な coverage / non-claim の正本は [../coverage/claims-v1.json](../coverage/claims-v1.json) です。この文書はその human-readable 補足です。
+
 - SpecQR adapter は `generate`, `generateSegments`, `estimate`, `analyzeSegments`, `getCapacity` の baseline 実行に対応している。
 - Planning / Diagnostics vector は `specqr@2.4.0` の `estimate`, `analyzeSegments`, `getCapacity` の subset と warning code surface を確認する。warning message の全文一致はしない。
 - SpecQR adapter は published `specqr@2.4.0` の GS1 helper / Digital Link helper を実行する。ただし対象は SpecQR がサポートする AI subset であり、GS1 full catalog の conformance ではない。
@@ -29,3 +31,4 @@
 - 何を検証していないか: scanner metadata merge support。Structured Append の scanner metadata decoding や decoder merge support は実装しない。metadata-returning decoder がある前提で `mergeStructuredAppendParts()` helper の入力検証だけを確認する。
 - 何を検証していないか: logo/styled QR。
 - SpecQR target は npm package `specqr@2.4.0`。SpecQR core repository の source tree や local checkout は検証入力として使わない。
+- `coverage/claims-v1.json` の `not-claimed` entry が vector、adapter、badge、report summary coverage を参照しないことは `npm run verify:claims` で検査する。

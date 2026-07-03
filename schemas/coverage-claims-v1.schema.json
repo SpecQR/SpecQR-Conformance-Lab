@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/coverage-claims-v1.schema.json",
+  "title": "SpecQR Conformance Lab Coverage Claims v1",
+  "type": "object",
+  "required": ["schemaVersion", "id", "title", "target", "claims", "nonClaims"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "title": {
+      "$ref": "#/$defs/nonEmptyString"
+    },
+    "target": {
+      "$ref": "#/$defs/target"
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    },
+    "nonClaims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/claim"
+      }
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "target": {
+      "type": "object",
+      "required": ["package", "requested", "source"],
+      "additionalProperties": true,
+      "properties": {
+        "package": {
+          "const": "specqr"
+        },
+        "requested": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "source": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "status",
+        "summary",
+        "suites",
+        "adapters",
+        "badges",
+        "reportSummaryKey",
+        "limits"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "title": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["verified", "partial", "not-claimed"]
+        },
+        "summary": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "suites": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "adapters": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "badges": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "reportSummaryKey": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "limits": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "reason": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "futureDirection": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "publicDocs": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    }
+  }
+}

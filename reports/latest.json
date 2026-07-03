@@ -3,7 +3,7 @@
   "labVersion": "0.1.0",
   "status": "executed",
   "metadata": {
-    "generatedAt": "2026-06-25T18:03:18.016Z",
+    "generatedAt": "2026-07-03T18:01:16.648Z",
     "runtime": {
       "node": "v25.9.0",
       "platform": "darwin",
@@ -681,6 +681,123 @@
           "error": 0
         }
       }
+    },
+    "coverageClaims": {
+      "file": "coverage/claims-v1.json",
+      "schemaVersion": 1,
+      "claimCount": 17,
+      "verified": 5,
+      "partial": 5,
+      "notClaimed": 7,
+      "statusCounts": {
+        "verified": 5,
+        "partial": 5,
+        "not-claimed": 7
+      },
+      "claims": [
+        {
+          "id": "qr-model2-core-generation",
+          "title": "QR Code Model 2 core generation",
+          "status": "verified",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "data-modes-kanji-eci-binary",
+          "title": "Numeric / Alphanumeric / Byte / Kanji / ECI / binary payloads",
+          "status": "partial",
+          "reportSummaryKey": "kanjiEciBinary"
+        },
+        {
+          "id": "gs1-digital-link-supported-subset",
+          "title": "GS1 supported AI subset / Digital Link helper",
+          "status": "partial",
+          "reportSummaryKey": "gs1DigitalLink"
+        },
+        {
+          "id": "structured-append-helper-behavior",
+          "title": "Structured Append helper behavior",
+          "status": "partial",
+          "reportSummaryKey": "structuredAppend"
+        },
+        {
+          "id": "planning-diagnostics-api",
+          "title": "Planning / Diagnostics API",
+          "status": "verified",
+          "reportSummaryKey": "planningDiagnostics"
+        },
+        {
+          "id": "rendering-output-surfaces",
+          "title": "Rendering output surfaces",
+          "status": "verified",
+          "reportSummaryKey": "renderingOutput"
+        },
+        {
+          "id": "package-exports-typescript-surface",
+          "title": "Package exports / TypeScript surface",
+          "status": "verified",
+          "reportSummaryKey": "packageSurface"
+        },
+        {
+          "id": "jsqr-decode-readability",
+          "title": "jsQR decode readability",
+          "status": "partial",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "nayuki-fixed-matrix-reference",
+          "title": "Nayuki fixed matrix reference comparison",
+          "status": "verified",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "optional-cli-decoder-lanes",
+          "title": "Optional CLI decoder lanes",
+          "status": "partial",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "micro-qr",
+          "title": "Micro QR",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "rmqr",
+          "title": "rMQR",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "full-gs1-ai-catalog",
+          "title": "Full GS1 AI catalog",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "full-qr-reader",
+          "title": "Full QR reader",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "scanner-metadata-merge-support",
+          "title": "Scanner metadata merge support",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "logo-styled-qr",
+          "title": "Logo / styled QR",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        },
+        {
+          "id": "browser-canvas-automation",
+          "title": "Browser Canvas automation",
+          "status": "not-claimed",
+          "reportSummaryKey": null
+        }
+      ]
     },
     "executed": 106,
     "passed": 106,

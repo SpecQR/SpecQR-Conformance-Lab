@@ -10,14 +10,17 @@ export async function buildPages(options = {}) {
   const reportsDir = path.join(cwd, "reports");
   const badgesDir = path.join(cwd, "badges");
   const schemasDir = path.join(cwd, "schemas");
+  const coverageDir = path.join(cwd, "coverage");
   const publicReportsDir = path.join(publicDir, "reports");
   const publicBadgesDir = path.join(publicDir, "badges");
   const publicSchemasDir = path.join(publicDir, "schemas");
+  const publicCoverageDir = path.join(publicDir, "coverage");
 
   await rm(publicDir, { recursive: true, force: true });
   await mkdir(publicReportsDir, { recursive: true });
   await mkdir(publicBadgesDir, { recursive: true });
   await mkdir(publicSchemasDir, { recursive: true });
+  await mkdir(publicCoverageDir, { recursive: true });
 
   await copyFile(path.join(reportsDir, "latest.html"), path.join(publicDir, "index.html"));
   await copyFile(path.join(reportsDir, "latest.html"), path.join(publicReportsDir, "latest.html"));
@@ -49,6 +52,21 @@ export async function buildPages(options = {}) {
   for (const fileName of schemaFiles) {
     await copyFile(path.join(schemasDir, fileName), path.join(publicSchemasDir, fileName));
     files.push(`schemas/${fileName}`);
+  }
+
+  const coverageEntries = await readdir(coverageDir, { withFileTypes: true });
+  const coverageFiles = coverageEntries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
+    .map((entry) => entry.name)
+    .sort();
+
+  if (!coverageFiles.includes("claims-v1.json")) {
+    throw new Error("missing required coverage file: claims-v1.json");
+  }
+
+  for (const fileName of coverageFiles) {
+    await copyFile(path.join(coverageDir, fileName), path.join(publicCoverageDir, fileName));
+    files.push(`coverage/${fileName}`);
   }
 
   return {
