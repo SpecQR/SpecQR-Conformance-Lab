@@ -24,6 +24,12 @@ report schema は `reports/latest.json` の安定 field を定義します。top
 
 filtered run は full run と同じ schema です。filter 条件は `run.mode: "filtered"` と `run.filters.suites`, `run.filters.categories`, `run.filters.adapters`, `run.filters.vectors` に記録します。full run は `run.mode: "full"` です。
 
+## HTML report explorer
+
+`reports/latest.html` は `reports/latest.json` と `coverage/claims-v1.json` から生成する static view です。HTML 自体は schema で固定しませんが、public report として suite、category、adapter、status、vector id search の filter control、filter 後 count、result ごとの `<details>` detail block、coverage claims / non-claims の link table を持ちます。
+
+JavaScript が無効な環境でも full result table を最初から表示します。filter は dependency-free な inline script だけで行い、conformance semantics や `reports/latest.json` の結果は変更しません。
+
 ## Badge
 
 badge schema は Shields-compatible JSON endpoint として使う最小形式です。`schemaVersion: 1`, `label`, `message`, `color` を必須にします。現行の color は `green`, `yellow`, `red` です。

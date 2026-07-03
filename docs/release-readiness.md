@@ -7,6 +7,7 @@
 - Verify workflow が Node 18 / 20 / 22 / 24 で green。
 - Pages workflow が green。
 - public report が到達可能: `https://specqr.github.io/SpecQR-Conformance-Lab/reports/latest.json`
+- public HTML explorer が到達可能で、suite / category / adapter / status / vector id search の filter controls と result detail `<details>` を含む: `https://specqr.github.io/SpecQR-Conformance-Lab/reports/latest.html`
 - public schema URL が到達可能:
   - `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json`
   - `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/conformance-report-v1.schema.json`

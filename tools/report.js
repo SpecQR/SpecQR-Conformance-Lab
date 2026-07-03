@@ -10,6 +10,7 @@ import { createBadgeSet, normalizeCounts, summarizeStatus } from "./report-utils
 const jsonReportPath = path.resolve("reports/latest.json");
 const htmlReportPath = path.resolve("reports/latest.html");
 const badgeDir = path.resolve("badges");
+const publicBaseUrl = "https://specqr.github.io/SpecQR-Conformance-Lab";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -17,6 +18,30 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
+}
+
+function slug(value) {
+  const normalized = String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return normalized || "unknown";
+}
+
+function anchorId(prefix, value) {
+  return `${prefix}-${slug(value)}`;
+}
+
+function publicUrl(relativePath) {
+  return `${publicBaseUrl}/${String(relativePath).replace(/^\/+/, "")}`;
+}
+
+function publicLink(relativePath, label = relativePath) {
+  return `<a href="${escapeHtml(publicUrl(relativePath))}">${escapeHtml(label)}</a>`;
+}
+
+function localAnchorLink(id, label) {
+  return `<a href="#${escapeHtml(id)}">${escapeHtml(label)}</a>`;
 }
 
 async function readReport() {
@@ -161,8 +186,9 @@ function scopeAdapterSummaryRows(scopeSummary) {
     .join("\n");
 }
 
-function scopeSection(title, description, summary, categoryTitle) {
-  return `  <h2>${escapeHtml(title)}</h2>
+function scopeSection(title, description, summary, categoryTitle, sectionId) {
+  const idAttribute = sectionId ? ` id="${escapeHtml(sectionId)}"` : "";
+  return `  <h2${idAttribute}>${escapeHtml(title)}</h2>
   <p>${escapeHtml(description)}</p>
   <table>
     <tbody>
@@ -196,10 +222,53 @@ function claimLimits(value) {
   return Array.isArray(value) && value.length > 0 ? value.join(" / ") : "-";
 }
 
+function linkList(items, linkForItem) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return "-";
+  }
+
+  return items.map((item) => linkForItem(item)).join(", ");
+}
+
+const summarySectionIds = {
+  gs1DigitalLink: "summary-gs1-digital-link",
+  structuredAppend: "summary-structured-append",
+  planningDiagnostics: "summary-planning-diagnostics",
+  kanjiEciBinary: "summary-kanji-eci-binary",
+  renderingOutput: "summary-rendering-output",
+  packageSurface: "summary-package-surface"
+};
+
+function suiteLinks(suiteIds) {
+  return linkList(suiteIds, (suiteId) => localAnchorLink(anchorId("suite", suiteId), suiteId));
+}
+
+function adapterLinks(adapterIds) {
+  return linkList(adapterIds, (adapterId) => localAnchorLink(anchorId("adapter", adapterId), adapterId));
+}
+
+function badgeLinks(badges) {
+  return linkList(badges, (badgePath) => publicLink(badgePath, badgePath.replace(/^badges\//, "")));
+}
+
+function reportSummaryLink(reportSummaryKey) {
+  if (!reportSummaryKey) {
+    return "-";
+  }
+  const sectionId = summarySectionIds[reportSummaryKey];
+  return sectionId ? localAnchorLink(sectionId, reportSummaryKey) : escapeHtml(reportSummaryKey);
+}
+
+function statusPill(status, options = {}) {
+  const extraClass = options.extraClass ? ` ${options.extraClass}` : "";
+  const suffix = options.suffix ? ` ${options.suffix}` : "";
+  return `<span class="status-pill status-${escapeHtml(status)}${extraClass}">${escapeHtml(status)}${escapeHtml(suffix)}</span>`;
+}
+
 function coverageClaimRows(claims) {
   return claims
     .map((claim) => {
-      return `      <tr><td>${escapeHtml(claim.id)}</td><td>${escapeHtml(claim.title)}</td><td>${escapeHtml(claim.status)}</td><td>${escapeHtml(claim.summary)}</td><td>${escapeHtml(claimList(claim.suites))}</td><td>${escapeHtml(claimList(claim.adapters))}</td><td>${escapeHtml(claimList(claim.badges))}</td><td>${escapeHtml(claim.reportSummaryKey ?? "-")}</td><td>${escapeHtml(claimLimits(claim.limits))}</td></tr>`;
+      return `      <tr class="claim-row claim-${escapeHtml(claim.status)}"><td>${escapeHtml(claim.id)}</td><td>${escapeHtml(claim.title)}</td><td>${statusPill(claim.status)}</td><td>${escapeHtml(claim.summary)}</td><td>${suiteLinks(claim.suites)}</td><td>${adapterLinks(claim.adapters)}</td><td>${badgeLinks(claim.badges)}</td><td>${reportSummaryLink(claim.reportSummaryKey)}</td><td>${escapeHtml(claimLimits(claim.limits))}</td></tr>`;
     })
     .join("\n");
 }
@@ -207,9 +276,169 @@ function coverageClaimRows(claims) {
 function nonClaimRows(nonClaims) {
   return nonClaims
     .map((claim) => {
-      return `      <tr><td>${escapeHtml(claim.id)}</td><td>${escapeHtml(claim.title)}</td><td>${escapeHtml(claim.reason ?? claim.summary)}</td><td>${escapeHtml(claim.futureDirection ?? "-")}</td><td>${escapeHtml(claimLimits(claim.limits))}</td></tr>`;
+      return `      <tr class="claim-row claim-not-claimed"><td>${escapeHtml(claim.id)}</td><td>${escapeHtml(claim.title)}</td><td>${statusPill(claim.status)}</td><td>${escapeHtml(claim.reason ?? claim.summary)}</td><td>${escapeHtml(claim.futureDirection ?? "-")}</td><td>${escapeHtml(claimLimits(claim.limits))}</td></tr>`;
     })
     .join("\n");
+}
+
+function uniqueSorted(values) {
+  return [...new Set(values.filter((value) => value !== undefined && value !== null && value !== ""))]
+    .sort((left, right) => String(left).localeCompare(String(right)));
+}
+
+function selectOptions(values, selectedValue = "") {
+  return values
+    .map((value) => {
+      const selected = value === selectedValue ? " selected" : "";
+      return `<option value="${escapeHtml(value)}"${selected}>${escapeHtml(value)}</option>`;
+    })
+    .join("\n");
+}
+
+function renderChecksTable(checks) {
+  if (!Array.isArray(checks) || checks.length === 0) {
+    return "<p>checks はありません。</p>";
+  }
+
+  return `<table class="nested-table">
+        <thead>
+          <tr><th>Check</th><th>Status</th><th>Reason</th><th>Important fields</th></tr>
+        </thead>
+        <tbody>
+${checks.map((check) => {
+  const important = Object.entries(check)
+    .filter(([key]) => !["name", "status", "reason"].includes(key))
+    .map(([key, value]) => `${key}: ${formatDetailValue(value)}`)
+    .join(" / ");
+  return `          <tr><td>${escapeHtml(check.name)}</td><td>${statusPill(check.status)}</td><td>${escapeHtml(check.reason ?? "")}</td><td>${escapeHtml(important || "-")}</td></tr>`;
+}).join("\n")}
+        </tbody>
+      </table>`;
+}
+
+function detailAt(object, pathParts) {
+  let current = object;
+  for (const part of pathParts) {
+    if (current === null || current === undefined || typeof current !== "object" || !Object.hasOwn(current, part)) {
+      return undefined;
+    }
+    current = current[part];
+  }
+  return current;
+}
+
+function formatDetailValue(value) {
+  if (value === undefined || value === null || value === "") {
+    return "";
+  }
+  if (Array.isArray(value)) {
+    return `${value.length} item${value.length === 1 ? "" : "s"}`;
+  }
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+  return String(value);
+}
+
+function truncateValue(value, maxLength = 96) {
+  const text = String(value ?? "");
+  return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+}
+
+function importantDetailPairs(result) {
+  const details = result.details ?? {};
+  const pairs = [];
+  const paths = [
+    ["matrixSha256", ["matrixSha256"]],
+    ["specqrMatrixSha256", ["specqrMatrixSha256"]],
+    ["nayukiMatrixSha256", ["nayukiMatrixSha256"]],
+    ["render.format", ["render", "format"]],
+    ["render.width", ["render", "width"]],
+    ["render.height", ["render", "height"]],
+    ["render.size", ["render", "size"]],
+    ["render.byteLength", ["render", "byteLength"]],
+    ["render.mediaType", ["render", "mediaType"]],
+    ["image.width", ["image", "width"]],
+    ["image.height", ["image", "height"]],
+    ["decoded.text", ["decoded", "text"]],
+    ["decoded.binaryHex", ["decoded", "binaryHex"]],
+    ["decoded.version", ["decoded", "version"]],
+    ["diagnostics.version", ["diagnostics", "version"]],
+    ["diagnostics.size", ["diagnostics", "size"]],
+    ["diagnostics.mode", ["diagnostics", "mode"]],
+    ["diagnostics.errorCorrectionLevel", ["diagnostics", "errorCorrectionLevel"]],
+    ["diagnostics.maskPattern", ["diagnostics", "maskPattern"]],
+    ["diagnostics.eciAssignmentNumber", ["diagnostics", "eciAssignmentNumber"]],
+    ["diagnostics.gs1", ["diagnostics", "gs1"]],
+    ["planning.selectedVersion", ["planning", "selectedVersion"]],
+    ["planning.remainingBits", ["planning", "remainingBits"]],
+    ["capacity.version", ["capacity", "version"]],
+    ["capacity.mode", ["capacity", "mode"]],
+    ["capacity.maxCharacters", ["capacity", "maxCharacters"]],
+    ["gs1.ok", ["gs1", "ok"]],
+    ["value", ["value"]],
+    ["structuredAppend.total", ["structuredAppend", "total"]],
+    ["structuredAppend.parity", ["structuredAppend", "parity"]],
+    ["packageSurface.kind", ["packageSurface", "kind"]],
+    ["packageSurface.metadata.version", ["packageSurface", "metadata", "version"]],
+    ["packageSurface.pngBuffer.byteLength", ["packageSurface", "pngBuffer", "byteLength"]],
+    ["packageSurface.typescript.exitCode", ["packageSurface", "typescript", "exitCode"]],
+    ["availability.commands", ["availability", "commands"]]
+  ];
+
+  for (const [label, pathParts] of paths) {
+    const value = detailAt(details, pathParts);
+    if (value !== undefined && value !== null && value !== "") {
+      pairs.push([label, truncateValue(formatDetailValue(value))]);
+    }
+  }
+
+  for (const check of result.checks ?? []) {
+    for (const key of ["matrixSha256", "specqrMatrixSha256", "nayukiMatrixSha256", "version", "size", "errorCorrectionLevel", "maskPattern", "mode", "format"]) {
+      if (check[key] !== undefined && check[key] !== null && check[key] !== "") {
+        pairs.push([`check.${check.name}.${key}`, truncateValue(formatDetailValue(check[key]))]);
+      }
+    }
+  }
+
+  return pairs;
+}
+
+function importantDetailRows(result) {
+  const pairs = importantDetailPairs(result);
+  if (pairs.length === 0) {
+    return "          <tr><td colspan=\"2\">重要 detail はありません。</td></tr>";
+  }
+
+  return pairs
+    .map(([label, value]) => `          <tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`)
+    .join("\n");
+}
+
+function resultDetailBlock(result) {
+  const detailJson = JSON.stringify(result.details ?? {});
+  return `<details class="result-detail">
+        <summary>結果詳細</summary>
+        <dl class="result-meta">
+          <div><dt>Vector</dt><dd>${escapeHtml(result.vectorId)}</dd></div>
+          <div><dt>Suite</dt><dd>${escapeHtml(result.suiteId)}</dd></div>
+          <div><dt>Category</dt><dd>${escapeHtml(result.category)}</dd></div>
+          <div><dt>Operation</dt><dd>${escapeHtml(result.operation)}</dd></div>
+          <div><dt>Adapter</dt><dd>${escapeHtml(result.adapterId)}</dd></div>
+          <div><dt>Status</dt><dd>${statusPill(result.status)}</dd></div>
+        </dl>
+        <p><strong>Reason:</strong> ${escapeHtml(result.reason ?? "-")}</p>
+        <h4>Checks</h4>
+${renderChecksTable(result.checks)}
+        <h4>Important details</h4>
+        <table class="nested-table">
+          <tbody>
+${importantDetailRows(result)}
+          </tbody>
+        </table>
+        <h4>Raw details JSON</h4>
+        <pre>${escapeHtml(detailJson === "{}" ? "{ }" : detailJson)}</pre>
+      </details>`;
 }
 
 const report = await readReport();
@@ -242,11 +471,112 @@ const coverageClaimList = allCoverageClaims(coverageClaimsMap);
 const optionalDecoderAdapters = adapters.filter((adapter) => {
   return adapter.lane === "optional-decode-readability" || adapter.required === false;
 });
+const adapterById = Object.fromEntries(adapters.map((adapter) => [adapter.id, adapter]));
+const requiredAdapterIds = new Set(adapters.filter((adapter) => adapter.required !== false).map((adapter) => adapter.id));
 const rawByteSkipped = results.flatMap((result) => {
   return (result.checks ?? [])
     .filter((check) => check.name === "decode.binaryHex" && check.status === "skipped")
     .map((check) => ({ vectorId: result.vectorId, reason: check.reason }));
 });
+
+function isOptionalAvailabilitySkip(result) {
+  const adapter = adapterById[result.adapterId];
+  if (!adapter || adapter.required !== false || result.status !== "skipped") {
+    return false;
+  }
+  return (result.checks ?? []).some((check) => {
+    return check.name === "availability" && check.status === "skipped";
+  });
+}
+
+function resultRow(result) {
+  const adapter = adapterById[result.adapterId] ?? {};
+  const expectedSkip = isOptionalAvailabilitySkip(result);
+  const requiredIssue = requiredAdapterIds.has(result.adapterId) && ["failed", "error"].includes(result.status);
+  const rowClasses = [
+    "result-row",
+    `result-status-${result.status}`,
+    adapter.required === false ? "result-optional-adapter" : "result-required-adapter",
+    expectedSkip ? "result-expected-skip" : "",
+    requiredIssue ? "result-required-issue" : ""
+  ].filter(Boolean).join(" ");
+  const status = expectedSkip ? statusPill(result.status, { suffix: "(expected)" }) : statusPill(result.status);
+  const suite = localAnchorLink(anchorId("suite", result.suiteId), result.suiteId);
+  const adapterLink = localAnchorLink(anchorId("adapter", result.adapterId), result.adapterId);
+  const vectorSearch = [
+    result.vectorId,
+    result.title,
+    result.suiteId,
+    result.category,
+    result.operation,
+    result.adapterId,
+    result.status,
+    result.reason,
+    checkSummary(result.checks)
+  ].filter(Boolean).join(" ").toLowerCase();
+
+  return `      <tr class="${escapeHtml(rowClasses)}" data-suite="${escapeHtml(result.suiteId)}" data-category="${escapeHtml(result.category)}" data-adapter="${escapeHtml(result.adapterId)}" data-status="${escapeHtml(result.status)}" data-vector-search="${escapeHtml(vectorSearch)}">
+        <td><code>${escapeHtml(result.vectorId)}</code><br><span class="muted">${escapeHtml(result.title ?? "")}</span></td>
+        <td>${suite}</td>
+        <td>${escapeHtml(result.category)}</td>
+        <td>${escapeHtml(result.operation)}</td>
+        <td>${adapterLink}</td>
+        <td>${status}</td>
+        <td>${escapeHtml(checkSummary(result.checks) || "-")}</td>
+        <td>${escapeHtml(result.reason ?? "-")}</td>
+        <td>${resultDetailBlock(result)}</td>
+      </tr>`;
+}
+
+function resultRows(allResults) {
+  return allResults.map((result) => resultRow(result)).join("\n");
+}
+
+function requiredIssueRows(allResults) {
+  const issues = allResults.filter((result) => {
+    return requiredAdapterIds.has(result.adapterId) && ["failed", "error"].includes(result.status);
+  });
+
+  if (issues.length === 0) {
+    return `  <section class="required-alert required-alert-ok">
+    <h2>Required adapter failures/errors</h2>
+    <p>Required adapter の failed / error result はありません。</p>
+  </section>`;
+  }
+
+  return `  <section class="required-alert required-alert-error">
+    <h2>Required adapter failures/errors</h2>
+    <p>Required adapter の failed / error は release gate 上の強い signal として扱います。</p>
+    <table>
+      <thead>
+        <tr><th>Vector</th><th>Suite</th><th>Adapter</th><th>Status</th><th>Reason</th></tr>
+      </thead>
+      <tbody>
+${issues.map((result) => `        <tr><td><code>${escapeHtml(result.vectorId)}</code></td><td>${escapeHtml(result.suiteId)}</td><td>${escapeHtml(result.adapterId)}</td><td>${statusPill(result.status)}</td><td>${escapeHtml(result.reason ?? "")}</td></tr>`).join("\n")}
+      </tbody>
+    </table>
+  </section>`;
+}
+
+const explorerSuiteOptions = selectOptions(uniqueSorted(results.map((result) => result.suiteId)));
+const explorerCategoryOptions = selectOptions(uniqueSorted(results.map((result) => result.category)));
+const explorerAdapterOptions = selectOptions(uniqueSorted(results.map((result) => result.adapterId)));
+const explorerStatusOptions = selectOptions(uniqueSorted(results.map((result) => result.status)));
+const resultRowsHtml = resultRows(results);
+const requiredIssuesHtml = requiredIssueRows(results);
+const publicArtifactRows = [
+  ["JSON report", publicLink("reports/latest.json", "reports/latest.json")],
+  ["HTML report", publicLink("reports/latest.html", "reports/latest.html")],
+  ["Coverage claims", publicLink("coverage/claims-v1.json", "coverage/claims-v1.json")],
+  ["Vector schema", publicLink("schemas/vector-suite-v1.schema.json", "schemas/vector-suite-v1.schema.json")],
+  ["Report schema", publicLink("schemas/conformance-report-v1.schema.json", "schemas/conformance-report-v1.schema.json")],
+  ["Badge schema", publicLink("schemas/badge-v1.schema.json", "schemas/badge-v1.schema.json")],
+  ["Claims schema", publicLink("schemas/coverage-claims-v1.schema.json", "schemas/coverage-claims-v1.schema.json")],
+  ["Overall badge", publicLink("badges/overall.json", "badges/overall.json")],
+  ["SpecQR badge", publicLink("badges/specqr.json", "badges/specqr.json")]
+]
+  .map(([label, link]) => `      <tr><th>${escapeHtml(label)}</th><td>${link}</td></tr>`)
+  .join("\n");
 
 const statusBands = [
   statusBand("Overall", "全 vector / adapter 結果", summary),
@@ -274,13 +604,13 @@ function commandCandidates(adapter) {
 
 const adapterRows = adapters
   .map(
-    (adapter) => `      <tr><td>${escapeHtml(adapter.id)}</td><td>${escapeHtml(adapter.name)}</td><td>${escapeHtml(adapter.required === false ? "optional" : "required")}</td><td>${escapeHtml(adapter.status)}</td><td>${escapeHtml(adapter.lane ?? "")}</td><td>${escapeHtml(adapter.packageName ?? "")}</td><td>${escapeHtml(adapter.packageVersion ?? "")}</td><td>${escapeHtml(commandCandidates(adapter))}</td></tr>`
+    (adapter) => `      <tr id="${escapeHtml(anchorId("adapter", adapter.id))}"><td>${escapeHtml(adapter.id)}</td><td>${escapeHtml(adapter.name)}</td><td>${escapeHtml(adapter.required === false ? "optional" : "required")}</td><td>${escapeHtml(adapter.status)}</td><td>${escapeHtml(adapter.lane ?? "")}</td><td>${escapeHtml(adapter.packageName ?? "")}</td><td>${escapeHtml(adapter.packageVersion ?? "")}</td><td>${escapeHtml(commandCandidates(adapter))}</td></tr>`
   )
   .join("\n");
 
 const suiteRows = suites
   .map(
-    (suite) => `      <tr><td>${escapeHtml(suite.id)}</td><td>${escapeHtml(suite.category)}</td><td>${escapeHtml(suite.vectorCount)}</td><td>${escapeHtml(suite.file)}</td></tr>`
+    (suite) => `      <tr id="${escapeHtml(anchorId("suite", suite.id))}"><td>${escapeHtml(suite.id)}</td><td>${escapeHtml(suite.category)}</td><td>${escapeHtml(suite.vectorCount)}</td><td>${escapeHtml(suite.file)}</td></tr>`
   )
   .join("\n");
 
@@ -327,14 +657,18 @@ const html = `<!doctype html>
   <title>SpecQR Conformance Lab Report</title>
   <style>
     body { color: #1f2933; font-family: system-ui, sans-serif; line-height: 1.5; margin: 2rem; max-width: 72rem; }
+    a { color: #1f6091; }
     h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
     h2 { font-size: 1.2rem; margin-top: 1.75rem; }
     h3 { font-size: 1rem; margin-top: 1.25rem; }
+    h4 { font-size: 0.95rem; margin: 1rem 0 0.35rem; }
     table { border-collapse: collapse; margin-top: 1rem; width: 100%; }
     th, td { border: 1px solid #d9e2ec; padding: 0.5rem; text-align: left; vertical-align: top; }
     th { background: #f0f4f8; }
     code { background: #f0f4f8; padding: 0.1rem 0.25rem; }
+    pre { background: #111827; color: #f8fafc; font-size: 0.8rem; line-height: 1.4; max-height: 24rem; overflow: auto; padding: 0.75rem; }
     ul { padding-left: 1.25rem; }
+    .muted { color: #627d98; font-size: 0.85rem; }
     .status-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); margin-top: 1rem; }
     .status-band { border-left: 0.5rem solid #9fb3c8; background: #f8fafc; padding: 0.9rem 1rem; }
     .status-band h2 { font-size: 1rem; margin: 0; }
@@ -348,6 +682,33 @@ const html = `<!doctype html>
     .status-yellow { border-color: #b7791f; }
     .status-red { border-color: #c53030; }
     .scope-note { background: #fffbea; border: 1px solid #f7d070; padding: 0.75rem 1rem; }
+    .required-alert { border: 1px solid #d9e2ec; margin-top: 1rem; padding: 0.75rem 1rem; }
+    .required-alert h2 { margin-top: 0; }
+    .required-alert-ok { background: #f0fff4; border-color: #9ae6b4; }
+    .required-alert-error { background: #fff5f5; border-color: #feb2b2; }
+    .filter-panel { align-items: end; border: 1px solid #d9e2ec; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); margin-top: 1rem; padding: 1rem; }
+    .filter-panel label { display: grid; gap: 0.25rem; font-weight: 700; }
+    .filter-panel input, .filter-panel select, .filter-panel button { font: inherit; min-height: 2.25rem; padding: 0.35rem 0.45rem; }
+    .filter-panel button { background: #1f6091; border: 0; color: white; cursor: pointer; font-weight: 700; }
+    .filter-count { font-weight: 700; }
+    .table-scroll { overflow-x: auto; }
+    .result-row.result-required-issue td { background: #fff5f5; }
+    .result-row.result-expected-skip td { background: #fffbea; }
+    .status-pill { border-radius: 999px; display: inline-block; font-size: 0.8rem; font-weight: 700; padding: 0.15rem 0.45rem; white-space: nowrap; }
+    .status-passed, .status-verified { background: #c6f6d5; color: #22543d; }
+    .status-skipped, .status-partial { background: #fefcbf; color: #744210; }
+    .status-failed, .status-error { background: #fed7d7; color: #742a2a; }
+    .status-not-claimed { background: #e2e8f0; color: #334e68; }
+    .claim-row.claim-verified td { border-left: 0.3rem solid #2f855a; }
+    .claim-row.claim-partial td { border-left: 0.3rem solid #b7791f; }
+    .claim-row.claim-not-claimed td { border-left: 0.3rem solid #718096; }
+    .result-detail summary { cursor: pointer; font-weight: 700; }
+    .result-meta { display: grid; gap: 0.35rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); margin: 0.75rem 0; }
+    .result-meta div { border: 1px solid #d9e2ec; padding: 0.4rem; }
+    .result-meta dt { color: #52606d; font-size: 0.78rem; }
+    .result-meta dd { margin: 0; }
+    .nested-table { font-size: 0.9rem; margin-top: 0.35rem; }
+    noscript p { background: #fffbea; border: 1px solid #f7d070; padding: 0.75rem 1rem; }
     @media (max-width: 40rem) {
       body { margin: 1rem; }
       .status-band dl { grid-template-columns: repeat(3, minmax(3rem, 1fr)); }
@@ -362,8 +723,16 @@ const html = `<!doctype html>
 ${statusBands}
   </div>
   <p class="scope-note">スキップ件数は隠さず表示します。adapter の責務外であることが明示された scope skip と、任意 CLI decoder が未導入の expected skip は、失敗やエラーとは別に扱います。</p>
+${requiredIssuesHtml}
+  <h2>Machine-readable artifacts</h2>
+  <p>HTML は <code>reports/latest.json</code> と <code>coverage/claims-v1.json</code> から生成した view です。公開 artifact は次の URL から直接確認できます。</p>
+  <table>
+    <tbody>
+${publicArtifactRows}
+    </tbody>
+  </table>
   <h2>Coverage claims / non-claims</h2>
-  <p>機械可読な claims map は <code>coverage/claims-v1.json</code> にあります。この report では verified / partial / not-claimed を分け、既存 vector や adapter が支えない scope を release claim として扱わないようにします。</p>
+  <p>機械可読な claims map は ${publicLink("coverage/claims-v1.json", "coverage/claims-v1.json")} にあります。この report では verified / partial / not-claimed を分け、既存 vector や adapter が支えない scope を release claim として扱わないようにします。</p>
   <table>
     <tbody>
       <tr><th>Claims file</th><td>${escapeHtml(coverageClaims.file ?? "coverage/claims-v1.json")}</td></tr>
@@ -385,7 +754,7 @@ ${coverageClaimRowsHtml}
   <h3>Explicit non-claims</h3>
   <table>
     <thead>
-      <tr><th>ID</th><th>Title</th><th>Reason</th><th>Future direction</th><th>Limits</th></tr>
+      <tr><th>ID</th><th>Title</th><th>Status</th><th>Reason</th><th>Future direction</th><th>Limits</th></tr>
     </thead>
     <tbody>
 ${nonClaimRowsHtml}
@@ -429,38 +798,88 @@ ${scopeSection(
   "GS1 / Digital Link 集計",
   "この集計は SpecQR がサポートする GS1 AI subset と Digital Link helper の確認であり、GS1 full catalog conformance は主張しません。",
   gs1DigitalLink,
-  "GS1 / Digital Link categories"
+  "GS1 / Digital Link categories",
+  summarySectionIds.gs1DigitalLink
 )}
 ${scopeSection(
   "Structured Append 集計",
   "この集計は SpecQR の Structured Append generation と merge helper を確認します。jsQR decode readability は Structured Append metadata validation ではなく、decoder merge support も主張しません。Nayuki lane も Structured Append scope は対象外です。",
   structuredAppend,
-  "Structured Append categories"
+  "Structured Append categories",
+  summarySectionIds.structuredAppend
 )}
 ${scopeSection(
   "Planning / Diagnostics 集計",
   "この集計は SpecQR 2.4.0 の estimate / analyzeSegments / getCapacity と planning diagnostics warning surface を確認します。jsQR と Nayuki は Planning API を実行しません。",
   planningDiagnostics,
-  "Planning / Diagnostics categories"
+  "Planning / Diagnostics categories",
+  summarySectionIds.planningDiagnostics
 )}
 ${scopeSection(
   "Kanji / ECI / Binary 集計",
   "この集計は Kanji mode、ECI UTF-8、raw binary payload の generation diagnostics と decoder readability を確認します。decoder が raw bytes や ECI metadata を露出しない場合は、制限として skip を記録します。",
   kanjiEciBinary,
-  "Kanji / ECI / Binary categories"
+  "Kanji / ECI / Binary categories",
+  summarySectionIds.kanjiEciBinary
 )}
 ${scopeSection(
   "Rendering / Output 集計",
   "この集計は Node 上で published specqr@2.4.0 の matrix、SVG、PNG、SVG Data URL、PNG Data URL output surface を確認します。Canvas / browser helper はこの Node-only suite の対象外です。",
   renderingOutput,
-  "Rendering / Output categories"
+  "Rendering / Output categories",
+  summarySectionIds.renderingOutput
 )}
 ${scopeSection(
   "Package Surface 集計",
   "この集計は published specqr@2.4.0 の root export、browser subpath、node subpath、package metadata、TypeScript consumer compile を確認します。browser helper は Node 上で import / type check し、browser automation は行いません。",
   packageSurface,
-  "Package Surface categories"
+  "Package Surface categories",
+  summarySectionIds.packageSurface
 )}
+  <h2 id="result-explorer">Result explorer</h2>
+  <p>全 result を suite、category、adapter、status、vector id search で絞り込めます。JavaScript が無効でも full table を最初から表示します。</p>
+  <form id="result-filters" class="filter-panel">
+    <label for="filter-suite">Suite
+      <select id="filter-suite" name="suite">
+        <option value="">All suites</option>
+${explorerSuiteOptions}
+      </select>
+    </label>
+    <label for="filter-category">Category
+      <select id="filter-category" name="category">
+        <option value="">All categories</option>
+${explorerCategoryOptions}
+      </select>
+    </label>
+    <label for="filter-adapter">Adapter
+      <select id="filter-adapter" name="adapter">
+        <option value="">All adapters</option>
+${explorerAdapterOptions}
+      </select>
+    </label>
+    <label for="filter-status">Status
+      <select id="filter-status" name="status">
+        <option value="">All statuses</option>
+${explorerStatusOptions}
+      </select>
+    </label>
+    <label for="filter-search">Vector id search
+      <input id="filter-search" name="search" type="search" placeholder="core.generate.byte-text">
+    </label>
+    <button id="filter-reset" type="button">Reset filters</button>
+  </form>
+  <p id="result-filter-count" class="filter-count" data-total="${escapeHtml(results.length)}">表示: ${escapeHtml(results.length)} / ${escapeHtml(results.length)} results</p>
+  <noscript><p>JavaScript が無効なため、filter control は動作しません。全 result table はこのまま確認できます。</p></noscript>
+  <div class="table-scroll">
+    <table id="result-table">
+      <thead>
+        <tr><th>Vector</th><th>Suite</th><th>Category</th><th>Operation</th><th>Adapter</th><th>Status</th><th>Checks</th><th>Reason</th><th>Detail</th></tr>
+      </thead>
+      <tbody>
+${resultRowsHtml}
+      </tbody>
+    </table>
+  </div>
   <h2>SpecQR 生成/Planning/Diagnostics/GS1/Structured Append/Kanji/ECI/Binary/Rendering/Package checks</h2>
   <table>
     <thead>
@@ -527,6 +946,71 @@ ${objectRows(summary.operations)}
 ${adapterRows}
     </tbody>
   </table>
+  <script>
+    (() => {
+      const table = document.getElementById("result-table");
+      if (!table) {
+        return;
+      }
+      const rows = Array.from(table.querySelectorAll("tbody tr.result-row"));
+      const controls = {
+        suite: document.getElementById("filter-suite"),
+        category: document.getElementById("filter-category"),
+        adapter: document.getElementById("filter-adapter"),
+        status: document.getElementById("filter-status"),
+        search: document.getElementById("filter-search")
+      };
+      const count = document.getElementById("result-filter-count");
+      const reset = document.getElementById("filter-reset");
+
+      const controlValues = () => ({
+        suite: controls.suite?.value ?? "",
+        category: controls.category?.value ?? "",
+        adapter: controls.adapter?.value ?? "",
+        status: controls.status?.value ?? "",
+        search: (controls.search?.value ?? "").trim().toLowerCase()
+      });
+
+      const matches = (row, values) => {
+        return (!values.suite || row.dataset.suite === values.suite)
+          && (!values.category || row.dataset.category === values.category)
+          && (!values.adapter || row.dataset.adapter === values.adapter)
+          && (!values.status || row.dataset.status === values.status)
+          && (!values.search || (row.dataset.vectorSearch ?? "").includes(values.search));
+      };
+
+      const update = () => {
+        const values = controlValues();
+        let visible = 0;
+        for (const row of rows) {
+          const show = matches(row, values);
+          row.hidden = !show;
+          if (show) {
+            visible += 1;
+          }
+        }
+        if (count) {
+          count.textContent = \`表示: \${visible} / \${rows.length} results\`;
+        }
+      };
+
+      for (const control of Object.values(controls)) {
+        control?.addEventListener("input", update);
+        control?.addEventListener("change", update);
+      }
+
+      reset?.addEventListener("click", () => {
+        for (const control of Object.values(controls)) {
+          if (control) {
+            control.value = "";
+          }
+        }
+        update();
+      });
+
+      update();
+    })();
+  </script>
 </body>
 </html>
 `;

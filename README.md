@@ -93,6 +93,8 @@ default の conformance run は unfiltered full run として記録されます�
 
 `npm run report` は `reports/latest.html` と Shields-compatible な badge JSON を生成します。badge は scope skip を失敗とは別に扱い、失敗またはエラーがある場合だけ red、実行 check がなく skip だけの場合は yellow、それ以外は green になります。
 
+`reports/latest.html` は `reports/latest.json` と `coverage/claims-v1.json` から生成する dependency-free な public report explorer です。top に overall pass / skip / fail / error counts を残しつつ、suite、category、adapter、status、vector id search で result を絞り込めます。JavaScript が無効でも full result table は最初から表示され、各 result の checks、reason、matrix hash、render dimensions、target metadata などの details は `<details>` で確認できます。
+
 生成する badge file:
 
 - `badges/overall.json`

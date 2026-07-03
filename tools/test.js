@@ -312,6 +312,9 @@ try {
     "missing `zbarimg` / ZXing CLI は CI failure ではありません",
     "reports/latest.json",
     "reports/latest.html",
+    "public report explorer",
+    "suite、category、adapter、status、vector id search",
+    "`<details>`",
     "badges/overall.json",
     "badges/rendering-output.json",
     "badges/package-surface.json",
@@ -509,6 +512,9 @@ try {
     "coverage-claims-v1.schema.json",
     "coverage/claims-v1.json",
     "run.mode: \"filtered\"",
+    "HTML report explorer",
+    "suite、category、adapter、status、vector id search",
+    "result ごとの `<details>`",
     "Coverage claims",
     "Rendering / Output",
     "Package Surface",
@@ -526,6 +532,8 @@ try {
     "npm run verify:claims",
     "coverage/claims-v1.json",
     "schemas/coverage-claims-v1.schema.json",
+    "public HTML explorer",
+    "result detail `<details>`",
     "reports/latest.json",
     "schemas/vector-suite-v1.schema.json",
     "failed` / `error",
@@ -601,6 +609,49 @@ try {
       }
     }
   }
+
+  const latestHtml = await readFile("reports/latest.html", "utf8");
+  for (const text of [
+    "id=\"result-explorer\"",
+    "id=\"result-filters\"",
+    "id=\"filter-suite\"",
+    "id=\"filter-category\"",
+    "id=\"filter-adapter\"",
+    "id=\"filter-status\"",
+    "id=\"filter-search\"",
+    "id=\"result-filter-count\"",
+    "class=\"result-detail\"",
+    "Coverage claims / non-claims",
+    "Required adapter failures/errors",
+    "result-expected-skip",
+    "https://specqr.github.io/SpecQR-Conformance-Lab/reports/latest.json",
+    "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json",
+    "https://specqr.github.io/SpecQR-Conformance-Lab/schemas/coverage-claims-v1.schema.json",
+    "https://specqr.github.io/SpecQR-Conformance-Lab/badges/overall.json",
+    "https://specqr.github.io/SpecQR-Conformance-Lab/coverage/claims-v1.json",
+    "<noscript>",
+    "data-suite=\"core\"",
+    "data-adapter=\"specqr\"",
+    "Raw details JSON",
+    "matrixSha256",
+    "render.width",
+    "image.width",
+    "packageSurface.metadata.version"
+  ]) {
+    requireText(latestHtml, text, "reports/latest.html");
+  }
+  assert(
+    (latestHtml.match(/class="result-row/g) ?? []).length > 0,
+    "generated HTML report must include result rows"
+  );
+  assert(
+    (latestHtml.match(/class="result-detail"/g) ?? []).length > 0,
+    "generated HTML report must include at least one result detail block"
+  );
+  assert(
+    latestHtml.includes("filter-suite") && latestHtml.includes("filter-category") && latestHtml.includes("filter-adapter") && latestHtml.includes("filter-status"),
+    "generated HTML report must include filter controls"
+  );
 
   const dependabot = await readFile(".github/dependabot.yml", "utf8");
   for (const text of [
