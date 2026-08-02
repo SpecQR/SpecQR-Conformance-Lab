@@ -1,3 +1,4 @@
+import { lstat, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
@@ -7,7 +8,7 @@ import {
   rcTarballSha256,
   rcVersion
 } from "./rc-constants.js";
-import { createCheck, deepEqual, readJson, statusCounts } from "./rc-utils.js";
+import { createCheck, deepEqual, readJson, sha256, stableStringify, statusCounts } from "./rc-utils.js";
 import { validateSchemaValue } from "./validate-schemas.js";
 
 function parseArgs(argv) {
@@ -22,11 +23,71 @@ function parseArgs(argv) {
   return options;
 }
 
+export async function validateArtifactEvidence(report, options = {}) {
+  const cwd = path.resolve(options.cwd ?? process.cwd());
+  const files = report.artifacts?.files;
+  const errors = [];
+  const seen = new Set();
+
+  if (!Array.isArray(files) || files.length === 0) {
+    return { ok: false, fileCount: 0, errors: [{ path: "$.artifacts.files", message: "must contain evidence files" }] };
+  }
+
+  for (const [index, file] of files.entries()) {
+    const reportPath = file?.path;
+    if (typeof reportPath !== "string" || path.isAbsolute(reportPath)) {
+      errors.push({ path: `$.artifacts.files[${index}].path`, message: "must be a safe relative path" });
+      continue;
+    }
+    const absolutePath = path.resolve(cwd, reportPath);
+    if (!absolutePath.startsWith(`${cwd}${path.sep}`)) {
+      errors.push({ path: `$.artifacts.files[${index}].path`, message: "escapes the validation root" });
+      continue;
+    }
+    if (seen.has(absolutePath)) {
+      errors.push({ path: `$.artifacts.files[${index}].path`, message: "duplicates an evidence path" });
+      continue;
+    }
+    seen.add(absolutePath);
+
+    try {
+      const metadata = await lstat(absolutePath);
+      if (!metadata.isFile()) {
+        errors.push({ path: reportPath, message: "is not a regular file" });
+        continue;
+      }
+      const contents = await readFile(absolutePath);
+      if (metadata.size !== file.size) {
+        errors.push({ path: reportPath, message: "size does not match", expected: file.size, actual: metadata.size });
+      }
+      const actualSha256 = sha256(contents);
+      if (actualSha256 !== file.sha256) {
+        errors.push({ path: reportPath, message: "SHA-256 does not match", expected: file.sha256, actual: actualSha256 });
+      }
+    } catch (error) {
+      errors.push({ path: reportPath, message: `cannot read evidence file: ${error.message}` });
+    }
+  }
+
+  const actualArtifactSetSha256 = sha256(`${stableStringify(files)}\n`);
+  if (actualArtifactSetSha256 !== report.artifacts?.artifactSetSha256) {
+    errors.push({
+      path: "$.artifacts.artifactSetSha256",
+      message: "artifact set SHA-256 does not match",
+      expected: report.artifacts?.artifactSetSha256,
+      actual: actualArtifactSetSha256
+    });
+  }
+
+  return { ok: errors.length === 0, fileCount: files.length, actualArtifactSetSha256, errors };
+}
+
 export async function validateRcReadiness(options = {}) {
   const cwd = options.cwd ?? process.cwd();
   const report = await readJson(path.resolve(cwd, options.reportPath ?? "reports/rc/readiness.json"));
   const schema = await readJson(path.resolve(cwd, "schemas/rc-readiness-v1.schema.json"));
   const schemaResult = validateSchemaValue(report, schema);
+  const artifactResult = await validateArtifactEvidence(report, { cwd });
   const checks = [
     createCheck("schema", schemaResult.ok, { errors: schemaResult.errors }),
     createCheck("technical-status", report.technicalStatus === "pass", { actual: report.technicalStatus }),
@@ -45,7 +106,7 @@ export async function validateRcReadiness(options = {}) {
       return result?.status === "pass" && result.blockingRegressionCount === 0;
     })),
     createCheck("v3-contract", report.v3Contract?.exact?.status === "pass" && report.v3Contract?.next?.status === "pass" && report.v3Contract?.exact?.requiredCheckCount > 0 && report.v3Contract?.exact?.requiredCheckCount === report.v3Contract?.next?.requiredCheckCount && report.v3Contract?.selectorComparison?.status === "pass"),
-    createCheck("artifacts", report.artifacts?.files?.length > 0)
+    createCheck("artifacts", artifactResult.ok, artifactResult)
   ];
   const summary = statusCounts(checks);
   return {

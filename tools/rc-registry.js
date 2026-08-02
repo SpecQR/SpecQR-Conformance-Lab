@@ -88,6 +88,10 @@ function tarChecksum(block) {
   return checksum;
 }
 
+function compareManifestPaths(left, right) {
+  return Buffer.compare(Buffer.from(left.path, "utf8"), Buffer.from(right.path, "utf8"));
+}
+
 function parsePax(data) {
   const result = {};
   let offset = 0;
@@ -160,6 +164,9 @@ export function archiveManifest(tarball) {
     nextPax = {};
     const archivePath = metadata.path ?? longPath ?? headerPath;
     longPath = null;
+    if (["1", "2"].includes(type)) {
+      throw new Error(`Registry tarball contains a link entry: ${archivePath}`);
+    }
     if (!["\0", "0", "7"].includes(type)) {
       continue;
     }
@@ -182,7 +189,7 @@ export function archiveManifest(tarball) {
     });
   }
 
-  return files.sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
+  return files.sort(compareManifestPaths);
 }
 
 export function expandedManifestSha256(manifest) {
@@ -214,7 +221,7 @@ async function installedManifest(packageRoot) {
   }
 
   await walk(packageRoot);
-  return files.sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
+  return files.sort(compareManifestPaths);
 }
 
 function selectImportTarget(exportsEntry, label) {

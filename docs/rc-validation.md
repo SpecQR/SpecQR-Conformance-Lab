@@ -21,6 +21,7 @@ Node 22 の full evidence は次で生成します。
 
 ```sh
 npm ci
+npm run verify
 npm run rc:full -- --require-node 22
 ```
 
@@ -119,6 +120,8 @@ Final Actions artifact は `reports/rc/readiness.json` と `reports/rc/readiness
 - `technicalStatus` と `observationStatus`
 
 Intermediate conformance report、strict comparison、v3 contract JSON、registry manifest、logs も同じ Actions artifact に含めます。これらは generated evidence であり、通常は repository へ commit しません。
+
+`npm run rc:validate` は report field の semantic consistency に加え、listed evidence file の存在、regular file、size、SHA-256、安全な relative path、重複、および artifact set SHA-256 を再計算します。
 
 ## Stable boundary
 

@@ -1,13 +1,15 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { access, readFile } from "node:fs/promises";
+import { access, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
 import { compareRcReports, normalizeRcResult, rcComparisonNormalizations } from "./compare-rc-reports.js";
 import { archiveManifest, expandedManifestSha256 } from "./rc-registry.js";
 import { suitesForTarget } from "./rc-target-suites.js";
-import { deepEqual, sha256 } from "./rc-utils.js";
+import { deepEqual, sha256, stableStringify } from "./rc-utils.js";
 import { validateSchemaValue } from "./validate-schemas.js";
+import { validateArtifactEvidence } from "./validate-rc-readiness.js";
 import { compareV3ContractEvidence } from "./verify-v3-contract.js";
 import { verifyLinks } from "./verify-links.js";
 
@@ -40,7 +42,7 @@ function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
-function tarEntry(name, contents) {
+function tarEntry(name, contents, options = {}) {
   const body = Buffer.from(contents);
   const header = Buffer.alloc(512);
   header.write(name, 0, 100, "utf8");
@@ -50,7 +52,10 @@ function tarEntry(name, contents) {
   header.write(`${body.length.toString(8).padStart(11, "0")}\0`, 124, 12, "ascii");
   header.write("00000000000\0", 136, 12, "ascii");
   header.fill(0x20, 148, 156);
-  header[156] = "0".charCodeAt(0);
+  header[156] = (options.type ?? "0").charCodeAt(0);
+  if (options.linkName) {
+    header.write(options.linkName, 157, 100, "utf8");
+  }
   header.write("ustar\0", 257, 6, "ascii");
   header.write("00", 263, 2, "ascii");
   const checksum = Array.from(header).reduce((total, byte) => total + byte, 0);
@@ -174,6 +179,25 @@ try {
   assert.equal(manifest[0].sha256, createHash("sha256").update("A").digest("hex"));
   assert.equal(expandedManifestSha256(manifest), sha256(`${JSON.stringify(manifest)}\n`));
 
+  const privateUsePath = `${String.fromCodePoint(0xe000)}.txt`;
+  const supplementaryPath = `${String.fromCodePoint(0x10000)}.txt`;
+  const unicodeTar = gzipSync(Buffer.concat([
+    tarEntry(`package/${supplementaryPath}`, "supplementary"),
+    tarEntry(`package/${privateUsePath}`, "private-use"),
+    Buffer.alloc(1024)
+  ]));
+  assert.deepEqual(
+    archiveManifest(unicodeTar).map((file) => file.path),
+    [privateUsePath, supplementaryPath],
+    "tar manifest path order must compare UTF-8 bytes"
+  );
+
+  const linkTar = gzipSync(Buffer.concat([
+    tarEntry("package/link.txt", "", { type: "2", linkName: "target.txt" }),
+    Buffer.alloc(1024)
+  ]));
+  assert.throws(() => archiveManifest(linkTar), /link entry/, "tar manifest must reject links");
+
   const contract = {
     target: { requested: "specqr@3.0.0-rc.1", resolvedVersion: "3.0.0-rc.1", source: "npm-registry" },
     input: { expectedSplitUnitCount: 62 },
@@ -193,6 +217,25 @@ try {
   const schemaResult = validateSchemaValue(syntheticReadiness(), readinessSchema);
   assert(schemaResult.ok, `synthetic RC readiness must pass schema: ${JSON.stringify(schemaResult.errors)}`);
 
+  const artifactRoot = await mkdtemp(path.join(tmpdir(), "specqr-rc-artifact-test-"));
+  try {
+    const artifactPath = "evidence.json";
+    const artifactContents = Buffer.from("{\"status\":\"pass\"}\n");
+    await writeFile(path.join(artifactRoot, artifactPath), artifactContents);
+    const artifactReport = syntheticReadiness();
+    artifactReport.artifacts.files = [{
+      path: artifactPath,
+      size: artifactContents.length,
+      sha256: sha256(artifactContents)
+    }];
+    artifactReport.artifacts.artifactSetSha256 = sha256(`${stableStringify(artifactReport.artifacts.files)}\n`);
+    assert((await validateArtifactEvidence(artifactReport, { cwd: artifactRoot })).ok, "artifact hashes must validate");
+    await writeFile(path.join(artifactRoot, artifactPath), "changed\n");
+    assert(!(await validateArtifactEvidence(artifactReport, { cwd: artifactRoot })).ok, "artifact mutation must fail validation");
+  } finally {
+    await rm(artifactRoot, { recursive: true, force: true });
+  }
+
   const workflow = await readFile(".github/workflows/rc-readiness.yml", "utf8");
   for (const text of [
     "workflow_dispatch",
@@ -203,6 +246,7 @@ try {
     "- 22",
     "- 24",
     "npm ci",
+    "run: npm run verify",
     "npm run rc:package-surface",
     "npm run rc:full -- --require-node 22",
     "npm run rc:assemble",

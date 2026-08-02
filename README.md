@@ -136,7 +136,7 @@ default の conformance run は unfiltered full run として記録されます�
 
 `.github/workflows/rc-readiness.yml` は published `specqr@3.0.0-rc.1` 専用の required evidence workflow です。Exact version と `specqr@next` を別々の temporary install で npm registry から取得し、tarball / expanded content hash、file manifest、metadata、root / Node / browser exports、runtime dependency 0、representative runtime smoke を照合します。Local tarball、SpecQR core checkout、direct source import への fallback はありません。
 
-Node 22 では pinned `specqr@2.4.0` baseline、exact RC、`specqr@next` の full report を生成し、strict common comparison と candidate 専用 v3 Structured Append contract を実行します。Node 18 / 20 / 22 / 24 では package surface、literal / dynamic TypeScript consumer、representative runtime smoke を実行します。Final Actions artifact は `reports/rc/readiness.json`、`reports/rc/readiness.md`、comparison、logs、artifact hash を含みます。
+Node 22 では default の `npm run verify` に加え、pinned `specqr@2.4.0` baseline、exact RC、`specqr@next` の full report を生成し、strict common comparison と candidate 専用 v3 Structured Append contract を実行します。Node 18 / 20 / 22 / 24 では package surface、literal / dynamic TypeScript consumer、representative runtime smoke を実行します。Final Actions artifact は `reports/rc/readiness.json`、`reports/rc/readiness.md`、comparison、logs、artifact hash を含み、validator が evidence file と artifact set の hash を再計算します。
 
 RC artifact は `technicalStatus: "pass" | "blocked"` と `observationStatus: "pending" | "sufficient" | "blocked"` を分けます。この dedicated workflow は利用観察を `sufficient` にせず、`pending` のまま記録します。Default dependency、`reports/latest.*`、badges、Pages workflow、public `2.4.0` report は変更しません。判定規則と stable 判断との境界は [docs/rc-validation.md](docs/rc-validation.md) に定義しています。
 

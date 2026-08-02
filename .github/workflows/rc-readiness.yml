@@ -87,6 +87,9 @@ jobs:
       - name: Install Lab dependencies
         run: npm ci
 
+      - name: Verify default Lab suite
+        run: npm run verify
+
       - name: Run strict RC readiness evidence
         run: npm run rc:full -- --require-node 22
 

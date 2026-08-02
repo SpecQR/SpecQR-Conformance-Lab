@@ -53,7 +53,7 @@ default の comparison は count difference だけで失敗しません。`--fai
 
 ## RC readiness
 
-`reports/rc/readiness.json` は published RC の temporary evidence format です。Target、toolchain、registry integrity、adapter 別 conformance、strict common regression、candidate 専用 contract、skip / non-claim、evidence file hash を 1 つに集約します。`technicalStatus` と `observationStatus` は独立 field です。Technical gate が green でも、利用観察が別条件を満たすまでは observation を `pending` とします。
+`reports/rc/readiness.json` は published RC の temporary evidence format です。Target、toolchain、registry integrity、adapter 別 conformance、strict common regression、candidate 専用 contract、skip / non-claim、evidence file hash を 1 つに集約します。Validator は listed file の size / SHA-256 と artifact set SHA-256 を再計算します。`technicalStatus` と `observationStatus` は独立 field です。Technical gate が green でも、利用観察が別条件を満たすまでは observation を `pending` とします。
 
 ## Compatibility policy
 
