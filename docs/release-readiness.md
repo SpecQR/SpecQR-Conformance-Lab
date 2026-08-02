@@ -46,3 +46,5 @@ npm run verify
 manual target workflow の `specqr@latest` / `specqr@next` comparison artifact は investigation output です。public Pages report は pinned baseline の snapshot であり、candidate target の release claim ではありません。
 
 filtered conformance artifact も investigation output です。full baseline と同じ schema を使いますが、`run.mode: "filtered"` と `run.filters` を見て scope を判断します。
+
+Published RC の dedicated evidence も stable release claim ではありません。[RC Validation](rc-validation.md) の `technicalStatus` が `pass` でも、独立した利用観察が十分になるまでは `observationStatus` を `pending` とし、public `specqr@2.4.0` report、badges、Pages、npm dist-tag を変更しません。

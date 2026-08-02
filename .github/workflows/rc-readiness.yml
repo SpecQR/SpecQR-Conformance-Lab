@@ -1,0 +1,165 @@
+name: SpecQR 3.0.0-rc.1 Readiness
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Exact Conformance Lab commit to validate
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: specqr-3.0.0-rc.1-readiness-${{ inputs.expected_commit }}
+  cancel-in-progress: false
+
+jobs:
+  package-surface:
+    name: Package surface / Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 18
+          - 20
+          - 22
+          - 24
+    env:
+      SPECQR_EVIDENCE_COMMIT: ${{ inputs.expected_commit }}
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_commit }}
+
+      - name: Verify exact commit
+        run: test "$(git rev-parse HEAD)" = "$SPECQR_EVIDENCE_COMMIT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install Lab dependencies
+        run: npm ci
+
+      - name: Verify registry package surface, types, and runtime smoke
+        run: >-
+          npm run rc:package-surface --
+          --node-major "${{ matrix.node-version }}"
+          --output "reports/rc/package-surface-node-${{ matrix.node-version }}.json"
+          --log "reports/rc/logs/package-surface-node-${{ matrix.node-version }}.log"
+
+      - name: Upload package-surface evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc-package-surface-node-${{ matrix.node-version }}
+          if-no-files-found: warn
+          path: |
+            reports/rc/package-surface-node-${{ matrix.node-version }}.json
+            reports/rc/logs/package-surface-node-${{ matrix.node-version }}.log
+
+  full-readiness:
+    name: Full readiness / Node 22
+    runs-on: ubuntu-latest
+    env:
+      SPECQR_EVIDENCE_COMMIT: ${{ inputs.expected_commit }}
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_commit }}
+
+      - name: Verify exact commit
+        run: test "$(git rev-parse HEAD)" = "$SPECQR_EVIDENCE_COMMIT"
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Lab dependencies
+        run: npm ci
+
+      - name: Run strict RC readiness evidence
+        run: npm run rc:full -- --require-node 22
+
+      - name: Upload full evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc-full-node-22
+          if-no-files-found: warn
+          path: reports/rc/full
+
+  readiness-artifact:
+    name: Readiness artifact
+    if: ${{ always() }}
+    needs:
+      - package-surface
+      - full-readiness
+    runs-on: ubuntu-latest
+    env:
+      SPECQR_EVIDENCE_COMMIT: ${{ inputs.expected_commit }}
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.expected_commit }}
+
+      - name: Verify exact commit
+        run: test "$(git rev-parse HEAD)" = "$SPECQR_EVIDENCE_COMMIT"
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Lab dependencies
+        run: npm ci
+
+      - name: Download package-surface evidence
+        uses: actions/download-artifact@v4
+        with:
+          pattern: rc-package-surface-node-*
+          merge-multiple: true
+          path: reports/rc
+
+      - name: Download full evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: rc-full-node-22
+          path: reports/rc/full
+
+      - name: Assemble readiness report
+        run: >-
+          npm run rc:assemble --
+          --expected-commit "$SPECQR_EVIDENCE_COMMIT"
+          --json-output reports/rc/readiness.json
+          --markdown-output reports/rc/readiness.md
+
+      - name: Validate readiness report
+        if: always()
+        run: npm run rc:validate -- --report reports/rc/readiness.json
+
+      - name: Write workflow summary
+        if: always()
+        run: |
+          if [ -f reports/rc/readiness.md ]; then
+            cat reports/rc/readiness.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload readiness artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: specqr-3.0.0-rc.1-readiness-${{ inputs.expected_commit }}
+          if-no-files-found: error
+          path: reports/rc

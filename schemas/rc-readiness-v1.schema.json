@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecQR RC readiness evidence v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "kind",
+    "generatedAt",
+    "commit",
+    "release",
+    "targets",
+    "technicalStatus",
+    "observationStatus",
+    "toolchain",
+    "registryIntegrity",
+    "conformance",
+    "v3Contract",
+    "skips",
+    "nonClaims",
+    "artifacts",
+    "checks",
+    "summary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "kind": { "const": "specqr-rc-readiness" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "commit": { "type": ["string", "null"] },
+    "release": {
+      "type": "object",
+      "required": ["version", "publishedAtJst", "expectedTarballSha256", "expectedExpandedSha256"],
+      "properties": {
+        "version": { "const": "3.0.0-rc.1" },
+        "publishedAtJst": { "type": "string" },
+        "expectedTarballSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "expectedExpandedSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "targets": {
+      "type": "object",
+      "required": ["baseline", "exact", "next"]
+    },
+    "technicalStatus": { "enum": ["pass", "blocked"] },
+    "observationStatus": { "enum": ["pending", "sufficient", "blocked"] },
+    "toolchain": {
+      "type": "object",
+      "required": ["full", "packageSurface"]
+    },
+    "registryIntegrity": {
+      "type": "object",
+      "required": ["exact", "next", "selectorComparison"]
+    },
+    "conformance": {
+      "type": "object",
+      "required": ["baseline", "exact", "next", "common", "normalizations"]
+    },
+    "v3Contract": {
+      "type": "object",
+      "required": ["exact", "next", "selectorComparison"]
+    },
+    "skips": {
+      "type": "object",
+      "required": ["baseline", "exact", "next"]
+    },
+    "nonClaims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["artifactSetSha256", "files"],
+      "properties": {
+        "artifactSetSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["path", "size", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "size": { "type": "integer", "minimum": 0 },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      }
+    },
+    "checks": { "type": "array", "minItems": 1 },
+    "summary": {
+      "type": "object",
+      "required": ["passed", "failed"]
+    }
+  }
+}

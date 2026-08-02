@@ -11,8 +11,11 @@
 | Badge v1 | [../schemas/badge-v1.schema.json](../schemas/badge-v1.schema.json) | `badges/*.json` |
 | Report comparison v1 | [../schemas/report-comparison-v1.schema.json](../schemas/report-comparison-v1.schema.json) | `reports/comparison.json` |
 | Coverage claims v1 | [../schemas/coverage-claims-v1.schema.json](../schemas/coverage-claims-v1.schema.json) | `coverage/claims-v1.json` |
+| RC readiness v1 | [../schemas/rc-readiness-v1.schema.json](../schemas/rc-readiness-v1.schema.json) | `reports/rc/readiness.json` in Actions artifacts |
 
 `npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
+
+RC readiness は default public report と別 lifecycle です。`npm run rc:validate -- --report reports/rc/readiness.json` が schema と fixed target、hash、Node matrix、strict comparison、v3 contract、technical / observation status の semantic consistency を検査します。RC schema と generated evidence は default Pages artifact へ追加しません。
 
 ## Conformance report
 
@@ -47,6 +50,10 @@ default の comparison は count difference だけで失敗しません。`--fai
 `coverage/claims-v1.json` は Lab 全体の coverage claim map です。各 claim は `id`, `title`, `status`, `summary`, `suites`, `adapters`, `badges`, `reportSummaryKey`, `limits` を持ちます。`status` は `verified`, `partial`, `not-claimed` のいずれかです。
 
 `not-claimed` entry は vector / adapter / badge / report summary coverage を参照しません。`npm run verify:claims` は schema validation に加えて、参照された suite が vectors と report の両方に存在すること、adapter が report に存在すること、badge file が存在すること、non-claim が passing vector coverage を装わないことを確認します。
+
+## RC readiness
+
+`reports/rc/readiness.json` は published RC の temporary evidence format です。Target、toolchain、registry integrity、adapter 別 conformance、strict common regression、candidate 専用 contract、skip / non-claim、evidence file hash を 1 つに集約します。`technicalStatus` と `observationStatus` は独立 field です。Technical gate が green でも、利用観察が別条件を満たすまでは observation を `pending` とします。
 
 ## Compatibility policy
 

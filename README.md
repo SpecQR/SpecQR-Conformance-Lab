@@ -37,6 +37,7 @@ contribution、security、dependency、release readiness の運用方針は次�
 - [docs/release-readiness.md](docs/release-readiness.md): release しない現状と、release / publish を検討する前の checklist。
 - [docs/dependency-policy.md](docs/dependency-policy.md): pinned baseline、manual target workflow、optional native decoder、dependency 追加方針。
 - [docs/maintenance.md](docs/maintenance.md): maintainer 向けの日常確認。
+- [docs/rc-validation.md](docs/rc-validation.md): published RC の registry integrity、strict comparison、candidate 専用 contract、readiness artifact。
 
 issue template は [vector request](.github/ISSUE_TEMPLATE/vector-request.yml)、[adapter request](.github/ISSUE_TEMPLATE/adapter-request.yml)、[report problem](.github/ISSUE_TEMPLATE/report-problem.yml) を用意しています。
 
@@ -55,6 +56,7 @@ Lab が生成・公開する machine-readable data format は `schemas/*.schema.
 - `schemas/badge-v1.schema.json`
 - `schemas/report-comparison-v1.schema.json`
 - `schemas/coverage-claims-v1.schema.json`
+- `schemas/rc-readiness-v1.schema.json`（RC Actions artifact 専用。default Pages には追加しない）
 
 `coverage/claims-v1.json` は、Lab が検証すると言える scope と、まだ claim しない scope を分けて公開する claims map です。`npm run verify:claims` は claims map の schema、suite / adapter / badge / report summary reference、non-claim の誤った coverage reference を検査します。
 
@@ -130,6 +132,14 @@ default の conformance run は unfiltered full run として記録されます�
 
 公開 Pages report は通常 CI が pinned dependency `specqr@2.4.0` で生成した report です。`specqr-target.yml` の `reports/baseline.json`、`reports/candidate.json`、`reports/comparison.json`、`reports/comparison.md` は workflow artifact として確認する比較 artifact / investigation artifact / investigation output であり、Pages deploy も release claim も行いません。`latest` や `next` の結果は通常 release gate には含めません。
 
+### SpecQR 3.0.0-rc.1 readiness
+
+`.github/workflows/rc-readiness.yml` は published `specqr@3.0.0-rc.1` 専用の required evidence workflow です。Exact version と `specqr@next` を別々の temporary install で npm registry から取得し、tarball / expanded content hash、file manifest、metadata、root / Node / browser exports、runtime dependency 0、representative runtime smoke を照合します。Local tarball、SpecQR core checkout、direct source import への fallback はありません。
+
+Node 22 では pinned `specqr@2.4.0` baseline、exact RC、`specqr@next` の full report を生成し、strict common comparison と candidate 専用 v3 Structured Append contract を実行します。Node 18 / 20 / 22 / 24 では package surface、literal / dynamic TypeScript consumer、representative runtime smoke を実行します。Final Actions artifact は `reports/rc/readiness.json`、`reports/rc/readiness.md`、comparison、logs、artifact hash を含みます。
+
+RC artifact は `technicalStatus: "pass" | "blocked"` と `observationStatus: "pending" | "sufficient" | "blocked"` を分けます。この dedicated workflow は利用観察を `sufficient` にせず、`pending` のまま記録します。Default dependency、`reports/latest.*`、badges、Pages workflow、public `2.4.0` report は変更しません。判定規則と stable 判断との境界は [docs/rc-validation.md](docs/rc-validation.md) に定義しています。
+
 ## Commands
 
 ```sh
@@ -143,6 +153,11 @@ npm run verify:target
 npm run validate:schemas
 npm run compare:reports -- --base reports/latest.json --candidate reports/latest.json
 npm run summary
+npm run verify:links
+npm run rc:package-surface -- --node-major 22
+npm run rc:full -- --require-node 22
+npm run rc:assemble -- --expected-commit <commit>
+npm run rc:validate -- --report reports/rc/readiness.json
 npm run pages:build
 npm run verify
 ```

@@ -4,6 +4,10 @@ import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { badgeFileNames } from "./report-utils.js";
 
+const artifactOnlySchemas = new Set([
+  "rc-readiness-v1.schema.json"
+]);
+
 export async function buildPages(options = {}) {
   const cwd = options.cwd ?? process.cwd();
   const publicDir = options.publicDir ?? path.join(cwd, "public");
@@ -45,7 +49,11 @@ export async function buildPages(options = {}) {
 
   const schemaEntries = await readdir(schemasDir, { withFileTypes: true });
   const schemaFiles = schemaEntries
-    .filter((entry) => entry.isFile() && entry.name.endsWith(".schema.json"))
+    .filter((entry) => {
+      return entry.isFile() &&
+        entry.name.endsWith(".schema.json") &&
+        !artifactOnlySchemas.has(entry.name);
+    })
     .map((entry) => entry.name)
     .sort();
 

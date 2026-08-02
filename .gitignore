@@ -7,3 +7,4 @@ reports/candidate.json
 reports/comparison.json
 reports/comparison.md
 reports/*.local.json
+reports/rc/

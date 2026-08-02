@@ -8,6 +8,8 @@ SpecQR Conformance Lab は reproducible report を優先します。dependency u
 
 `specqr@latest` や `specqr@next` は manual target workflow で調査します。automatic dependency bump で public baseline を変えません。candidate run は `reports/candidate.json` と comparison artifact として扱い、release claim にはしません。
 
+Published `specqr@3.0.0-rc.1` の dedicated readiness workflow も default pin を変更しません。Exact RC と `specqr@next` は別々の temporary install へ registry から取得し、content hash と package surface を照合します。Local tarball や core checkout へ fallback せず、generated evidence は `reports/rc/` の Actions artifact として扱います。詳細は [RC Validation](rc-validation.md) を参照してください。
+
 ## Optional native / CLI decoders
 
 `zbarimg` と ZXing CLI は optional decoder lane です。native command がない環境では expected `skipped` として記録します。これらは npm dependency にしません。CI の success は native decoder が存在することを前提にしません。

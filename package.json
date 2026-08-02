@@ -17,7 +17,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node tools/test.js",
+    "test": "node tools/test.js && node tools/test-rc.js",
     "validate:vectors": "node tools/validate-vectors.js",
     "conformance": "node tools/run-conformance.js",
     "report": "node tools/report.js",
@@ -27,8 +27,13 @@
     "validate:schemas": "node tools/validate-schemas.js",
     "compare:reports": "node tools/compare-reports.js",
     "summary": "node tools/write-github-summary.js",
+    "verify:links": "node tools/verify-links.js",
+    "rc:package-surface": "node tools/run-rc-package-surface.js",
+    "rc:full": "node tools/run-rc-full.js",
+    "rc:assemble": "node tools/assemble-rc-readiness.js",
+    "rc:validate": "node tools/validate-rc-readiness.js",
     "pages:build": "npm run conformance && npm run report && node tools/build-pages.js",
-    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:claims && npm run validate:schemas && npm run verify:report"
+    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:claims && npm run validate:schemas && npm run verify:report && npm run verify:links"
   },
   "keywords": [
     "specqr",

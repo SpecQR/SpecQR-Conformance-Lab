@@ -1,10 +1,8 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import * as specqrRoot from "specqr";
-import * as specqrBrowser from "specqr/browser";
-import * as specqrNode from "specqr/node";
 import {
   analyzeSegments,
   createGs1DigitalLink,
@@ -17,11 +15,15 @@ import {
   getCapacity,
   mergeStructuredAppendParts,
   normalizeGs1DigitalLink,
+  readSpecqrPackageMetadata,
+  specqrBrowser,
+  specqrNode,
+  specqrRoot,
+  specqrTargetRoot,
   validateGs1DigitalLink,
   validateGs1ElementString
-} from "specqr";
+} from "../tools/specqr-target.js";
 import { pngToRgba } from "../tools/png-rgba.js";
-import { readInstalledPackageMetadata } from "../tools/report-metadata.js";
 
 const supportedOperations = new Set([
   "generate",
@@ -218,8 +220,38 @@ function normalizeStructuredAppendParts(parts) {
 }
 
 function trimProcessOutput(value) {
-  const text = String(value ?? "").replaceAll(process.cwd(), ".");
+  let text = String(value ?? "").replaceAll(process.cwd(), ".");
+  if (specqrTargetRoot) {
+    text = text.replaceAll(path.dirname(path.dirname(specqrTargetRoot)), "[temporary-install]");
+  }
   return text.length > 4000 ? `${text.slice(0, 4000)}...` : text;
+}
+
+async function typescriptProjectPath(project) {
+  if (!specqrTargetRoot) {
+    return project;
+  }
+
+  const sourceProject = path.resolve(process.cwd(), project);
+  const installRoot = path.dirname(path.dirname(specqrTargetRoot));
+  const targetDirectory = path.join(installRoot, ".specqr-conformance-common-consumer");
+  await rm(targetDirectory, { recursive: true, force: true });
+  await mkdir(targetDirectory, { recursive: true });
+  const targetProject = path.join(targetDirectory, "tsconfig.json");
+  await writeFile(targetProject, `${JSON.stringify({
+    extends: sourceProject,
+    compilerOptions: {
+      baseUrl: process.cwd(),
+      ignoreDeprecations: "6.0",
+      typeRoots: [path.join(process.cwd(), "node_modules", "@types")],
+      paths: {
+        specqr: [path.join(specqrTargetRoot, "src", "index.d.ts")],
+        "specqr/browser": [path.join(specqrTargetRoot, "src", "browser.d.ts")],
+        "specqr/node": [path.join(specqrTargetRoot, "src", "node.d.ts")]
+      }
+    }
+  }, null, 2)}\n`, "utf8");
+  return targetProject;
 }
 
 function packageMetadataSubset(packageJson) {
@@ -258,7 +290,7 @@ function pngSignatureDetails(bytes) {
 async function executePackageOperation(vector) {
   switch (vector.operation) {
     case "package.metadata": {
-      const metadata = await readInstalledPackageMetadata("specqr");
+      const metadata = await readSpecqrPackageMetadata();
       return {
         packageSurface: {
           kind: "metadata",
@@ -313,8 +345,9 @@ async function executePackageOperation(vector) {
     }
     case "package.typescriptConsumer": {
       const project = vector.options.project ?? "fixtures/typescript-consumer/tsconfig.json";
+      const targetProject = await typescriptProjectPath(project);
       const tscPath = path.join(process.cwd(), "node_modules", "typescript", "bin", "tsc");
-      const run = spawnSync(process.execPath, [tscPath, "-p", project, "--noEmit"], {
+      const run = spawnSync(process.execPath, [tscPath, "-p", targetProject, "--noEmit"], {
         cwd: process.cwd(),
         encoding: "utf8"
       });

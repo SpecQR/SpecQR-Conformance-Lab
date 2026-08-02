@@ -133,10 +133,11 @@ export async function verifyReportObject(report, options = {}) {
   }
 
   const filters = normalizeFilters(report.run?.filters ?? {});
-  const suites = await readSuites({ cwd });
+  const suites = options.suites ?? await readSuites({ cwd });
+  const adapters = options.adapters ?? activeAdapters;
   let scope;
   try {
-    scope = selectRunScope(suites, activeAdapters, filters);
+    scope = selectRunScope(suites, adapters, filters);
   } catch (error) {
     return {
       ok: false,
@@ -218,7 +219,7 @@ export async function verifyReportFile(reportPath = defaultReportPath, options =
   const cwd = options.cwd ?? process.cwd();
   const absoluteReportPath = path.resolve(cwd, reportPath);
   const report = JSON.parse(await readFile(absoluteReportPath, "utf8"));
-  return verifyReportObject(report, { cwd });
+  return verifyReportObject(report, { ...options, cwd });
 }
 
 function parseCliArgs(argv) {

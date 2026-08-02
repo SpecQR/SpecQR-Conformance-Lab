@@ -9,6 +9,7 @@
 - `reports/latest.json` の target が pinned baseline を指していることを確認する。
 - optional decoder skip が expected skip として説明されていることを確認する。
 - issue templates から来た request が vector、adapter、report problem のどれかに分類できることを確認する。
+- RC readiness を実行した場合は exact commit、Node 18 / 20 / 22 / 24 matrix、Node 22 full gate、artifact retention を確認し、default public report が `specqr@2.4.0` のままであることを再確認する。
 
 ## Before changing workflows
 

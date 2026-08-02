@@ -6,13 +6,15 @@ export const reportPackageNames = ["specqr", "jsqr", "nayuki-qr-code-generator"]
 export const defaultSpecqrPackageName = "specqr";
 export const defaultSpecqrTargetSource = "npm";
 
-export function packageJsonPath(cwd, packageName) {
-  return path.join(cwd, "node_modules", ...packageName.split("/"), "package.json");
+export function packageJsonPath(cwd, packageName, packageRoot = null) {
+  return packageRoot
+    ? path.join(packageRoot, "package.json")
+    : path.join(cwd, "node_modules", ...packageName.split("/"), "package.json");
 }
 
 export async function readInstalledPackageMetadata(packageName, options = {}) {
   const cwd = options.cwd ?? process.cwd();
-  const metadataPath = packageJsonPath(cwd, packageName);
+  const metadataPath = packageJsonPath(cwd, packageName, options.packageRoot);
   let packageJson;
 
   try {
@@ -69,7 +71,10 @@ export async function createReportMetadata(options = {}) {
   const packages = {};
 
   for (const packageName of reportPackageNames) {
-    packages[packageName] = await readInstalledPackageVersion(packageName, { cwd });
+    packages[packageName] = await readInstalledPackageVersion(packageName, {
+      cwd,
+      packageRoot: options.packageRoots?.[packageName]
+    });
   }
 
   return {
