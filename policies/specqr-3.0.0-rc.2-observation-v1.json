@@ -1,0 +1,109 @@
+{
+  "$schema": "../schemas/rc-observation-policy-v1.schema.json",
+  "schemaVersion": 1,
+  "kind": "specqr-rc-observation-policy",
+  "id": "specqr-3.0.0-rc.2-observation-v1",
+  "candidate": {
+    "exactRequested": "specqr@3.0.0-rc.2",
+    "nextRequested": "specqr@next",
+    "resolvedVersion": "3.0.0-rc.2",
+    "publishedAt": "2026-08-02T07:38:47.138Z",
+    "tarballSha256": "c96c324dcd99d72c385d3890156a6ae973ad8db57b840fd5a47f987ddcbb6298",
+    "expandedSha256": "f507de7da842b3bc5fce88eaa6a4d04388ce1d55541c58cbebf36d4b583ae306",
+    "manifestSha256": "05fdf7029c6b66f56bf2b952e9297ea38201d8a144929f14cc55d26970f8af1f",
+    "fileCount": 121,
+    "runtimeDependencyCount": 0
+  },
+  "distTags": {
+    "latest": "2.4.0",
+    "next": "3.0.0-rc.2"
+  },
+  "technicalEvidence": {
+    "repository": "SpecQR/SpecQR-Conformance-Lab",
+    "workflowId": 325405930,
+    "initialRunId": 30739905031,
+    "initialHeadSha": "383399338481ed80acf9f596099bbeb9c79a59cb",
+    "initialArtifactId": 8830922112,
+    "initialArtifactName": "specqr-3.0.0-rc.2-readiness-383399338481ed80acf9f596099bbeb9c79a59cb",
+    "initialArtifactSha256": "64a62ddc7e72106c3abf59fa986ef3f7dc8caeeb5046072c2944847da48c59a9",
+    "initialReadinessSha256": "4d602563119d38e35e91d88e8ea8984aa3ce3b590befc917ee5fa946642423a0",
+    "initialReadinessArtifactSetSha256": "1a9f2480dcde88760cf5159d4c286bf309b680399e65385f1f8177d0e47c7872",
+    "requiredNodeMajors": [
+      "18",
+      "20",
+      "22",
+      "24"
+    ],
+    "requiredV3ContractChecks": 35
+  },
+  "repositories": [
+    "SpecQR/SpecQR",
+    "SpecQR/SpecQR-Conformance-Lab"
+  ],
+  "timeline": {
+    "minimumAgeHours": 168,
+    "minimumSnapshots": 3,
+    "minimumFinalGapHours": 48,
+    "milestones": [
+      {
+        "id": "initial",
+        "minimumAgeHours": 0,
+        "maximumAgeHours": 72
+      },
+      {
+        "id": "after-72-hours",
+        "minimumAgeHours": 72
+      },
+      {
+        "id": "after-168-hours",
+        "minimumAgeHours": 168
+      }
+    ]
+  },
+  "consumerConfirmation": {
+    "minimumIndependentConfirmations": 1,
+    "requiredPackageSource": "npm-registry",
+    "allowedKinds": [
+      "independent-project",
+      "independent-sample"
+    ],
+    "requiredEvidence": [
+      "url",
+      "commit",
+      "logUrl",
+      "logSha256"
+    ]
+  },
+  "blockingCategories": [
+    "defect",
+    "regression",
+    "security",
+    "migration-failure"
+  ],
+  "statusRules": {
+    "pendingWhen": [
+      "unreviewed-open-item",
+      "minimum-age-not-met",
+      "required-snapshot-not-met",
+      "required-milestone-not-met",
+      "minimum-final-gap-not-met",
+      "independent-confirmation-not-met",
+      "final-technical-rerun-not-met"
+    ],
+    "blockedWhen": [
+      "registry-integrity-failure",
+      "candidate-or-dist-tag-mismatch",
+      "artifact-hash-drift",
+      "technical-evidence-failure",
+      "open-blocking-evidence"
+    ],
+    "sufficientWhen": "all-criteria-pass"
+  },
+  "nonClaims": [
+    "stable publish approval",
+    "automatic npm dist-tag change",
+    "zero feedback as positive feedback",
+    "automated fixture as independent consumer confirmation",
+    "GitHub Release or GitHub Pages change"
+  ]
+}

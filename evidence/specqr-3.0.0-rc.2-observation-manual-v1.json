@@ -1,0 +1,60 @@
+{
+  "$schema": "../schemas/rc-observation-manual-evidence-v1.schema.json",
+  "schemaVersion": 1,
+  "kind": "specqr-rc-observation-manual-evidence",
+  "candidate": "3.0.0-rc.2",
+  "itemReviews": [
+    {
+      "repository": "SpecQR/SpecQR-Conformance-Lab",
+      "type": "pull-request",
+      "number": 1,
+      "url": "https://github.com/SpecQR/SpecQR-Conformance-Lab/pull/1",
+      "classification": "non-blocking",
+      "reason": "GitHub Actions の dependency maintenance PR であり、RC 2 の defect、regression、security issue、migration failure を示す evidence ではない。",
+      "reviewMethod": "manual",
+      "reviewedAt": "2026-08-02T09:20:56.000Z"
+    },
+    {
+      "repository": "SpecQR/SpecQR-Conformance-Lab",
+      "type": "pull-request",
+      "number": 2,
+      "url": "https://github.com/SpecQR/SpecQR-Conformance-Lab/pull/2",
+      "classification": "non-blocking",
+      "reason": "GitHub Actions の dependency maintenance PR であり、RC 2 の defect、regression、security issue、migration failure を示す evidence ではない。",
+      "reviewMethod": "manual",
+      "reviewedAt": "2026-08-02T09:20:56.000Z"
+    },
+    {
+      "repository": "SpecQR/SpecQR-Conformance-Lab",
+      "type": "pull-request",
+      "number": 3,
+      "url": "https://github.com/SpecQR/SpecQR-Conformance-Lab/pull/3",
+      "classification": "non-blocking",
+      "reason": "GitHub Actions の dependency maintenance PR であり、RC 2 の defect、regression、security issue、migration failure を示す evidence ではない。",
+      "reviewMethod": "manual",
+      "reviewedAt": "2026-08-02T09:20:56.000Z"
+    },
+    {
+      "repository": "SpecQR/SpecQR-Conformance-Lab",
+      "type": "pull-request",
+      "number": 4,
+      "url": "https://github.com/SpecQR/SpecQR-Conformance-Lab/pull/4",
+      "classification": "non-blocking",
+      "reason": "GitHub Actions の dependency maintenance PR であり、RC 2 の defect、regression、security issue、migration failure を示す evidence ではない。",
+      "reviewMethod": "manual",
+      "reviewedAt": "2026-08-02T09:20:56.000Z"
+    },
+    {
+      "repository": "SpecQR/SpecQR-Conformance-Lab",
+      "type": "pull-request",
+      "number": 5,
+      "url": "https://github.com/SpecQR/SpecQR-Conformance-Lab/pull/5",
+      "classification": "non-blocking",
+      "reason": "GitHub Actions の dependency maintenance PR であり、RC 2 の defect、regression、security issue、migration failure を示す evidence ではない。",
+      "reviewMethod": "manual",
+      "reviewedAt": "2026-08-02T09:20:56.000Z"
+    }
+  ],
+  "consumerConfirmations": [],
+  "reportedBlockers": []
+}

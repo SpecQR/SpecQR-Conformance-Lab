@@ -13,7 +13,10 @@ export const schemaFiles = {
 };
 
 export const artifactSchemaFiles = {
-  rcExpectedDeltaPolicy: "schemas/rc-expected-delta-policy-v1.schema.json"
+  rcExpectedDeltaPolicy: "schemas/rc-expected-delta-policy-v1.schema.json",
+  rcObservationPolicy: "schemas/rc-observation-policy-v1.schema.json",
+  rcObservationManualEvidence: "schemas/rc-observation-manual-evidence-v1.schema.json",
+  rcObservation: "schemas/rc-observation-v1.schema.json"
 };
 
 const draft = "https://json-schema.org/draft/2020-12/schema";
@@ -352,6 +355,26 @@ export async function validateAllSchemas(options = {}) {
   pushResult(
     summary,
     await validateJsonFile(
+      "policies/specqr-3.0.0-rc.2-observation-v1.json",
+      schemas.rcObservationPolicy,
+      artifactSchemaFiles.rcObservationPolicy,
+      options
+    )
+  );
+
+  pushResult(
+    summary,
+    await validateJsonFile(
+      "evidence/specqr-3.0.0-rc.2-observation-manual-v1.json",
+      schemas.rcObservationManualEvidence,
+      artifactSchemaFiles.rcObservationManualEvidence,
+      options
+    )
+  );
+
+  pushResult(
+    summary,
+    await validateJsonFile(
       "policies/specqr-3.0.0-rc.2-expected-deltas-v1.json",
       schemas.rcExpectedDeltaPolicy,
       artifactSchemaFiles.rcExpectedDeltaPolicy,
@@ -394,6 +417,12 @@ function summarize(summary) {
     coverageClaims: summary.validated.filter((entry) => entry.schema === schemaFiles.coverageClaims).length,
     rcExpectedDeltaPolicies: summary.validated.filter((entry) => {
       return entry.schema === artifactSchemaFiles.rcExpectedDeltaPolicy;
+    }).length,
+    rcObservationPolicies: summary.validated.filter((entry) => {
+      return entry.schema === artifactSchemaFiles.rcObservationPolicy;
+    }).length,
+    rcObservationManualEvidence: summary.validated.filter((entry) => {
+      return entry.schema === artifactSchemaFiles.rcObservationManualEvidence;
     }).length
   };
 

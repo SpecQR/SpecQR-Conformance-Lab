@@ -1,0 +1,113 @@
+name: SpecQR RC Observation
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_commit:
+        description: Exact Conformance Lab commit to observe
+        required: true
+        type: string
+      technical_run_id:
+        description: RC readiness run to reference or revalidate
+        required: true
+        default: "30739905031"
+        type: string
+      previous_observation_run_id:
+        description: Optional prior observation run selected for the evidence timeline
+        required: false
+        type: string
+  schedule:
+    - cron: "17 8 * * *"
+
+permissions:
+  actions: read
+  contents: read
+  issues: read
+  pull-requests: read
+
+concurrency:
+  group: specqr-rc-observation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  observation:
+    name: RC 2 observation / Node 22
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SPECQR_EVIDENCE_COMMIT: ${{ inputs.expected_commit || github.sha }}
+      SPECQR_TECHNICAL_RUN_ID: ${{ inputs.technical_run_id || '30739905031' }}
+      SPECQR_PREVIOUS_OBSERVATION_RUN_ID: ${{ inputs.previous_observation_run_id }}
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SPECQR_EVIDENCE_COMMIT }}
+
+      - name: Initialize failure evidence path
+        run: |
+          mkdir -p reports/observation/current/logs
+          printf 'Workflow run: %s\nExpected commit: %s\n' \
+            "$GITHUB_RUN_ID" "$SPECQR_EVIDENCE_COMMIT" \
+            > reports/observation/current/logs/workflow-context.log
+
+      - name: Verify exact commit
+        run: test "$(git rev-parse HEAD)" = "$SPECQR_EVIDENCE_COMMIT"
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Lab dependencies
+        run: npm ci
+
+      - name: Download selected observation history
+        if: ${{ env.SPECQR_PREVIOUS_OBSERVATION_RUN_ID != '' }}
+        run: |
+          case "$SPECQR_PREVIOUS_OBSERVATION_RUN_ID" in
+            *[!0-9]*|'') exit 2 ;;
+          esac
+          mkdir -p reports/observation/previous
+          gh run download "$SPECQR_PREVIOUS_OBSERVATION_RUN_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "specqr-3.0.0-rc.2-observation-$SPECQR_PREVIOUS_OBSERVATION_RUN_ID" \
+            --dir reports/observation/previous
+          npm run observation:validate -- \
+            --report reports/observation/previous/observation.json
+
+      - name: Generate registry and usage snapshot
+        run: >-
+          npm run observation:snapshot --
+          --expected-commit "$SPECQR_EVIDENCE_COMMIT"
+          --technical-run-id "$SPECQR_TECHNICAL_RUN_ID"
+
+      - name: Assemble initial observation report
+        if: ${{ env.SPECQR_PREVIOUS_OBSERVATION_RUN_ID == '' }}
+        run: npm run observation:assemble
+
+      - name: Assemble observation report with selected history
+        if: ${{ env.SPECQR_PREVIOUS_OBSERVATION_RUN_ID != '' }}
+        run: >-
+          npm run observation:assemble --
+          --previous-report reports/observation/previous/observation.json
+
+      - name: Validate observation evidence
+        run: npm run observation:validate
+
+      - name: Write workflow summary
+        if: always()
+        run: |
+          if [ -f reports/observation/current/observation.md ]; then
+            cat reports/observation/current/observation.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload observation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: specqr-3.0.0-rc.2-observation-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 90
+          path: reports/observation/current

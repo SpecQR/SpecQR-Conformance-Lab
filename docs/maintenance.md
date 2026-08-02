@@ -11,6 +11,8 @@
 - issue templates から来た request が vector、adapter、report problem のどれかに分類できることを確認する。
 - RC readiness を実行した場合は exact commit、Node 18 / 20 / 22 / 24 matrix、Node 22 full gate、raw strict delta、expected-delta matched / missing / unexpected、policy/schema hash、artifact retention を確認し、default public report が `specqr@2.4.0` のままであることを再確認する。
 - Expected-delta policy は baseline と resolved candidate version に厳密に pin し、stable、次の RC、別 baseline、fingerprint/path/precondition/control の変化があれば失効させる。Wildcard、path prefix、vector group、warning code だけの allowlist へ広げない。
+- RC observation を実行した場合は policy / schema hash、exact candidate / `next` registry integrity、technical evidence run、open issue / PR の manual classification、snapshot chronology、consumer confirmation、blocker、artifact retention を確認する。Feedback 0 件を肯定的 feedback と数えず、`observationStatus: "sufficient"` だけで stable publish を実行しない。
+- Daily observation artifact は自動で全件を timeline に採用しない。72 時間以降と 168 時間以降の selected snapshot、最終 2 snapshot の 48 時間以上の間隔、final technical rerun を明示的に確認する。
 
 ## Before changing workflows
 

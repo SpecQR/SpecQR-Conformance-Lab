@@ -1,0 +1,414 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecQR RC observation evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "kind",
+    "generatedAt",
+    "candidate",
+    "publishedAt",
+    "observedAt",
+    "ageHours",
+    "lab",
+    "technicalEvidence",
+    "registry",
+    "github",
+    "consumerConfirmations",
+    "blockers",
+    "snapshots",
+    "criteria",
+    "technicalStatus",
+    "observationStatus",
+    "statusReasons",
+    "policy",
+    "history",
+    "nonClaims",
+    "fileHashes"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "kind": { "const": "specqr-rc-observation" },
+    "generatedAt": { "$ref": "#/$defs/dateTime" },
+    "candidate": { "$ref": "#/$defs/candidate" },
+    "publishedAt": { "const": "2026-08-02T07:38:47.138Z" },
+    "observedAt": { "$ref": "#/$defs/dateTime" },
+    "ageHours": { "type": "number", "minimum": 0 },
+    "lab": { "$ref": "#/$defs/lab" },
+    "technicalEvidence": { "$ref": "#/$defs/technicalEvidence" },
+    "registry": { "$ref": "#/$defs/registry" },
+    "github": { "$ref": "#/$defs/github" },
+    "consumerConfirmations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/consumerConfirmation" }
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "snapshots": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/snapshotSummary" }
+    },
+    "criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/criterion" }
+    },
+    "technicalStatus": { "enum": ["pass", "blocked"] },
+    "observationStatus": { "enum": ["pending", "sufficient", "blocked"] },
+    "statusReasons": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pending", "blocked"],
+      "properties": {
+        "pending": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "blocked": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "sha256",
+        "schemaPath",
+        "schemaSha256",
+        "manualEvidencePath",
+        "manualEvidenceSha256",
+        "manualEvidenceSchemaPath",
+        "manualEvidenceSchemaSha256",
+        "reportSchemaPath",
+        "reportSchemaSha256"
+      ],
+      "properties": {
+        "id": { "const": "specqr-3.0.0-rc.2-observation-v1" },
+        "path": { "const": "policies/specqr-3.0.0-rc.2-observation-v1.json" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "schemaPath": { "const": "schemas/rc-observation-policy-v1.schema.json" },
+        "schemaSha256": { "$ref": "#/$defs/sha256" },
+        "manualEvidencePath": { "const": "evidence/specqr-3.0.0-rc.2-observation-manual-v1.json" },
+        "manualEvidenceSha256": { "$ref": "#/$defs/sha256" },
+        "manualEvidenceSchemaPath": { "const": "schemas/rc-observation-manual-evidence-v1.schema.json" },
+        "manualEvidenceSchemaSha256": { "$ref": "#/$defs/sha256" },
+        "reportSchemaPath": { "const": "schemas/rc-observation-v1.schema.json" },
+        "reportSchemaSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "history": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["path", "sha256", "snapshotCount", "workflowRunId", "workflowUrl", "artifactSetSha256"],
+      "properties": {
+        "path": { "const": "history/previous-observation.json" },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "snapshotCount": { "type": "integer", "minimum": 1 },
+        "workflowRunId": { "type": ["integer", "null"] },
+        "workflowUrl": { "type": ["string", "null"] },
+        "artifactSetSha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "nonClaims": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "fileHashes": { "$ref": "#/$defs/fileHashes" }
+  },
+  "$defs": {
+    "dateTime": { "type": "string", "format": "date-time" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exactRequested", "nextRequested", "resolvedVersion", "publishedAt"],
+      "properties": {
+        "exactRequested": { "const": "specqr@3.0.0-rc.2" },
+        "nextRequested": { "const": "specqr@next" },
+        "resolvedVersion": { "const": "3.0.0-rc.2" },
+        "publishedAt": { "const": "2026-08-02T07:38:47.138Z" }
+      }
+    },
+    "lab": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "commit", "workflowRunId", "workflowUrl"],
+      "properties": {
+        "repository": { "const": "SpecQR/SpecQR-Conformance-Lab" },
+        "commit": { "$ref": "#/$defs/commit" },
+        "workflowRunId": { "type": ["integer", "null"] },
+        "workflowUrl": { "type": ["string", "null"] }
+      }
+    },
+    "registryTarget": {
+      "type": "object",
+      "required": [
+        "requested",
+        "resolvedVersion",
+        "source",
+        "tarballUrl",
+        "publication",
+        "hashes",
+        "fileCount",
+        "runtimeDependencyCount",
+        "exportsFingerprint",
+        "runtimeFingerprint",
+        "status"
+      ],
+      "properties": {
+        "requested": { "enum": ["specqr@3.0.0-rc.2", "specqr@next"] },
+        "resolvedVersion": { "const": "3.0.0-rc.2" },
+        "source": { "const": "npm-registry" },
+        "tarballUrl": { "const": "https://registry.npmjs.org/specqr/-/specqr-3.0.0-rc.2.tgz" },
+        "publication": { "type": "object" },
+        "hashes": { "type": "object" },
+        "fileCount": { "const": 121 },
+        "runtimeDependencyCount": { "const": 0 },
+        "exportsFingerprint": { "$ref": "#/$defs/sha256" },
+        "runtimeFingerprint": { "$ref": "#/$defs/sha256" },
+        "status": { "enum": ["pass", "blocked"] }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact", "next", "distTags", "selectorComparisonStatus", "invariantFingerprint", "checks", "status"],
+      "properties": {
+        "exact": { "$ref": "#/$defs/registryTarget" },
+        "next": { "$ref": "#/$defs/registryTarget" },
+        "distTags": {
+          "type": "object",
+          "required": ["latest", "next"],
+          "properties": {
+            "latest": { "type": ["string", "null"] },
+            "next": { "type": ["string", "null"] }
+          }
+        },
+        "selectorComparisonStatus": { "enum": ["pass", "blocked"] },
+        "invariantFingerprint": { "$ref": "#/$defs/sha256" },
+        "checks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/check" } },
+        "status": { "enum": ["pass", "blocked"] }
+      }
+    },
+    "technicalEvidence": {
+      "type": "object",
+      "required": [
+        "evidenceKind",
+        "repository",
+        "runId",
+        "workflowId",
+        "runStatus",
+        "conclusion",
+        "headSha",
+        "createdAt",
+        "completedAt",
+        "runUrl",
+        "artifactId",
+        "artifactName",
+        "artifactUrl",
+        "artifactSha256",
+        "readinessSha256",
+        "readinessArtifactSetSha256",
+        "readinessGeneratedAt",
+        "nodeMajors",
+        "v3Contract",
+        "checks",
+        "status",
+        "fingerprint"
+      ],
+      "properties": {
+        "evidenceKind": { "enum": ["initial-reference", "final-rerun"] },
+        "repository": { "const": "SpecQR/SpecQR-Conformance-Lab" },
+        "runId": { "type": "integer", "minimum": 1 },
+        "workflowId": { "type": "integer", "minimum": 1 },
+        "runStatus": { "type": "string" },
+        "conclusion": { "type": ["string", "null"] },
+        "headSha": { "$ref": "#/$defs/commit" },
+        "createdAt": { "$ref": "#/$defs/dateTime" },
+        "completedAt": { "$ref": "#/$defs/dateTime" },
+        "runUrl": { "type": "string", "minLength": 1 },
+        "artifactId": { "type": "integer", "minimum": 1 },
+        "artifactName": { "type": "string", "minLength": 1 },
+        "artifactUrl": { "type": "string", "minLength": 1 },
+        "artifactSha256": { "$ref": "#/$defs/sha256" },
+        "readinessSha256": { "$ref": "#/$defs/sha256" },
+        "readinessArtifactSetSha256": { "$ref": "#/$defs/sha256" },
+        "readinessGeneratedAt": { "$ref": "#/$defs/dateTime" },
+        "nodeMajors": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": { "enum": ["18", "20", "22", "24"] }
+        },
+        "v3Contract": { "type": "object" },
+        "checks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/check" } },
+        "status": { "enum": ["pass", "blocked"] },
+        "fingerprint": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "githubItem": {
+      "type": "object",
+      "required": [
+        "repository",
+        "type",
+        "number",
+        "state",
+        "title",
+        "labels",
+        "createdAt",
+        "updatedAt",
+        "closedAt",
+        "url",
+        "classification",
+        "classificationReason",
+        "classificationSource"
+      ],
+      "properties": {
+        "repository": { "enum": ["SpecQR/SpecQR", "SpecQR/SpecQR-Conformance-Lab"] },
+        "type": { "enum": ["issue", "pull-request"] },
+        "number": { "type": "integer", "minimum": 1 },
+        "state": { "enum": ["open", "closed"] },
+        "title": { "type": "string" },
+        "labels": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "$ref": "#/$defs/dateTime" },
+        "updatedAt": { "$ref": "#/$defs/dateTime" },
+        "closedAt": { "type": ["string", "null"] },
+        "url": { "type": "string", "minLength": 1 },
+        "classification": { "enum": ["unreviewed", "non-blocking", "blocking"] },
+        "classificationReason": { "type": "string", "minLength": 1 },
+        "classificationSource": { "enum": ["unreviewed", "manual"] },
+        "reviewedAt": { "$ref": "#/$defs/dateTime" }
+      }
+    },
+    "github": {
+      "type": "object",
+      "required": ["repositories", "items", "summary", "fingerprint", "status"],
+      "properties": {
+        "repositories": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/githubItem" } },
+        "summary": {
+          "type": "object",
+          "required": ["total", "issues", "pullRequests", "unreviewed", "nonBlocking", "blocking", "repositories"]
+        },
+        "fingerprint": { "$ref": "#/$defs/sha256" },
+        "status": { "enum": ["pass", "pending", "blocked"] }
+      }
+    },
+    "consumerConfirmation": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "candidate",
+        "packageSource",
+        "independent",
+        "automatedFixture",
+        "independenceReason",
+        "url",
+        "commit",
+        "logUrl",
+        "logSha256",
+        "verifiedAt",
+        "summary"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["independent-project", "independent-sample"] },
+        "candidate": { "const": "3.0.0-rc.2" },
+        "packageSource": { "const": "npm-registry" },
+        "independent": { "const": true },
+        "automatedFixture": { "const": false },
+        "independenceReason": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "pattern": "^https://", "minLength": 1 },
+        "commit": { "$ref": "#/$defs/commit" },
+        "logUrl": { "type": "string", "pattern": "^https://", "minLength": 1 },
+        "logSha256": { "$ref": "#/$defs/sha256" },
+        "verifiedAt": { "$ref": "#/$defs/dateTime" },
+        "summary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "snapshotSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotId",
+        "observedAt",
+        "ageHours",
+        "labCommit",
+        "workflowRunId",
+        "candidateVersion",
+        "registryStatus",
+        "registryFingerprint",
+        "technicalStatus",
+        "technicalEvidenceKind",
+        "technicalRunId",
+        "technicalCompletedAt",
+        "githubUnreviewed",
+        "githubBlocking",
+        "consumerConfirmationCount",
+        "blockerCount"
+      ],
+      "properties": {
+        "snapshotId": { "$ref": "#/$defs/sha256" },
+        "observedAt": { "$ref": "#/$defs/dateTime" },
+        "ageHours": { "type": "number", "minimum": 0 },
+        "labCommit": { "$ref": "#/$defs/commit" },
+        "workflowRunId": { "type": ["integer", "null"] },
+        "candidateVersion": { "const": "3.0.0-rc.2" },
+        "registryStatus": { "enum": ["pass", "blocked"] },
+        "registryFingerprint": { "$ref": "#/$defs/sha256" },
+        "technicalStatus": { "enum": ["pass", "blocked"] },
+        "technicalEvidenceKind": { "enum": ["initial-reference", "final-rerun"] },
+        "technicalRunId": { "type": "integer", "minimum": 1 },
+        "technicalCompletedAt": { "$ref": "#/$defs/dateTime" },
+        "githubUnreviewed": { "type": "integer", "minimum": 0 },
+        "githubBlocking": { "type": "integer", "minimum": 0 },
+        "consumerConfirmationCount": { "type": "integer", "minimum": 0 },
+        "blockerCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "required": ["id", "status", "reason", "actual", "required"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["pass", "pending", "blocked"] },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "check": {
+      "type": "object",
+      "required": ["id", "status"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "status": { "enum": ["pass", "blocked"] }
+      }
+    },
+    "fileHashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactSetSha256", "files"],
+      "properties": {
+        "artifactSetSha256": { "$ref": "#/$defs/sha256" },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "size", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "size": { "type": "integer", "minimum": 0 },
+              "sha256": { "$ref": "#/$defs/sha256" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

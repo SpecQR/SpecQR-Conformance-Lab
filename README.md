@@ -38,6 +38,7 @@ contribution、security、dependency、release readiness の運用方針は次�
 - [docs/dependency-policy.md](docs/dependency-policy.md): pinned baseline、manual target workflow、optional native decoder、dependency 追加方針。
 - [docs/maintenance.md](docs/maintenance.md): maintainer 向けの日常確認。
 - [docs/rc-validation.md](docs/rc-validation.md): published RC の registry integrity、strict comparison、candidate 専用 contract、readiness artifact。
+- [docs/rc-observation.md](docs/rc-observation.md): RC 公開後の時系列 snapshot、issue / PR review、独立 consumer confirmation、stable 判断との境界。
 
 issue template は [vector request](.github/ISSUE_TEMPLATE/vector-request.yml)、[adapter request](.github/ISSUE_TEMPLATE/adapter-request.yml)、[report problem](.github/ISSUE_TEMPLATE/report-problem.yml) を用意しています。
 
@@ -57,10 +58,13 @@ Lab が生成・公開する machine-readable data format は `schemas/*.schema.
 - `schemas/report-comparison-v1.schema.json`
 - `schemas/coverage-claims-v1.schema.json`
 - `schemas/rc-readiness-v1.schema.json`（RC Actions artifact 専用。default Pages には追加しない）
+- `schemas/rc-observation-policy-v1.schema.json`（RC observation policy 専用）
+- `schemas/rc-observation-manual-evidence-v1.schema.json`（manual review / confirmation 専用）
+- `schemas/rc-observation-v1.schema.json`（RC observation Actions artifact 専用）
 
 `coverage/claims-v1.json` は、Lab が検証すると言える scope と、まだ claim しない scope を分けて公開する claims map です。`npm run verify:claims` は claims map の schema、suite / adapter / badge / report summary reference、non-claim の誤った coverage reference を検査します。
 
-`npm run validate:schemas` は `vectors/*.json`、`reports/latest.json`、`badges/*.json`、`coverage/claims-v1.json`、report self-comparison を schema に対して検査します。`reports/comparison.json` が存在する場合はそれも検査します。filtered report も同じ report schema を使い、`run.mode: "filtered"` と `run.filters` で filter 条件を表します。
+`npm run validate:schemas` は `vectors/*.json`、`reports/latest.json`、`badges/*.json`、`coverage/claims-v1.json`、RC expected-delta policy、RC observation policy / manual evidence、report self-comparison を schema に対して検査します。`reports/comparison.json` が存在する場合はそれも検査します。Filtered report も同じ report schema を使い、`run.mode: "filtered"` と `run.filters` で filter 条件を表します。
 
 `npm run pages:build` は schema file を `public/schemas/` に、claims map を `public/coverage/claims-v1.json` にコピーします。Pages deploy 後は `https://specqr.github.io/SpecQR-Conformance-Lab/schemas/vector-suite-v1.schema.json` や `https://specqr.github.io/SpecQR-Conformance-Lab/coverage/claims-v1.json` のような URL で参照できます。
 
@@ -140,6 +144,12 @@ Node 22 では default の `npm run verify` に加え、pinned `specqr@2.4.0` ba
 
 RC artifact は `technicalStatus: "pass" | "blocked"` と `observationStatus: "pending" | "sufficient" | "blocked"` を分けます。この dedicated workflow は利用観察を `sufficient` にせず、`pending` のまま記録します。Default dependency、`reports/latest.*`、badges、Pages workflow、public `2.4.0` report は変更しません。判定規則と stable 判断との境界は [docs/rc-validation.md](docs/rc-validation.md) に定義しています。
 
+### SpecQR 3.0.0-rc.2 observation
+
+`.github/workflows/rc-observation.yml` は RC 2 の利用観察 snapshot を manual dispatch と 1 日 1 回の schedule で生成します。Exact candidate と `specqr@next` の registry integrity、固定 technical readiness artifact、SpecQR core / Lab の open issue・PR、manual classification、独立 consumer confirmation、reported blocker を `reports/observation/` の JSON / Markdown / logs / manifest に保存し、Actions artifact だけへ upload します。
+
+Policy は公開後 168 時間以上、initial / 72 時間以降 / 168 時間以降の 3 snapshot、最終 2 snapshot の 48 時間以上の間隔、final technical rerun、open blocker 0 件、独立 registry-only consumer confirmation 1 件以上を要求します。未 review item または期間・snapshot・confirmation 不足は `pending`、registry / hash drift、technical failure、manual に確認された blocker は `blocked` です。全 criteria が pass の場合だけ `sufficient` ですが、stable publish は自動実行しません。詳細は [docs/rc-observation.md](docs/rc-observation.md) を参照してください。
+
 ## Commands
 
 ```sh
@@ -158,6 +168,9 @@ npm run rc:package-surface -- --node-major 22
 npm run rc:full -- --require-node 22
 npm run rc:assemble -- --expected-commit <commit>
 npm run rc:validate -- --report reports/rc/readiness.json
+npm run observation:snapshot -- --expected-commit <commit> --technical-run-id 30739905031
+npm run observation:assemble
+npm run observation:validate
 npm run pages:build
 npm run verify
 ```

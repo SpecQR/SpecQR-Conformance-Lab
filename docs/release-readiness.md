@@ -48,3 +48,5 @@ manual target workflow の `specqr@latest` / `specqr@next` comparison artifact �
 filtered conformance artifact も investigation output です。full baseline と同じ schema を使いますが、`run.mode: "filtered"` と `run.filters` を見て scope を判断します。
 
 Published RC の dedicated evidence も stable release claim ではありません。[RC Validation](rc-validation.md) の `technicalStatus` が `pass` でも、独立した利用観察が十分になるまでは `observationStatus` を `pending` とし、public `specqr@2.4.0` report、badges、Pages、npm dist-tag を変更しません。
+
+利用観察の必要期間、snapshot milestone、issue / PR review、独立 consumer confirmation、final technical rerun は [RC Observation](rc-observation.md) に従います。`observationStatus: "sufficient"` は stable go / no-go goal の入力であり、publish command ではありません。

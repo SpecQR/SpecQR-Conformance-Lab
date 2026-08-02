@@ -27,6 +27,8 @@ token、credential、private path、未公開 exploit detail を public issue �
 
 report、docs、summary、artifact、schema example に private token、secret、local machine path、private account name を含めないでください。公開 report は portable である必要があります。test suite は public-facing files に local path や実装環境名が混ざらないことを検査します。
 
+RC observation collector は GitHub API と Actions artifact download に read-only token を使えますが、token value を JSON、Markdown、manifest、collector log、failure log に保存しません。Observation validator は実行環境で利用可能な credential value が evidence file に混入していないことも検査します。
+
 ## Supported versions
 
 現時点では、この repository は public Pages と main branch の conformance artifacts を最新の運用対象とします。release package としての version support はまだ開始していません。release を開始する場合は [docs/release-readiness.md](docs/release-readiness.md) を更新します。

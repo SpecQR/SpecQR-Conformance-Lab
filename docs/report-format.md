@@ -13,8 +13,11 @@
 | Coverage claims v1 | [../schemas/coverage-claims-v1.schema.json](../schemas/coverage-claims-v1.schema.json) | `coverage/claims-v1.json` |
 | RC readiness v1 | [../schemas/rc-readiness-v1.schema.json](../schemas/rc-readiness-v1.schema.json) | `reports/rc/readiness.json` in Actions artifacts |
 | RC expected delta policy v1 | [../schemas/rc-expected-delta-policy-v1.schema.json](../schemas/rc-expected-delta-policy-v1.schema.json) | `policies/specqr-3.0.0-rc.2-expected-deltas-v1.json` |
+| RC observation policy v1 | [../schemas/rc-observation-policy-v1.schema.json](../schemas/rc-observation-policy-v1.schema.json) | `policies/specqr-3.0.0-rc.2-observation-v1.json` |
+| RC observation manual evidence v1 | [../schemas/rc-observation-manual-evidence-v1.schema.json](../schemas/rc-observation-manual-evidence-v1.schema.json) | `evidence/specqr-3.0.0-rc.2-observation-manual-v1.json` |
+| RC observation report v1 | [../schemas/rc-observation-v1.schema.json](../schemas/rc-observation-v1.schema.json) | `reports/observation/current/observation.json` in Actions artifacts |
 
-`npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、RC expected delta policy、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
+`npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、RC expected delta policy、RC observation policy / manual evidence、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
 
 RC readiness は default public report と別 lifecycle です。`npm run rc:validate -- --report reports/rc/readiness.json` が schema と fixed target、registry hash、Node matrix、raw strict comparison、expected-delta adjudication、v3 contract、technical / observation status の semantic consistency を検査します。RC readiness schema と expected delta policy schema、generated evidence は default Pages artifact へ追加しません。
 
@@ -55,6 +58,12 @@ default の comparison は count difference だけで失敗しません。`--fai
 ## RC readiness
 
 `reports/rc/readiness.json` は published RC の temporary evidence format です。Target、toolchain、registry integrity、adapter 別 conformance、raw strict regression、expected-delta adjudication、candidate 専用 contract、skip / non-claim、evidence file hash を 1 つに集約します。`expectedDelta` は policy path / SHA-256、exact / `next` ごとの raw delta count、matched / missing / unexpected、positive control、selector 一致を記録します。Validator は policy と schema の SHA-256、raw report からの adjudication、listed file の size / SHA-256、artifact set SHA-256 を再計算します。`technicalStatus` と `observationStatus` は独立 field です。Technical gate が green でも、利用観察が別条件を満たすまでは observation を `pending` とします。
+
+## RC observation
+
+`reports/observation/current/observation.json` は RC 公開後の時系列 evidence format です。Candidate、published / observed timestamp、age、technical evidence run、registry snapshot、GitHub issue / PR snapshot、manual classification、consumer confirmation、blocker、criteria、status、snapshot timeline、file hash を記録します。
+
+`npm run observation:validate` は fixed policy / schema hash、candidate / dist-tag / artifact hash、technical readiness 内容、snapshot fingerprint、chronology、duplicate、future timestamp、manual evidence hash、listed file、manifest、artifact set hash、report 再組立を検査します。期間・snapshot・confirmation が不足した正当な `pending` report は validation success です。Registry drift、technical failure、open blocker、evidence 改変を含む `blocked` report は failure です。この format は default Pages artifact に追加しません。
 
 ## Compatibility policy
 

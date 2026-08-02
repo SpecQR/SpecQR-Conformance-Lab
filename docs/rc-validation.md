@@ -163,6 +163,8 @@ Intermediate conformance report、raw strict comparison、expected-delta JSON / 
 
 `observationStatus` は利用観察の独立 status です。この検証だけでは `"sufficient"` にしません。RC readiness workflow は常に `"pending"` を出し、stable 公開判断には別途、公開後の利用期間、consumer feedback、issue / regression observation、必要な compatibility confirmation を要求します。
 
+時系列の observation policy、snapshot command、issue / PR classification、独立 consumer evidence、`pending` / `blocked` / `sufficient` の判定は [RC Observation](rc-observation.md) に定義します。
+
 この evidence は次を claim しません。
 
 - stable tag または npm `latest` へ進める最終承認

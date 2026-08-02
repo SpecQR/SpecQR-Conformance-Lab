@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecQR RC observation manual evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "kind",
+    "candidate",
+    "itemReviews",
+    "consumerConfirmations",
+    "reportedBlockers"
+  ],
+  "properties": {
+    "$schema": { "const": "../schemas/rc-observation-manual-evidence-v1.schema.json" },
+    "schemaVersion": { "const": 1 },
+    "kind": { "const": "specqr-rc-observation-manual-evidence" },
+    "candidate": { "const": "3.0.0-rc.2" },
+    "itemReviews": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/itemReview" }
+    },
+    "consumerConfirmations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/consumerConfirmation" }
+    },
+    "reportedBlockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reportedBlocker" }
+    }
+  },
+  "$defs": {
+    "dateTime": { "type": "string", "format": "date-time" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "itemReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "type", "number", "url", "classification", "reason", "reviewMethod", "reviewedAt"],
+      "properties": {
+        "repository": { "enum": ["SpecQR/SpecQR", "SpecQR/SpecQR-Conformance-Lab"] },
+        "type": { "enum": ["issue", "pull-request"] },
+        "number": { "type": "integer", "minimum": 1 },
+        "url": { "type": "string", "minLength": 1 },
+        "classification": { "enum": ["non-blocking", "blocking"] },
+        "reason": { "type": "string", "minLength": 1 },
+        "reviewMethod": { "const": "manual" },
+        "reviewedAt": { "$ref": "#/$defs/dateTime" }
+      }
+    },
+    "consumerConfirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "candidate",
+        "packageSource",
+        "independent",
+        "automatedFixture",
+        "independenceReason",
+        "url",
+        "commit",
+        "logUrl",
+        "logSha256",
+        "verifiedAt",
+        "summary"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["independent-project", "independent-sample"] },
+        "candidate": { "const": "3.0.0-rc.2" },
+        "packageSource": { "const": "npm-registry" },
+        "independent": { "const": true },
+        "automatedFixture": { "const": false },
+        "independenceReason": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "pattern": "^https://", "minLength": 1 },
+        "commit": { "$ref": "#/$defs/commit" },
+        "logUrl": { "type": "string", "pattern": "^https://", "minLength": 1 },
+        "logSha256": { "$ref": "#/$defs/sha256" },
+        "verifiedAt": { "$ref": "#/$defs/dateTime" },
+        "summary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "reportedBlocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "state", "summary", "url", "observedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "category": { "enum": ["defect", "regression", "security", "migration-failure"] },
+        "state": { "enum": ["open", "resolved"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "minLength": 1 },
+        "observedAt": { "$ref": "#/$defs/dateTime" }
+      }
+    }
+  }
+}
