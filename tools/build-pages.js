@@ -5,7 +5,8 @@ import { pathToFileURL } from "node:url";
 import { badgeFileNames } from "./report-utils.js";
 
 const artifactOnlySchemas = new Set([
-  "rc-readiness-v1.schema.json"
+  "rc-readiness-v1.schema.json",
+  "rc-expected-delta-policy-v1.schema.json"
 ]);
 
 export async function buildPages(options = {}) {

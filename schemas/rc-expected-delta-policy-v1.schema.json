@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SpecQR RC expected delta policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "kind",
+    "id",
+    "description",
+    "validFor",
+    "expectedDeltaCount",
+    "control",
+    "expiresWhen",
+    "entries"
+  ],
+  "properties": {
+    "$schema": { "const": "../schemas/rc-expected-delta-policy-v1.schema.json" },
+    "schemaVersion": { "const": 1 },
+    "kind": { "const": "specqr-rc-expected-delta-policy" },
+    "id": { "const": "specqr-3.0.0-rc.2-capacity-warning-removal" },
+    "description": { "type": "string", "minLength": 1 },
+    "validFor": { "$ref": "#/$defs/targets" },
+    "expectedDeltaCount": { "const": 3 },
+    "control": { "$ref": "#/$defs/control" },
+    "expiresWhen": { "$ref": "#/$defs/expiresWhen" },
+    "entries": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "baselineTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requested", "resolvedVersion"],
+      "properties": {
+        "requested": { "const": "specqr@2.4.0" },
+        "resolvedVersion": { "const": "2.4.0" }
+      }
+    },
+    "candidateTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requested", "resolvedVersion"],
+      "properties": {
+        "requested": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["specqr@3.0.0-rc.2", "specqr@next"] }
+        },
+        "resolvedVersion": { "const": "3.0.0-rc.2" }
+      }
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "candidate"],
+      "properties": {
+        "baseline": { "$ref": "#/$defs/baselineTarget" },
+        "candidate": { "$ref": "#/$defs/candidateTarget" }
+      }
+    },
+    "warningPaths": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "$.details.diagnostics.warnings",
+          "$.details.planning.warnings"
+        ]
+      }
+    },
+    "changePaths": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "$.details.diagnostics.warnings.length",
+          "$.details.diagnostics.warnings[0]",
+          "$.details.planning.warnings.length",
+          "$.details.planning.warnings[0]"
+        ]
+      }
+    },
+    "expiresWhen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baselineRequestedChanges",
+        "baselineResolvedVersionChanges",
+        "candidateRequestedIsNotListed",
+        "candidateResolvedVersionChanges",
+        "candidateBecomesStable",
+        "candidateRcNumberChanges",
+        "rawDeltaCountChanges",
+        "fingerprintChanges",
+        "changePathChanges",
+        "preconditionFails",
+        "unchangedInvariantFails",
+        "controlFails"
+      ],
+      "properties": {
+        "baselineRequestedChanges": { "const": true },
+        "baselineResolvedVersionChanges": { "const": true },
+        "candidateRequestedIsNotListed": { "const": true },
+        "candidateResolvedVersionChanges": { "const": true },
+        "candidateBecomesStable": { "const": true },
+        "candidateRcNumberChanges": { "const": true },
+        "rawDeltaCountChanges": { "const": true },
+        "fingerprintChanges": { "const": true },
+        "changePathChanges": { "const": true },
+        "preconditionFails": { "const": true },
+        "unchangedInvariantFails": { "const": true },
+        "controlFails": { "const": true }
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "adapterId",
+        "vectorId",
+        "operation",
+        "status",
+        "planningOk",
+        "planningReason",
+        "remainingBits",
+        "warningCode",
+        "warningCount",
+        "warningPaths"
+      ],
+      "properties": {
+        "id": { "const": "capacity-near-limit-positive-control" },
+        "adapterId": { "const": "specqr" },
+        "vectorId": { "const": "planning.diagnostics.warning.capacity-near-limit" },
+        "operation": { "const": "estimate" },
+        "status": { "const": "passed" },
+        "planningOk": { "const": true },
+        "planningReason": { "const": null },
+        "remainingBits": { "const": 1 },
+        "warningCode": { "const": "CAPACITY_NEAR_LIMIT" },
+        "warningCount": { "const": 1 },
+        "warningPaths": { "$ref": "#/$defs/warningPaths" }
+      }
+    },
+    "precondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "candidateOk",
+        "candidateReason",
+        "expectedRemainingBits",
+        "remainingBitsLessThan",
+        "baselineWarningCount",
+        "candidateWarningCount"
+      ],
+      "properties": {
+        "status": { "const": "passed" },
+        "candidateOk": { "const": false },
+        "candidateReason": { "const": "data-too-long" },
+        "expectedRemainingBits": { "type": "integer", "maximum": -1 },
+        "remainingBitsLessThan": { "const": 0 },
+        "baselineWarningCount": { "const": 1 },
+        "candidateWarningCount": { "const": 0 }
+      }
+    },
+    "unchangedInvariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "paths"],
+      "properties": {
+        "method": { "const": "remove-exact-warning-arrays-then-deep-equal" },
+        "paths": { "$ref": "#/$defs/warningPaths" }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "targets",
+        "adapterId",
+        "vectorId",
+        "operation",
+        "changePaths",
+        "beforeFingerprint",
+        "afterFingerprint",
+        "warningCode",
+        "precondition",
+        "unchangedInvariant",
+        "control",
+        "expiresWhen"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "targets": { "$ref": "#/$defs/targets" },
+        "adapterId": { "const": "specqr" },
+        "vectorId": {
+          "enum": [
+            "core.estimate.data-too-long-reject",
+            "planning.estimate.data-too-long-v1-h",
+            "planning.analyze-segments.data-too-long-v1-h"
+          ]
+        },
+        "operation": { "enum": ["estimate", "analyzeSegments"] },
+        "changePaths": { "$ref": "#/$defs/changePaths" },
+        "beforeFingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "afterFingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "warningCode": { "const": "CAPACITY_NEAR_LIMIT" },
+        "precondition": { "$ref": "#/$defs/precondition" },
+        "unchangedInvariant": { "$ref": "#/$defs/unchangedInvariant" },
+        "control": { "const": "capacity-near-limit-positive-control" },
+        "expiresWhen": { "$ref": "#/$defs/expiresWhen" }
+      }
+    }
+  }
+}

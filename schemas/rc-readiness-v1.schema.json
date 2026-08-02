@@ -14,6 +14,7 @@
     "toolchain",
     "registryIntegrity",
     "conformance",
+    "expectedDelta",
     "v3Contract",
     "skips",
     "nonClaims",
@@ -30,7 +31,7 @@
       "type": "object",
       "required": ["version", "publishedAtJst", "expectedTarballSha256", "expectedExpandedSha256"],
       "properties": {
-        "version": { "const": "3.0.0-rc.1" },
+        "version": { "const": "3.0.0-rc.2" },
         "publishedAtJst": { "type": "string" },
         "expectedTarballSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
         "expectedExpandedSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
@@ -53,6 +54,51 @@
     "conformance": {
       "type": "object",
       "required": ["baseline", "exact", "next", "common", "normalizations"]
+    },
+    "expectedDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "exact", "next", "selectorComparison"],
+      "properties": {
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "path",
+            "sha256",
+            "schemaPath",
+            "schemaSha256",
+            "snapshotPath",
+            "schemaSnapshotPath",
+            "status"
+          ],
+          "properties": {
+            "id": { "const": "specqr-3.0.0-rc.2-capacity-warning-removal" },
+            "path": { "const": "policies/specqr-3.0.0-rc.2-expected-deltas-v1.json" },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "schemaPath": { "const": "schemas/rc-expected-delta-policy-v1.schema.json" },
+            "schemaSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "snapshotPath": { "const": "reports/rc/full/expected-delta-policy.json" },
+            "schemaSnapshotPath": { "const": "reports/rc/full/expected-delta-policy.schema.json" },
+            "status": { "const": "pass" }
+          }
+        },
+        "exact": { "$ref": "#/$defs/adjudicationSummary" },
+        "next": { "$ref": "#/$defs/adjudicationSummary" },
+        "selectorComparison": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "identical", "exactSha256", "nextSha256", "evidencePath"],
+          "properties": {
+            "status": { "const": "pass" },
+            "identical": { "const": true },
+            "exactSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "nextSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "evidencePath": { "const": "reports/rc/full/expected-delta-comparison.json" }
+          }
+        }
+      }
     },
     "v3Contract": {
       "type": "object",
@@ -91,6 +137,34 @@
     "summary": {
       "type": "object",
       "required": ["passed", "failed"]
+    }
+  },
+  "$defs": {
+    "adjudicationSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "rawStatus",
+        "rawDeltaCount",
+        "rawBlockingRegressionCount",
+        "matchedExpected",
+        "missingExpected",
+        "unexpected",
+        "controlStatus",
+        "evidencePath"
+      ],
+      "properties": {
+        "status": { "const": "pass" },
+        "rawStatus": { "const": "blocked" },
+        "rawDeltaCount": { "const": 3 },
+        "rawBlockingRegressionCount": { "const": 3 },
+        "matchedExpected": { "const": 3 },
+        "missingExpected": { "const": 0 },
+        "unexpected": { "const": 0 },
+        "controlStatus": { "const": "pass" },
+        "evidencePath": { "type": "string", "pattern": "^reports/rc/full/expected-delta-(?:exact|next)\\.json$" }
+      }
     }
   }
 }

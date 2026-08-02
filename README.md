@@ -132,11 +132,11 @@ default の conformance run は unfiltered full run として記録されます�
 
 公開 Pages report は通常 CI が pinned dependency `specqr@2.4.0` で生成した report です。`specqr-target.yml` の `reports/baseline.json`、`reports/candidate.json`、`reports/comparison.json`、`reports/comparison.md` は workflow artifact として確認する比較 artifact / investigation artifact / investigation output であり、Pages deploy も release claim も行いません。`latest` や `next` の結果は通常 release gate には含めません。
 
-### SpecQR 3.0.0-rc.1 readiness
+### SpecQR 3.0.0-rc.2 readiness
 
-`.github/workflows/rc-readiness.yml` は published `specqr@3.0.0-rc.1` 専用の required evidence workflow です。Exact version と `specqr@next` を別々の temporary install で npm registry から取得し、tarball / expanded content hash、file manifest、metadata、root / Node / browser exports、runtime dependency 0、representative runtime smoke を照合します。Local tarball、SpecQR core checkout、direct source import への fallback はありません。
+`.github/workflows/rc-readiness.yml` は published `specqr@3.0.0-rc.2` 専用の required evidence workflow です。Exact version と `specqr@next` を別々の temporary install で npm registry から取得し、tarball / expanded content hash、file manifest、metadata、root / Node / browser exports、runtime dependency 0、representative runtime smoke を照合します。Local tarball、SpecQR core checkout、direct source import への fallback はありません。
 
-Node 22 では default の `npm run verify` に加え、pinned `specqr@2.4.0` baseline、exact RC、`specqr@next` の full report を生成し、strict common comparison と candidate 専用 v3 Structured Append contract を実行します。Node 18 / 20 / 22 / 24 では package surface、literal / dynamic TypeScript consumer、representative runtime smoke を実行します。Final Actions artifact は `reports/rc/readiness.json`、`reports/rc/readiness.md`、comparison、logs、artifact hash を含み、validator が evidence file と artifact set の hash を再計算します。
+Node 22 では default の `npm run verify` に加え、pinned `specqr@2.4.0` baseline、exact RC、`specqr@next` の full report を生成し、raw strict common comparison、RC 2 専用 expected-delta adjudication、candidate 専用 v3 Structured Append contract を実行します。Raw strict comparison は 3 件を blocking delta として保持します。Versioned policy は `CAPACITY_NEAR_LIMIT` warning だけが除去された 3 件を full fingerprint、exact path、precondition、unchanged invariant、positive control で照合し、3 / 3 matched、0 missing、0 unexpected の場合だけ technical gate を通します。Node 18 / 20 / 22 / 24 では package surface、literal / dynamic TypeScript consumer、representative runtime smoke を実行します。Final Actions artifact は `reports/rc/readiness.json`、`reports/rc/readiness.md`、raw comparison、adjudication、policy snapshot、logs、artifact hash を含み、validator が policy/schema hash、report fingerprint、evidence file、artifact set hash を再計算します。
 
 RC artifact は `technicalStatus: "pass" | "blocked"` と `observationStatus: "pending" | "sufficient" | "blocked"` を分けます。この dedicated workflow は利用観察を `sufficient` にせず、`pending` のまま記録します。Default dependency、`reports/latest.*`、badges、Pages workflow、public `2.4.0` report は変更しません。判定規則と stable 判断との境界は [docs/rc-validation.md](docs/rc-validation.md) に定義しています。
 

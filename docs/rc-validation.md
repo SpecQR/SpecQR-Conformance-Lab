@@ -1,19 +1,20 @@
 # RC Validation
 
-この文書は、公開済み `specqr@3.0.0-rc.1` を SpecQR Conformance Lab から外部 black-box 検証し、stable readiness の技術的 evidence を作る専用手順を定義します。通常の public baseline は `specqr@2.4.0` のままです。RC validation は `reports/latest.json`、`reports/latest.html`、badges、GitHub Pages、npm dist-tag を変更しません。
+この文書は、公開済み `specqr@3.0.0-rc.2` を SpecQR Conformance Lab から外部 black-box 検証し、stable readiness の技術的 evidence を作る専用手順を定義します。通常の public baseline は `specqr@2.4.0` のままです。RC validation は `reports/latest.json`、`reports/latest.html`、badges、GitHub Pages、npm dist-tag を変更しません。
 
 ## Fixed targets
 
 | Role | Package spec | Expected resolved version |
 | --- | --- | --- |
 | Baseline | `specqr@2.4.0` | `2.4.0` |
-| Exact candidate | `specqr@3.0.0-rc.1` | `3.0.0-rc.1` |
-| Dist-tag candidate | `specqr@next` | `3.0.0-rc.1` |
+| Exact candidate | `specqr@3.0.0-rc.2` | `3.0.0-rc.2` |
+| Dist-tag candidate | `specqr@next` | `3.0.0-rc.2` |
 
-RC 公開日時は 2026-08-02 13:27:44 JST です。Registry artifact の expected SHA-256 は次です。
+RC 公開日時は 2026-08-02 16:38:47 JST です。Registry artifact の固定値は次です。
 
-- tarball: `ad1c384475ff09cc27fcbb5479d2a230431dab43d403b86deba13b1005530f04`
-- expanded contents: `b8f906d95076316c7de97a3a4f376dfbea70e4aef2e19dbeb6dbbfde96b577d4`
+- tarball SHA-256: `c96c324dcd99d72c385d3890156a6ae973ad8db57b840fd5a47f987ddcbb6298`
+- expanded contents SHA-256: `f507de7da842b3bc5fce88eaa6a4d04388ce1d55541c58cbebf36d4b583ae306`
+- files: 121
 
 ## Commands
 
@@ -57,11 +58,11 @@ Expanded SHA-256 は、tar archive の `package/` 以下にある file を path 
 
 Local tarball、SpecQR core checkout、direct source import への fallback はありません。Registry access または temporary install に失敗した場合は、そのまま blocked です。
 
-## Strict common comparison
+## Raw strict common comparison
 
 Baseline、exact candidate、dist-tag candidate は、同じ vector と adapter で full conformance report を生成します。Candidate report integrity は required gate であり、失敗を許容して comparison だけ続行する経路はありません。
 
-次を blocking regression とします。
+Raw strict comparison は次を blocking regression とします。Expected delta policy はこの report を変更せず、3 件の raw delta と 3 件の blocking regression を残したまま別 report で判定します。
 
 - common vector / adapter の新しい `failed` または `error`
 - baseline にある result または required check の欠落
@@ -82,6 +83,37 @@ Optional adapter の availability skip は adapter 別に report します。Opt
 4. Manual Structured Append diagnostics の `splitUnits`、`splitUnitsDetail`、`splitUnitCount`
 
 4 番目は breaking change を無視するためではありません。Common regression から分離し、次の v3 candidate contract で required evidence として検証します。Matrix、renderer output、symbol result、offset 以外の summary、warning、helper result は正規化しません。
+
+## RC 2 expected delta policy
+
+RC 2 で確認された 3 件だけを adjudicate する versioned policy は [specqr-3.0.0-rc.2-expected-deltas-v1.json](../policies/specqr-3.0.0-rc.2-expected-deltas-v1.json) です。Schema は [rc-expected-delta-policy-v1.schema.json](../schemas/rc-expected-delta-policy-v1.schema.json) です。
+
+- policy SHA-256: `77ad3e6241c8d02f698c7e4609d0e837ffce076d47255c719ecf070d69b461a0`
+- policy schema SHA-256: `84955271cfc8596228cc6adecf297abece7f549f9aab699690b3f9b3d101a240`
+- expected delta count: 3
+- valid baseline: requested `specqr@2.4.0`、resolved `2.4.0`
+- valid candidates: requested `specqr@3.0.0-rc.2` または `specqr@next`、resolved `3.0.0-rc.2`
+
+| Vector | Operation | Before fingerprint | After fingerprint | `remainingBits` |
+| --- | --- | --- | --- | --- |
+| `core.estimate.data-too-long-reject` | `estimate` | `feb36244b3cba7698421c2bfe4357aa091b91980034ed6c6d2c7043cc7644c50` | `3aa336488d9fd8afbfdc1cb6ddf2ef4123f9257659d4ede5ff255af3ad9c33c9` | -381 |
+| `planning.estimate.data-too-long-v1-h` | `estimate` | `13f97c0ed73c276012eaaa150d756da6ca91bac859dffea06b07a01b1816d47a` | `c8a9588eac278ac1c09249b2eaed6ca2714c4f93dd32c1d3a7130e8a3deb00e7` | -340 |
+| `planning.analyze-segments.data-too-long-v1-h` | `analyzeSegments` | `b6f40826566b609cab7cd7bd674a5fbc52b591513eee415276bdc6008f4a23dd` | `e454ec71100d4de4209be8f3340b87f97423f94367483ca9a9a861c2b58bc1a2` | -340 |
+
+全 entry の `adapterId` は `specqr` です。許可する変更 path は、次の 4 個の完全一致だけです。
+
+1. `$.details.diagnostics.warnings.length`
+2. `$.details.diagnostics.warnings[0]`
+3. `$.details.planning.warnings.length`
+4. `$.details.planning.warnings[0]`
+
+各 entry は baseline と candidate の status が `passed`、planning が `ok: false`、`reason: "data-too-long"`、表の `remainingBits` と一致して 0 未満であることを required とします。Baseline の diagnostics / planning warning はそれぞれ `CAPACITY_NEAR_LIMIT` 1 件、candidate は 0 件でなければなりません。Baseline からこの 2 warning array だけを空にした normalized result が candidate と完全一致することを unchanged invariant とします。
+
+Positive control は `planning.diagnostics.warning.capacity-near-limit` / `specqr` / `estimate` です。Baseline と candidate の両方で成功し、planning は `ok: true`、`reason: null`、`remainingBits: 1`、diagnostics / planning の両方に `CAPACITY_NEAR_LIMIT` が 1 件必要です。
+
+Policy は exact RC と `next` へ独立に適用します。両方が raw 3、matched 3、missing 0、unexpected 0 で、entry evidence と control が一致した場合だけ adjudication は pass です。Extra / missing delta、adapter / vector / operation / path / full fingerprint / warning code の不一致、precondition failure、unchanged field drift、control 消失、version 変更、`next` mismatch、policy または schema の hash 変更は failure です。
+
+Wildcard、path prefix、vector group、warning code だけの broad allowlist は認めません。Baseline、candidate requested / resolved version、RC number、raw delta count、fingerprint、path、precondition、unchanged invariant、control のどれかが変われば policy は失効します。Stable、RC 3、別 baseline へ自動適用しません。
 
 ## v3 candidate contract
 
@@ -114,18 +146,20 @@ Final Actions artifact は `reports/rc/readiness.json` と `reports/rc/readiness
 - registry integrity、file count、artifact hashes、runtime dependency count
 - target 別 conformance summary と adapter 別 pass / skip / fail / error
 - common regression と normalization rules
+- raw strict delta と exact / `next` の expected-delta matched / missing / unexpected
+- expected-delta policy / schema path、SHA-256、entry evidence、positive control
 - v3 candidate contract の required check count
 - optional skip と non-claims
 - evidence file ごとの SHA-256 と artifact set SHA-256
 - `technicalStatus` と `observationStatus`
 
-Intermediate conformance report、strict comparison、v3 contract JSON、registry manifest、logs も同じ Actions artifact に含めます。これらは generated evidence であり、通常は repository へ commit しません。
+Intermediate conformance report、raw strict comparison、expected-delta JSON / Markdown、policy / schema snapshot、v3 contract JSON、registry manifest、logs も同じ Actions artifact に含めます。これらは generated evidence であり、通常は repository へ commit しません。
 
-`npm run rc:validate` は report field の semantic consistency に加え、listed evidence file の存在、regular file、size、SHA-256、安全な relative path、重複、および artifact set SHA-256 を再計算します。
+`npm run rc:validate` は report field の semantic consistency に加え、policy/schema hash、raw comparison、full result fingerprint、exact / `next` adjudication、evidence file の存在、regular file、size、SHA-256、安全な relative path、重複、および artifact set SHA-256 を再計算します。
 
 ## Stable boundary
 
-`technicalStatus: "pass"` は、この workflow が定義する registry integrity、common regression、v3 contract、Node matrix が green であることだけを示します。
+`technicalStatus: "pass"` は、registry integrity、91 vectors / 455 results、raw strict 3 件、expected delta 3 / 3 matched・0 missing・0 unexpected、v3 contract 35 / 35、Node 18 / 20 / 22 / 24 matrix がすべて green であることだけを示します。
 
 `observationStatus` は利用観察の独立 status です。この検証だけでは `"sufficient"` にしません。RC readiness workflow は常に `"pending"` を出し、stable 公開判断には別途、公開後の利用期間、consumer feedback、issue / regression observation、必要な compatibility confirmation を要求します。
 

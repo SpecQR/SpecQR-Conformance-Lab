@@ -6,6 +6,12 @@ import {
   rcBaselineSpec,
   rcExactSpec,
   rcExpandedSha256,
+  rcExpectedDeltaCount,
+  rcExpectedDeltaPolicyPath,
+  rcExpectedDeltaPolicySchemaPath,
+  rcExpectedDeltaPolicySchemaSha256,
+  rcExpectedDeltaPolicySha256,
+  rcFileCount,
   rcNextSpec,
   rcNonClaims,
   rcPublishedAtJst,
@@ -91,6 +97,20 @@ function registrySummary(evidence) {
   };
 }
 
+function adjudicationSummary(adjudication, evidencePath) {
+  return {
+    status: adjudication.status,
+    rawStatus: adjudication.rawStatus,
+    rawDeltaCount: adjudication.rawDeltaCount,
+    rawBlockingRegressionCount: adjudication.rawBlockingRegressionCount,
+    matchedExpected: adjudication.matchedExpected,
+    missingExpected: adjudication.missingExpected.length,
+    unexpected: adjudication.unexpected.length,
+    controlStatus: adjudication.control.status,
+    evidencePath
+  };
+}
+
 function markdownTable(headers, rows) {
   const render = (value) => String(value ?? "").replaceAll("|", "\\|").replaceAll("\n", " ");
   return [
@@ -118,7 +138,7 @@ export function renderReadinessMarkdown(report) {
     `${entry.summary.passed}/${entry.summary.passed + entry.summary.failed}`
   ]);
   const artifactRows = report.artifacts.files.map((file) => [file.path, file.size, file.sha256]);
-  return `# SpecQR 3.0.0-rc.1 Readiness Evidence
+  return `# SpecQR 3.0.0-rc.2 Readiness Evidence
 
 - Commit: \`${report.commit}\`
 - RC publication: ${report.release.publishedAtJst}
@@ -139,11 +159,19 @@ export function renderReadinessMarkdown(report) {
 
 ## Common conformance
 
-- baseline / exact: **${report.conformance.common.exact.status}**, blocking regressions ${report.conformance.common.exact.blockingRegressionCount}
-- baseline / next: **${report.conformance.common.next.status}**, blocking regressions ${report.conformance.common.next.blockingRegressionCount}
+- baseline / exact raw strict: **${report.conformance.common.exact.status}**, blocking regressions ${report.conformance.common.exact.blockingRegressionCount}
+- baseline / next raw strict: **${report.conformance.common.next.status}**, blocking regressions ${report.conformance.common.next.blockingRegressionCount}
 - exact / next: **${report.conformance.common.selector.status}**, blocking regressions ${report.conformance.common.selector.blockingRegressionCount}
 
 ${markdownTable(["Target", "Adapter", "Pass", "Skip", "Fail", "Error"], adapterRows)}
+
+## Expected delta adjudication
+
+- Policy: \`${report.expectedDelta.policy.path}\`
+- Policy SHA-256: \`${report.expectedDelta.policy.sha256}\`
+- exact: **${report.expectedDelta.exact.status}**, raw ${report.expectedDelta.exact.rawDeltaCount}, matched ${report.expectedDelta.exact.matchedExpected}, missing ${report.expectedDelta.exact.missingExpected}, unexpected ${report.expectedDelta.exact.unexpected}
+- next: **${report.expectedDelta.next.status}**, raw ${report.expectedDelta.next.rawDeltaCount}, matched ${report.expectedDelta.next.matchedExpected}, missing ${report.expectedDelta.next.missingExpected}, unexpected ${report.expectedDelta.next.unexpected}
+- exact / next identical: **${report.expectedDelta.selectorComparison.identical}**
 
 ## v3 candidate contract
 
@@ -197,6 +225,9 @@ export async function assembleRcReadiness(options = {}) {
   const comparisonExact = await readJson(path.join(fullDirectory, "comparison-baseline-exact.json"));
   const comparisonNext = await readJson(path.join(fullDirectory, "comparison-baseline-next.json"));
   const selectorComparison = await readJson(path.join(fullDirectory, "comparison-exact-next.json"));
+  const expectedDeltaExact = await readJson(path.join(fullDirectory, "expected-delta-exact.json"));
+  const expectedDeltaNext = await readJson(path.join(fullDirectory, "expected-delta-next.json"));
+  const expectedDeltaComparison = await readJson(path.join(fullDirectory, "expected-delta-comparison.json"));
   const v3Exact = await readJson(path.join(fullDirectory, "v3-contract-exact.json"));
   const v3Next = await readJson(path.join(fullDirectory, "v3-contract-next.json"));
   const v3Comparison = await readJson(path.join(fullDirectory, "v3-contract-comparison.json"));
@@ -215,9 +246,27 @@ export async function assembleRcReadiness(options = {}) {
       actual: surfaces.map((surface) => surface.runtime.nodeMajor)
     }),
     createCheck("surface-status", surfaces.every((surface) => surface.status === "pass")),
-    createCheck("registry-integrity", registryComparison.status === "pass"),
-    createCheck("common-conformance", [comparisonExact, comparisonNext, selectorComparison].every((comparison) => comparison.status === "pass")),
-    createCheck("v3-contract", v3Exact.status === "pass" && v3Next.status === "pass" && v3Comparison.status === "pass")
+    createCheck("registry-integrity", registryComparison.status === "pass" &&
+      registryExact.manifest.length === rcFileCount && registryNext.manifest.length === rcFileCount),
+    createCheck("conformance-coverage", [baselineReport, exactReport, nextReport].every((report) => {
+      return report.summary.totalVectors === 91 && report.summary.totalResults === 455;
+    })),
+    createCheck("raw-strict-comparison", comparisonExact.status === "blocked" &&
+      comparisonNext.status === "blocked" && selectorComparison.status === "pass" &&
+      comparisonExact.changes.length === rcExpectedDeltaCount &&
+      comparisonNext.changes.length === rcExpectedDeltaCount &&
+      comparisonExact.blockingRegressions.length === rcExpectedDeltaCount &&
+      comparisonNext.blockingRegressions.length === rcExpectedDeltaCount &&
+      selectorComparison.changes.length === 0 && selectorComparison.blockingRegressions.length === 0),
+    createCheck("expected-delta", expectedDeltaExact.status === "pass" &&
+      expectedDeltaNext.status === "pass" && expectedDeltaComparison.status === "pass" &&
+      [expectedDeltaExact, expectedDeltaNext].every((adjudication) => {
+        return adjudication.rawDeltaCount === rcExpectedDeltaCount &&
+          adjudication.matchedExpected === rcExpectedDeltaCount &&
+          adjudication.missingExpected.length === 0 && adjudication.unexpected.length === 0;
+      })),
+    createCheck("v3-contract", v3Exact.status === "pass" && v3Next.status === "pass" &&
+      v3Comparison.status === "pass" && v3Exact.requiredCheckCount === 35 && v3Next.requiredCheckCount === 35)
   ];
   const checkSummary = statusCounts(checks);
 
@@ -286,6 +335,27 @@ export async function assembleRcReadiness(options = {}) {
         selector: comparisonSummary(selectorComparison)
       },
       normalizations: comparisonExact.normalizations
+    },
+    expectedDelta: {
+      policy: {
+        id: expectedDeltaExact.policy.id,
+        path: rcExpectedDeltaPolicyPath,
+        sha256: rcExpectedDeltaPolicySha256,
+        schemaPath: rcExpectedDeltaPolicySchemaPath,
+        schemaSha256: rcExpectedDeltaPolicySchemaSha256,
+        snapshotPath: "reports/rc/full/expected-delta-policy.json",
+        schemaSnapshotPath: "reports/rc/full/expected-delta-policy.schema.json",
+        status: expectedDeltaExact.policy.status
+      },
+      exact: adjudicationSummary(expectedDeltaExact, "reports/rc/full/expected-delta-exact.json"),
+      next: adjudicationSummary(expectedDeltaNext, "reports/rc/full/expected-delta-next.json"),
+      selectorComparison: {
+        status: expectedDeltaComparison.status,
+        identical: expectedDeltaComparison.identical,
+        exactSha256: expectedDeltaComparison.exactSha256,
+        nextSha256: expectedDeltaComparison.nextSha256,
+        evidencePath: "reports/rc/full/expected-delta-comparison.json"
+      }
     },
     v3Contract: {
       exact: {

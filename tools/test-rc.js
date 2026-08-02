@@ -5,6 +5,12 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { gzipSync } from "node:zlib";
 import { compareRcReports, normalizeRcResult, rcComparisonNormalizations } from "./compare-rc-reports.js";
+import {
+  adjudicateExpectedDeltas,
+  compareExpectedDeltaAdjudications,
+  loadExpectedDeltaPolicy,
+  validateExpectedDeltaPolicyDocuments
+} from "./rc-expected-delta.js";
 import { archiveManifest, expandedManifestSha256 } from "./rc-registry.js";
 import { suitesForTarget } from "./rc-target-suites.js";
 import { deepEqual, sha256, stableStringify } from "./rc-utils.js";
@@ -16,6 +22,8 @@ import { verifyLinks } from "./verify-links.js";
 const requiredPaths = [
   ".github/workflows/rc-readiness.yml",
   "docs/rc-validation.md",
+  "policies/specqr-3.0.0-rc.2-expected-deltas-v1.json",
+  "schemas/rc-expected-delta-policy-v1.schema.json",
   "schemas/rc-readiness-v1.schema.json",
   "fixtures/rc-v3-consumer/tsconfig.base.json",
   "fixtures/rc-v3-consumer/tsconfig.literal.json",
@@ -25,6 +33,7 @@ const requiredPaths = [
   "tools/assemble-rc-readiness.js",
   "tools/compare-rc-reports.js",
   "tools/rc-constants.js",
+  "tools/rc-expected-delta.js",
   "tools/rc-registry.js",
   "tools/rc-target-suites.js",
   "tools/rc-typescript.js",
@@ -40,6 +49,20 @@ const requiredPaths = [
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function setCandidateTarget(report, requested) {
+  report.target.requested = requested;
+  report.target.resolvedVersion = "3.0.0-rc.2";
+  report.target.version = "3.0.0-rc.2";
+  report.metadata.target.requested = requested;
+  report.metadata.target.resolvedVersion = "3.0.0-rc.2";
+  report.metadata.packages.specqr = "3.0.0-rc.2";
+  report.adapters.find((adapter) => adapter.id === "specqr").packageVersion = "3.0.0-rc.2";
+  report.results.find((result) => {
+    return result.vectorId === "package.metadata.published-surface" && result.adapterId === "specqr";
+  }).details.packageSurface.metadata.version = "3.0.0-rc.2";
+  return report;
 }
 
 function tarEntry(name, contents, options = {}) {
@@ -71,8 +94,8 @@ function syntheticReadiness() {
     generatedAt: "2026-08-02T04:27:44.000Z",
     commit: "0123456789012345678901234567890123456789",
     release: {
-      version: "3.0.0-rc.1",
-      publishedAtJst: "2026-08-02 13:27:44 JST",
+      version: "3.0.0-rc.2",
+      publishedAtJst: "2026-08-02 16:38:47 JST",
       expectedTarballSha256: "a".repeat(64),
       expectedExpandedSha256: "b".repeat(64)
     },
@@ -82,6 +105,32 @@ function syntheticReadiness() {
     toolchain: { full: {}, packageSurface: [] },
     registryIntegrity: { exact: {}, next: {}, selectorComparison: {} },
     conformance: { baseline: {}, exact: {}, next: {}, common: {}, normalizations: [] },
+    expectedDelta: {
+      policy: {
+        id: "specqr-3.0.0-rc.2-capacity-warning-removal",
+        path: "policies/specqr-3.0.0-rc.2-expected-deltas-v1.json",
+        sha256: "a".repeat(64),
+        schemaPath: "schemas/rc-expected-delta-policy-v1.schema.json",
+        schemaSha256: "b".repeat(64),
+        snapshotPath: "reports/rc/full/expected-delta-policy.json",
+        schemaSnapshotPath: "reports/rc/full/expected-delta-policy.schema.json",
+        status: "pass"
+      },
+      exact: {
+        status: "pass", rawStatus: "blocked", rawDeltaCount: 3, rawBlockingRegressionCount: 3,
+        matchedExpected: 3, missingExpected: 0, unexpected: 0, controlStatus: "pass",
+        evidencePath: "reports/rc/full/expected-delta-exact.json"
+      },
+      next: {
+        status: "pass", rawStatus: "blocked", rawDeltaCount: 3, rawBlockingRegressionCount: 3,
+        matchedExpected: 3, missingExpected: 0, unexpected: 0, controlStatus: "pass",
+        evidencePath: "reports/rc/full/expected-delta-next.json"
+      },
+      selectorComparison: {
+        status: "pass", identical: true, exactSha256: "c".repeat(64), nextSha256: "c".repeat(64),
+        evidencePath: "reports/rc/full/expected-delta-comparison.json"
+      }
+    },
     v3Contract: { exact: {}, next: {}, selectorComparison: {} },
     skips: { baseline: [], exact: [], next: [] },
     nonClaims: ["stable publication"],
@@ -107,17 +156,7 @@ try {
 
   const latest = JSON.parse(await readFile("reports/latest.json", "utf8"));
   assert.equal(latest.target.resolvedVersion, "2.4.0", "default report must remain on specqr@2.4.0");
-  const targetOnly = clone(latest);
-  targetOnly.target.requested = "specqr@3.0.0-rc.1";
-  targetOnly.target.resolvedVersion = "3.0.0-rc.1";
-  targetOnly.target.version = "3.0.0-rc.1";
-  targetOnly.metadata.target.requested = "specqr@3.0.0-rc.1";
-  targetOnly.metadata.target.resolvedVersion = "3.0.0-rc.1";
-  targetOnly.metadata.packages.specqr = "3.0.0-rc.1";
-  const specqrAdapter = targetOnly.adapters.find((adapter) => adapter.id === "specqr");
-  specqrAdapter.packageVersion = "3.0.0-rc.1";
-  const metadataResult = targetOnly.results.find((result) => result.vectorId === "package.metadata.published-surface" && result.adapterId === "specqr");
-  metadataResult.details.packageSurface.metadata.version = "3.0.0-rc.1";
+  const targetOnly = setCandidateTarget(clone(latest), "specqr@3.0.0-rc.2");
   const targetComparison = compareRcReports(latest, targetOnly);
   assert.equal(targetComparison.status, "pass", "target identity changes alone must not be regressions");
 
@@ -152,8 +191,157 @@ try {
   }
   const warningComparison = compareRcReports(latest, warningRemoval);
   assert.equal(warningComparison.status, "blocked", "helper warning result changes must remain blocking");
+  assert.equal(warningComparison.changes.length, 3, "raw strict comparison must retain exactly three deltas");
   assert.equal(warningComparison.blockingRegressions.filter((item) => item.kind === "matrix-renderer-helper-or-result-change").length, 3);
   assert(warningComparison.changes.every((change) => change.differences.some((difference) => difference.path.endsWith("warnings.length"))));
+
+  const policyContext = await loadExpectedDeltaPolicy();
+  assert.equal(policyContext.status, "pass", "the pinned expected-delta policy must validate");
+  const adjudicate = (candidate, options = {}) => {
+    const base = options.base ?? latest;
+    const raw = options.raw ?? compareRcReports(base, candidate);
+    return adjudicateExpectedDeltas({
+      baseReport: base,
+      candidateReport: candidate,
+      rawComparison: raw,
+      policyContext: options.policyContext ?? policyContext,
+      expectedRequested: options.expectedRequested ?? candidate.target.requested
+    });
+  };
+  const exactAdjudication = adjudicate(warningRemoval);
+  assert.equal(exactAdjudication.status, "pass");
+  assert.equal(exactAdjudication.rawDeltaCount, 3);
+  assert.equal(exactAdjudication.matchedExpected, 3);
+  assert.equal(exactAdjudication.missingExpected.length, 0);
+  assert.equal(exactAdjudication.unexpected.length, 0);
+  assert.equal(exactAdjudication.control.status, "pass");
+  assert.deepEqual(exactAdjudication.entries.map((entry) => [
+    entry.vectorId,
+    entry.beforeFingerprint,
+    entry.afterFingerprint
+  ]), [
+    [
+      "core.estimate.data-too-long-reject",
+      "feb36244b3cba7698421c2bfe4357aa091b91980034ed6c6d2c7043cc7644c50",
+      "3aa336488d9fd8afbfdc1cb6ddf2ef4123f9257659d4ede5ff255af3ad9c33c9"
+    ],
+    [
+      "planning.estimate.data-too-long-v1-h",
+      "13f97c0ed73c276012eaaa150d756da6ca91bac859dffea06b07a01b1816d47a",
+      "c8a9588eac278ac1c09249b2eaed6ca2714c4f93dd32c1d3a7130e8a3deb00e7"
+    ],
+    [
+      "planning.analyze-segments.data-too-long-v1-h",
+      "b6f40826566b609cab7cd7bd674a5fbc52b591513eee415276bdc6008f4a23dd",
+      "e454ec71100d4de4209be8f3340b87f97423f94367483ca9a9a861c2b58bc1a2"
+    ]
+  ]);
+
+  const nextCandidate = setCandidateTarget(clone(warningRemoval), "specqr@next");
+  const nextAdjudication = adjudicate(nextCandidate, { expectedRequested: "specqr@next" });
+  assert.equal(nextAdjudication.status, "pass");
+  assert.equal(compareExpectedDeltaAdjudications(exactAdjudication, nextAdjudication).status, "pass");
+
+  const negativeCases = [];
+  const expectBlocked = (name, value) => {
+    negativeCases.push(name);
+    assert.equal(value.status, "blocked", `${name} must block expected-delta adjudication`);
+  };
+
+  const extraDelta = clone(warningRemoval);
+  const extraResult = extraDelta.results.find((result) => {
+    return result.adapterId === "specqr" && result.status === "passed" &&
+      ![
+        "core.estimate.data-too-long-reject",
+        "planning.estimate.data-too-long-v1-h",
+        "planning.analyze-segments.data-too-long-v1-h"
+      ].includes(result.vectorId) && result.details && Object.keys(result.details).length > 0;
+  });
+  extraResult.details.expectedDeltaNegativeMutation = true;
+  expectBlocked("extra delta", adjudicate(extraDelta));
+
+  const missingDelta = clone(warningRemoval);
+  const missingVector = "core.estimate.data-too-long-reject";
+  const missingResult = missingDelta.results.find((result) => result.adapterId === "specqr" && result.vectorId === missingVector);
+  const baselineMissingResult = latest.results.find((result) => result.adapterId === "specqr" && result.vectorId === missingVector);
+  missingResult.details = clone(baselineMissingResult.details);
+  expectBlocked("missing delta", adjudicate(missingDelta));
+
+  const wrongVector = clone(warningRemoval);
+  wrongVector.results.find((result) => result.adapterId === "specqr" && result.vectorId === missingVector).vectorId = `${missingVector}.wrong`;
+  expectBlocked("wrong vector", adjudicate(wrongVector));
+
+  const policyText = await readFile("policies/specqr-3.0.0-rc.2-expected-deltas-v1.json", "utf8");
+  const policySchemaText = await readFile("schemas/rc-expected-delta-policy-v1.schema.json", "utf8");
+  const wrongAdapterPolicy = JSON.parse(policyText);
+  wrongAdapterPolicy.entries[0].adapterId = "jsqr";
+  const wrongAdapterContext = validateExpectedDeltaPolicyDocuments({
+    policyText: `${JSON.stringify(wrongAdapterPolicy, null, 2)}\n`,
+    schemaText: policySchemaText
+  });
+  expectBlocked("wrong adapter", adjudicate(warningRemoval, { policyContext: wrongAdapterContext }));
+
+  const wrongOperation = clone(warningRemoval);
+  wrongOperation.results.find((result) => {
+    return result.adapterId === "specqr" && result.vectorId === "planning.analyze-segments.data-too-long-v1-h";
+  }).operation = "estimate";
+  expectBlocked("wrong operation", adjudicate(wrongOperation));
+
+  const wrongPathRaw = clone(warningComparison);
+  wrongPathRaw.changes[0].differences[0].path = "$.details.diagnostics.warnings";
+  expectBlocked("wrong path", adjudicate(warningRemoval, { raw: wrongPathRaw }));
+
+  const wrongFingerprintRaw = clone(warningComparison);
+  wrongFingerprintRaw.changes[0].baseFingerprint = "0".repeat(64);
+  expectBlocked("wrong fingerprint", adjudicate(warningRemoval, { raw: wrongFingerprintRaw }));
+
+  const wrongWarningBase = clone(latest);
+  const wrongWarningResult = wrongWarningBase.results.find((result) => {
+    return result.adapterId === "specqr" && result.vectorId === missingVector;
+  });
+  wrongWarningResult.details.diagnostics.warnings[0].code = "WRONG_WARNING";
+  wrongWarningResult.details.planning.warnings[0].code = "WRONG_WARNING";
+  expectBlocked("wrong warning code", adjudicate(warningRemoval, { base: wrongWarningBase }));
+
+  const failedPrecondition = clone(warningRemoval);
+  failedPrecondition.results.find((result) => {
+    return result.adapterId === "specqr" && result.vectorId === "planning.estimate.data-too-long-v1-h";
+  }).details.planning.remainingBits = -339;
+  expectBlocked("precondition failure", adjudicate(failedPrecondition));
+
+  const invariantDrift = clone(warningRemoval);
+  invariantDrift.results.find((result) => {
+    return result.adapterId === "specqr" && result.vectorId === "planning.estimate.data-too-long-v1-h";
+  }).details.planning.overflowBits = 339;
+  expectBlocked("unchanged field drift", adjudicate(invariantDrift));
+
+  const controlDisappeared = clone(warningRemoval);
+  const controlResult = controlDisappeared.results.find((result) => {
+    return result.adapterId === "specqr" && result.vectorId === "planning.diagnostics.warning.capacity-near-limit";
+  });
+  controlResult.details.diagnostics.warnings = [];
+  controlResult.details.planning.warnings = [];
+  expectBlocked("control disappearance", adjudicate(controlDisappeared));
+
+  const versionChanged = clone(warningRemoval);
+  versionChanged.target.resolvedVersion = "3.0.0-rc.3";
+  versionChanged.target.version = "3.0.0-rc.3";
+  expectBlocked("candidate version change", adjudicate(versionChanged));
+
+  const nextMismatch = clone(nextCandidate);
+  nextMismatch.results.find((result) => {
+    return result.adapterId === "specqr" && result.vectorId === "planning.estimate.data-too-long-v1-h";
+  }).details.planning.overflowBits = 339;
+  const nextMismatchAdjudication = adjudicate(nextMismatch, { expectedRequested: "specqr@next" });
+  expectBlocked("next mismatch", nextMismatchAdjudication);
+  assert.equal(compareExpectedDeltaAdjudications(exactAdjudication, nextMismatchAdjudication).status, "blocked");
+
+  const alteredPolicyContext = validateExpectedDeltaPolicyDocuments({
+    policyText: `${policyText}\n`,
+    schemaText: policySchemaText
+  });
+  expectBlocked("policy mutation", adjudicate(warningRemoval, { policyContext: alteredPolicyContext }));
+  assert.equal(negativeCases.length, 14);
 
   const manualResult = latest.results.find((result) => {
     return result.adapterId === "specqr" && result.operation === "structuredAppend.generateSegments" && result.details?.structuredAppend?.diagnostics?.splitStrategy === "segment-boundary-byte-chunk";
@@ -165,8 +353,8 @@ try {
 
   const suites = [JSON.parse(await readFile("vectors/package-surface.json", "utf8"))];
   suites[0].file = "vectors/package-surface.json";
-  const candidateSuites = suitesForTarget(suites, "3.0.0-rc.1");
-  assert.equal(candidateSuites.suites[0].vectors[0].expect.package.metadataSubset.version, "3.0.0-rc.1");
+  const candidateSuites = suitesForTarget(suites, "3.0.0-rc.2");
+  assert.equal(candidateSuites.suites[0].vectors[0].expect.package.metadataSubset.version, "3.0.0-rc.2");
   assert.equal(suites[0].vectors[0].expect.package.metadataSubset.version, "2.4.0", "suite normalization must not mutate source vectors");
 
   const tar = gzipSync(Buffer.concat([
@@ -199,7 +387,7 @@ try {
   assert.throws(() => archiveManifest(linkTar), /link entry/, "tar manifest must reject links");
 
   const contract = {
-    target: { requested: "specqr@3.0.0-rc.1", resolvedVersion: "3.0.0-rc.1", source: "npm-registry" },
+    target: { requested: "specqr@3.0.0-rc.2", resolvedVersion: "3.0.0-rc.2", source: "npm-registry" },
     input: { expectedSplitUnitCount: 62 },
     observations: { splitUnitsSha256: "a".repeat(64) },
     checks: [{ id: "contract", status: "passed" }],
@@ -261,15 +449,17 @@ try {
 
   const pagesBuilder = await readFile("tools/build-pages.js", "utf8");
   assert(pagesBuilder.includes('"rc-readiness-v1.schema.json"'), "Pages builder must identify the RC schema as artifact-only");
+  assert(pagesBuilder.includes('"rc-expected-delta-policy-v1.schema.json"'), "Pages builder must keep the policy schema artifact-only");
   assert(pagesBuilder.includes("!artifactOnlySchemas.has(entry.name)"), "Pages builder must exclude artifact-only schemas");
 
   const rcDoc = await readFile("docs/rc-validation.md", "utf8");
   for (const text of [
     "specqr@2.4.0",
-    "specqr@3.0.0-rc.1",
+    "specqr@3.0.0-rc.2",
     "specqr@next",
-    "ad1c384475ff09cc27fcbb5479d2a230431dab43d403b86deba13b1005530f04",
-    "b8f906d95076316c7de97a3a4f376dfbea70e4aef2e19dbeb6dbbfde96b577d4",
+    "c96c324dcd99d72c385d3890156a6ae973ad8db57b840fd5a47f987ddcbb6298",
+    "f507de7da842b3bc5fce88eaa6a4d04388ce1d55541c58cbebf36d4b583ae306",
+    "expected delta",
     "technicalStatus",
     "observationStatus",
     "Local tarball",
@@ -297,6 +487,7 @@ try {
     checks: {
       requiredPaths: requiredPaths.length,
       strictComparison: true,
+      expectedDeltaNegativeTests: negativeCases.length,
       tarManifest: true,
       readinessSchema: true,
       workflowIsolation: true,

@@ -9,7 +9,8 @@
 - `reports/latest.json` の target が pinned baseline を指していることを確認する。
 - optional decoder skip が expected skip として説明されていることを確認する。
 - issue templates から来た request が vector、adapter、report problem のどれかに分類できることを確認する。
-- RC readiness を実行した場合は exact commit、Node 18 / 20 / 22 / 24 matrix、Node 22 full gate、artifact retention を確認し、default public report が `specqr@2.4.0` のままであることを再確認する。
+- RC readiness を実行した場合は exact commit、Node 18 / 20 / 22 / 24 matrix、Node 22 full gate、raw strict delta、expected-delta matched / missing / unexpected、policy/schema hash、artifact retention を確認し、default public report が `specqr@2.4.0` のままであることを再確認する。
+- Expected-delta policy は baseline と resolved candidate version に厳密に pin し、stable、次の RC、別 baseline、fingerprint/path/precondition/control の変化があれば失効させる。Wildcard、path prefix、vector group、warning code だけの allowlist へ広げない。
 
 ## Before changing workflows
 

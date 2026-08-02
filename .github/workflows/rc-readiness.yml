@@ -1,4 +1,4 @@
-name: SpecQR 3.0.0-rc.1 Readiness
+name: SpecQR RC Readiness
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: specqr-3.0.0-rc.1-readiness-${{ inputs.expected_commit }}
+  group: specqr-rc-readiness-${{ inputs.expected_commit }}
   cancel-in-progress: false
 
 jobs:
@@ -163,6 +163,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: specqr-3.0.0-rc.1-readiness-${{ inputs.expected_commit }}
+          name: specqr-3.0.0-rc.2-readiness-${{ inputs.expected_commit }}
           if-no-files-found: error
           path: reports/rc

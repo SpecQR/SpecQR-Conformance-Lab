@@ -8,7 +8,7 @@ SpecQR Conformance Lab は reproducible report を優先します。dependency u
 
 `specqr@latest` や `specqr@next` は manual target workflow で調査します。automatic dependency bump で public baseline を変えません。candidate run は `reports/candidate.json` と comparison artifact として扱い、release claim にはしません。
 
-Published `specqr@3.0.0-rc.1` の dedicated readiness workflow も default pin を変更しません。Exact RC と `specqr@next` は別々の temporary install へ registry から取得し、content hash と package surface を照合します。Local tarball や core checkout へ fallback せず、generated evidence は `reports/rc/` の Actions artifact として扱います。詳細は [RC Validation](rc-validation.md) を参照してください。
+Published `specqr@3.0.0-rc.2` の dedicated readiness workflow も default pin を変更しません。Exact RC と `specqr@next` は別々の temporary install へ registry から取得し、content hash と package surface を照合します。RC 2 expected-delta policy は resolved version に厳密に pin し、stable、別 RC、別 baseline には適用しません。Local tarball や core checkout へ fallback せず、generated evidence は `reports/rc/` の Actions artifact として扱います。詳細は [RC Validation](rc-validation.md) を参照してください。
 
 ## Optional native / CLI decoders
 

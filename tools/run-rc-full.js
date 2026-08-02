@@ -8,10 +8,19 @@ import { compareRcReportFiles } from "./compare-rc-reports.js";
 import {
   rcBaselineSpec,
   rcExactSpec,
+  rcExpectedDeltaCount,
+  rcExpectedDeltaPolicyPath,
+  rcExpectedDeltaPolicySchemaPath,
   rcNextSpec,
   rcReportDirectory,
   rcVersion
 } from "./rc-constants.js";
+import {
+  adjudicateExpectedDeltas,
+  compareExpectedDeltaAdjudications,
+  loadExpectedDeltaPolicy,
+  writeExpectedDeltaEvidence
+} from "./rc-expected-delta.js";
 import {
   compareRegistryEvidence,
   installAndVerifyRegistryTarget,
@@ -131,6 +140,44 @@ export async function runRcFull(options = {}) {
       kind: "specqr-rc-selector-conformance-comparison"
     });
 
+    const reports = {
+      baseline: JSON.parse(await readFile(path.join(outputDirectory, "conformance-baseline.json"), "utf8")),
+      exact: JSON.parse(await readFile(path.join(outputDirectory, "conformance-exact.json"), "utf8")),
+      next: JSON.parse(await readFile(path.join(outputDirectory, "conformance-next.json"), "utf8"))
+    };
+    const policyContext = await loadExpectedDeltaPolicy({ cwd });
+    const [policyText, policySchemaText] = await Promise.all([
+      readFile(path.resolve(cwd, rcExpectedDeltaPolicyPath), "utf8"),
+      readFile(path.resolve(cwd, rcExpectedDeltaPolicySchemaPath), "utf8")
+    ]);
+    await writeText(path.join(outputDirectory, "expected-delta-policy.json"), policyText);
+    await writeText(path.join(outputDirectory, "expected-delta-policy.schema.json"), policySchemaText);
+
+    const adjudications = {};
+    for (const targetId of ["exact", "next"]) {
+      adjudications[targetId] = adjudicateExpectedDeltas({
+        baseReport: reports.baseline,
+        candidateReport: reports[targetId],
+        rawComparison: comparisons[targetId],
+        policyContext,
+        expectedRequested: targetId === "exact" ? rcExactSpec : rcNextSpec,
+        evidenceFiles: {
+          baselineReport: "conformance-baseline.json",
+          candidateReport: `conformance-${targetId}.json`,
+          rawComparison: `comparison-baseline-${targetId}.json`,
+          policySnapshot: "expected-delta-policy.json",
+          policySchemaSnapshot: "expected-delta-policy.schema.json"
+        }
+      });
+      await writeExpectedDeltaEvidence({
+        adjudication: adjudications[targetId],
+        jsonPath: path.join(outputDirectory, `expected-delta-${targetId}.json`),
+        markdownPath: path.join(outputDirectory, `expected-delta-${targetId}.md`)
+      });
+    }
+    const adjudicationComparison = compareExpectedDeltaAdjudications(adjudications.exact, adjudications.next);
+    await writeJson(path.join(outputDirectory, "expected-delta-comparison.json"), adjudicationComparison);
+
     const exactContract = await verifyV3Contract({
       cwd,
       packageRoot: exact.packageRoot,
@@ -165,9 +212,17 @@ export async function runRcFull(options = {}) {
       createCheck("baseline-report-integrity", integrity.baseline.status === "pass"),
       createCheck("exact-report-integrity", integrity.exact.status === "pass"),
       createCheck("next-report-integrity", integrity.next.status === "pass"),
-      createCheck("baseline-exact-common", comparisons.exact.status === "pass"),
-      createCheck("baseline-next-common", comparisons.next.status === "pass"),
+      createCheck("baseline-exact-raw-strict", comparisons.exact.status === "blocked" &&
+        comparisons.exact.changes.length === rcExpectedDeltaCount &&
+        comparisons.exact.blockingRegressions.length === rcExpectedDeltaCount),
+      createCheck("baseline-next-raw-strict", comparisons.next.status === "blocked" &&
+        comparisons.next.changes.length === rcExpectedDeltaCount &&
+        comparisons.next.blockingRegressions.length === rcExpectedDeltaCount),
       createCheck("exact-next-common", selectorConformance.status === "pass"),
+      createCheck("expected-delta-policy", policyContext.status === "pass"),
+      createCheck("exact-expected-delta", adjudications.exact.status === "pass"),
+      createCheck("next-expected-delta", adjudications.next.status === "pass"),
+      createCheck("exact-next-expected-delta", adjudicationComparison.status === "pass"),
       createCheck("exact-v3-contract", exactContract.status === "pass", { requiredCheckCount: exactContract.requiredCheckCount }),
       createCheck("next-v3-contract", nextContract.status === "pass", { requiredCheckCount: nextContract.requiredCheckCount }),
       createCheck("exact-next-v3-contract", contractComparison.status === "pass")
@@ -199,6 +254,11 @@ export async function runRcFull(options = {}) {
         comparisonExact: "comparison-baseline-exact.json",
         comparisonNext: "comparison-baseline-next.json",
         selectorComparison: "comparison-exact-next.json",
+        expectedDeltaPolicy: "expected-delta-policy.json",
+        expectedDeltaPolicySchema: "expected-delta-policy.schema.json",
+        expectedDeltaExact: "expected-delta-exact.json",
+        expectedDeltaNext: "expected-delta-next.json",
+        expectedDeltaComparison: "expected-delta-comparison.json",
         v3Exact: "v3-contract-exact.json",
         v3Next: "v3-contract-next.json",
         v3Comparison: "v3-contract-comparison.json"

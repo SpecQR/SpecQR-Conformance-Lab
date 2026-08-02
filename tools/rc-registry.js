@@ -8,6 +8,7 @@ import { pathToFileURL } from "node:url";
 import { gunzipSync } from "node:zlib";
 import {
   rcExpandedSha256,
+  rcFileCount,
   rcPublishedAt,
   rcTarballSha256,
   rcVersion
@@ -336,7 +337,7 @@ function publicationSecond(value) {
 }
 
 export async function installAndVerifyRegistryTarget(packageSpec, options = {}) {
-  if (!/^specqr@(?:3\.0\.0-rc\.1|next)$/.test(packageSpec)) {
+  if (!/^specqr@(?:3\.0\.0-rc\.2|next)$/.test(packageSpec)) {
     throw new Error(`RC registry verifier does not allow target ${packageSpec}`);
   }
 
@@ -391,6 +392,10 @@ export async function installAndVerifyRegistryTarget(packageSpec, options = {}) 
     createCheck("expanded-sha256", expandedSha256 === rcExpandedSha256, {
       expected: rcExpandedSha256,
       actual: expandedSha256
+    }),
+    createCheck("file-count", packedManifest.length === rcFileCount, {
+      expected: rcFileCount,
+      actual: packedManifest.length
     }),
     createCheck("registry-integrity", tarballSha512 === view["dist.integrity"], {
       expected: view["dist.integrity"],
@@ -459,7 +464,7 @@ export async function installAndVerifyRegistryTarget(packageSpec, options = {}) 
 }
 
 export async function installRegistryPackage(packageSpec, options = {}) {
-  if (!/^specqr@(?:2\.4\.0|3\.0\.0-rc\.1|next)$/.test(packageSpec)) {
+  if (!/^specqr@(?:2\.4\.0|3\.0\.0-rc\.2|next)$/.test(packageSpec)) {
     throw new Error(`Registry installer does not allow target ${packageSpec}`);
   }
   const logs = [];

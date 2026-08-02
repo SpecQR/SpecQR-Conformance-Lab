@@ -12,10 +12,11 @@
 | Report comparison v1 | [../schemas/report-comparison-v1.schema.json](../schemas/report-comparison-v1.schema.json) | `reports/comparison.json` |
 | Coverage claims v1 | [../schemas/coverage-claims-v1.schema.json](../schemas/coverage-claims-v1.schema.json) | `coverage/claims-v1.json` |
 | RC readiness v1 | [../schemas/rc-readiness-v1.schema.json](../schemas/rc-readiness-v1.schema.json) | `reports/rc/readiness.json` in Actions artifacts |
+| RC expected delta policy v1 | [../schemas/rc-expected-delta-policy-v1.schema.json](../schemas/rc-expected-delta-policy-v1.schema.json) | `policies/specqr-3.0.0-rc.2-expected-deltas-v1.json` |
 
-`npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
+`npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、RC expected delta policy、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
 
-RC readiness は default public report と別 lifecycle です。`npm run rc:validate -- --report reports/rc/readiness.json` が schema と fixed target、hash、Node matrix、strict comparison、v3 contract、technical / observation status の semantic consistency を検査します。RC schema と generated evidence は default Pages artifact へ追加しません。
+RC readiness は default public report と別 lifecycle です。`npm run rc:validate -- --report reports/rc/readiness.json` が schema と fixed target、registry hash、Node matrix、raw strict comparison、expected-delta adjudication、v3 contract、technical / observation status の semantic consistency を検査します。RC readiness schema と expected delta policy schema、generated evidence は default Pages artifact へ追加しません。
 
 ## Conformance report
 
@@ -53,7 +54,7 @@ default の comparison は count difference だけで失敗しません。`--fai
 
 ## RC readiness
 
-`reports/rc/readiness.json` は published RC の temporary evidence format です。Target、toolchain、registry integrity、adapter 別 conformance、strict common regression、candidate 専用 contract、skip / non-claim、evidence file hash を 1 つに集約します。Validator は listed file の size / SHA-256 と artifact set SHA-256 を再計算します。`technicalStatus` と `observationStatus` は独立 field です。Technical gate が green でも、利用観察が別条件を満たすまでは observation を `pending` とします。
+`reports/rc/readiness.json` は published RC の temporary evidence format です。Target、toolchain、registry integrity、adapter 別 conformance、raw strict regression、expected-delta adjudication、candidate 専用 contract、skip / non-claim、evidence file hash を 1 つに集約します。`expectedDelta` は policy path / SHA-256、exact / `next` ごとの raw delta count、matched / missing / unexpected、positive control、selector 一致を記録します。Validator は policy と schema の SHA-256、raw report からの adjudication、listed file の size / SHA-256、artifact set SHA-256 を再計算します。`technicalStatus` と `observationStatus` は独立 field です。Technical gate が green でも、利用観察が別条件を満たすまでは observation を `pending` とします。
 
 ## Compatibility policy
 

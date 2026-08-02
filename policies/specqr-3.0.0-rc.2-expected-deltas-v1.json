@@ -1,0 +1,230 @@
+{
+  "$schema": "../schemas/rc-expected-delta-policy-v1.schema.json",
+  "schemaVersion": 1,
+  "kind": "specqr-rc-expected-delta-policy",
+  "id": "specqr-3.0.0-rc.2-capacity-warning-removal",
+  "description": "Adjudicates exactly three data-too-long warning removals for SpecQR 3.0.0-rc.2.",
+  "validFor": {
+    "baseline": {
+      "requested": "specqr@2.4.0",
+      "resolvedVersion": "2.4.0"
+    },
+    "candidate": {
+      "requested": [
+        "specqr@3.0.0-rc.2",
+        "specqr@next"
+      ],
+      "resolvedVersion": "3.0.0-rc.2"
+    }
+  },
+  "expectedDeltaCount": 3,
+  "control": {
+    "id": "capacity-near-limit-positive-control",
+    "adapterId": "specqr",
+    "vectorId": "planning.diagnostics.warning.capacity-near-limit",
+    "operation": "estimate",
+    "status": "passed",
+    "planningOk": true,
+    "planningReason": null,
+    "remainingBits": 1,
+    "warningCode": "CAPACITY_NEAR_LIMIT",
+    "warningCount": 1,
+    "warningPaths": [
+      "$.details.diagnostics.warnings",
+      "$.details.planning.warnings"
+    ]
+  },
+  "expiresWhen": {
+    "baselineRequestedChanges": true,
+    "baselineResolvedVersionChanges": true,
+    "candidateRequestedIsNotListed": true,
+    "candidateResolvedVersionChanges": true,
+    "candidateBecomesStable": true,
+    "candidateRcNumberChanges": true,
+    "rawDeltaCountChanges": true,
+    "fingerprintChanges": true,
+    "changePathChanges": true,
+    "preconditionFails": true,
+    "unchangedInvariantFails": true,
+    "controlFails": true
+  },
+  "entries": [
+    {
+      "id": "core-estimate-data-too-long-warning-removal",
+      "targets": {
+        "baseline": {
+          "requested": "specqr@2.4.0",
+          "resolvedVersion": "2.4.0"
+        },
+        "candidate": {
+          "requested": [
+            "specqr@3.0.0-rc.2",
+            "specqr@next"
+          ],
+          "resolvedVersion": "3.0.0-rc.2"
+        }
+      },
+      "adapterId": "specqr",
+      "vectorId": "core.estimate.data-too-long-reject",
+      "operation": "estimate",
+      "changePaths": [
+        "$.details.diagnostics.warnings.length",
+        "$.details.diagnostics.warnings[0]",
+        "$.details.planning.warnings.length",
+        "$.details.planning.warnings[0]"
+      ],
+      "beforeFingerprint": "feb36244b3cba7698421c2bfe4357aa091b91980034ed6c6d2c7043cc7644c50",
+      "afterFingerprint": "3aa336488d9fd8afbfdc1cb6ddf2ef4123f9257659d4ede5ff255af3ad9c33c9",
+      "warningCode": "CAPACITY_NEAR_LIMIT",
+      "precondition": {
+        "status": "passed",
+        "candidateOk": false,
+        "candidateReason": "data-too-long",
+        "expectedRemainingBits": -381,
+        "remainingBitsLessThan": 0,
+        "baselineWarningCount": 1,
+        "candidateWarningCount": 0
+      },
+      "unchangedInvariant": {
+        "method": "remove-exact-warning-arrays-then-deep-equal",
+        "paths": [
+          "$.details.diagnostics.warnings",
+          "$.details.planning.warnings"
+        ]
+      },
+      "control": "capacity-near-limit-positive-control",
+      "expiresWhen": {
+        "baselineRequestedChanges": true,
+        "baselineResolvedVersionChanges": true,
+        "candidateRequestedIsNotListed": true,
+        "candidateResolvedVersionChanges": true,
+        "candidateBecomesStable": true,
+        "candidateRcNumberChanges": true,
+        "rawDeltaCountChanges": true,
+        "fingerprintChanges": true,
+        "changePathChanges": true,
+        "preconditionFails": true,
+        "unchangedInvariantFails": true,
+        "controlFails": true
+      }
+    },
+    {
+      "id": "planning-estimate-data-too-long-warning-removal",
+      "targets": {
+        "baseline": {
+          "requested": "specqr@2.4.0",
+          "resolvedVersion": "2.4.0"
+        },
+        "candidate": {
+          "requested": [
+            "specqr@3.0.0-rc.2",
+            "specqr@next"
+          ],
+          "resolvedVersion": "3.0.0-rc.2"
+        }
+      },
+      "adapterId": "specqr",
+      "vectorId": "planning.estimate.data-too-long-v1-h",
+      "operation": "estimate",
+      "changePaths": [
+        "$.details.diagnostics.warnings.length",
+        "$.details.diagnostics.warnings[0]",
+        "$.details.planning.warnings.length",
+        "$.details.planning.warnings[0]"
+      ],
+      "beforeFingerprint": "13f97c0ed73c276012eaaa150d756da6ca91bac859dffea06b07a01b1816d47a",
+      "afterFingerprint": "c8a9588eac278ac1c09249b2eaed6ca2714c4f93dd32c1d3a7130e8a3deb00e7",
+      "warningCode": "CAPACITY_NEAR_LIMIT",
+      "precondition": {
+        "status": "passed",
+        "candidateOk": false,
+        "candidateReason": "data-too-long",
+        "expectedRemainingBits": -340,
+        "remainingBitsLessThan": 0,
+        "baselineWarningCount": 1,
+        "candidateWarningCount": 0
+      },
+      "unchangedInvariant": {
+        "method": "remove-exact-warning-arrays-then-deep-equal",
+        "paths": [
+          "$.details.diagnostics.warnings",
+          "$.details.planning.warnings"
+        ]
+      },
+      "control": "capacity-near-limit-positive-control",
+      "expiresWhen": {
+        "baselineRequestedChanges": true,
+        "baselineResolvedVersionChanges": true,
+        "candidateRequestedIsNotListed": true,
+        "candidateResolvedVersionChanges": true,
+        "candidateBecomesStable": true,
+        "candidateRcNumberChanges": true,
+        "rawDeltaCountChanges": true,
+        "fingerprintChanges": true,
+        "changePathChanges": true,
+        "preconditionFails": true,
+        "unchangedInvariantFails": true,
+        "controlFails": true
+      }
+    },
+    {
+      "id": "planning-analyze-segments-data-too-long-warning-removal",
+      "targets": {
+        "baseline": {
+          "requested": "specqr@2.4.0",
+          "resolvedVersion": "2.4.0"
+        },
+        "candidate": {
+          "requested": [
+            "specqr@3.0.0-rc.2",
+            "specqr@next"
+          ],
+          "resolvedVersion": "3.0.0-rc.2"
+        }
+      },
+      "adapterId": "specqr",
+      "vectorId": "planning.analyze-segments.data-too-long-v1-h",
+      "operation": "analyzeSegments",
+      "changePaths": [
+        "$.details.diagnostics.warnings.length",
+        "$.details.diagnostics.warnings[0]",
+        "$.details.planning.warnings.length",
+        "$.details.planning.warnings[0]"
+      ],
+      "beforeFingerprint": "b6f40826566b609cab7cd7bd674a5fbc52b591513eee415276bdc6008f4a23dd",
+      "afterFingerprint": "e454ec71100d4de4209be8f3340b87f97423f94367483ca9a9a861c2b58bc1a2",
+      "warningCode": "CAPACITY_NEAR_LIMIT",
+      "precondition": {
+        "status": "passed",
+        "candidateOk": false,
+        "candidateReason": "data-too-long",
+        "expectedRemainingBits": -340,
+        "remainingBitsLessThan": 0,
+        "baselineWarningCount": 1,
+        "candidateWarningCount": 0
+      },
+      "unchangedInvariant": {
+        "method": "remove-exact-warning-arrays-then-deep-equal",
+        "paths": [
+          "$.details.diagnostics.warnings",
+          "$.details.planning.warnings"
+        ]
+      },
+      "control": "capacity-near-limit-positive-control",
+      "expiresWhen": {
+        "baselineRequestedChanges": true,
+        "baselineResolvedVersionChanges": true,
+        "candidateRequestedIsNotListed": true,
+        "candidateResolvedVersionChanges": true,
+        "candidateBecomesStable": true,
+        "candidateRcNumberChanges": true,
+        "rawDeltaCountChanges": true,
+        "fingerprintChanges": true,
+        "changePathChanges": true,
+        "preconditionFails": true,
+        "unchangedInvariantFails": true,
+        "controlFails": true
+      }
+    }
+  ]
+}

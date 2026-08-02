@@ -12,6 +12,10 @@ export const schemaFiles = {
   coverageClaims: "schemas/coverage-claims-v1.schema.json"
 };
 
+export const artifactSchemaFiles = {
+  rcExpectedDeltaPolicy: "schemas/rc-expected-delta-policy-v1.schema.json"
+};
+
 const draft = "https://json-schema.org/draft/2020-12/schema";
 
 function isObject(value) {
@@ -131,6 +135,10 @@ function validateNumber(value, schema, instancePath, errors) {
   if (typeof schema.minimum === "number" && value < schema.minimum) {
     error(errors, instancePath, `must be >= ${schema.minimum}`);
   }
+
+  if (typeof schema.maximum === "number" && value > schema.maximum) {
+    error(errors, instancePath, `must be <= ${schema.maximum}`);
+  }
 }
 
 function validateArray(value, schema, rootSchema, instancePath, errors) {
@@ -140,6 +148,17 @@ function validateArray(value, schema, rootSchema, instancePath, errors) {
 
   if (Number.isInteger(schema.minItems) && value.length < schema.minItems) {
     error(errors, instancePath, `must have at least ${schema.minItems} item(s)`);
+  }
+
+  if (Number.isInteger(schema.maxItems) && value.length > schema.maxItems) {
+    error(errors, instancePath, `must have at most ${schema.maxItems} item(s)`);
+  }
+
+  if (schema.uniqueItems === true) {
+    const serialized = value.map((item) => stableStringify(item));
+    if (new Set(serialized).size !== serialized.length) {
+      error(errors, instancePath, "must contain unique items");
+    }
   }
 
   if (isObject(schema.items) || typeof schema.items === "boolean") {
@@ -251,7 +270,7 @@ async function fileExists(filePath, options = {}) {
 
 export async function loadSchemas(options = {}) {
   const schemas = {};
-  for (const [key, filePath] of Object.entries(schemaFiles)) {
+  for (const [key, filePath] of Object.entries({ ...schemaFiles, ...artifactSchemaFiles })) {
     schemas[key] = await readJsonFile(filePath, options);
   }
   return schemas;
@@ -307,7 +326,7 @@ export async function validateAllSchemas(options = {}) {
   const summary = {
     ok: true,
     schemaDraft: draft,
-    schemas: Object.values(schemaFiles),
+    schemas: [...Object.values(schemaFiles), ...Object.values(artifactSchemaFiles)],
     validated: [],
     errors: []
   };
@@ -328,6 +347,16 @@ export async function validateAllSchemas(options = {}) {
   pushResult(
     summary,
     await validateJsonFile(coverageClaimsPath, schemas.coverageClaims, schemaFiles.coverageClaims, options)
+  );
+
+  pushResult(
+    summary,
+    await validateJsonFile(
+      "policies/specqr-3.0.0-rc.2-expected-deltas-v1.json",
+      schemas.rcExpectedDeltaPolicy,
+      artifactSchemaFiles.rcExpectedDeltaPolicy,
+      options
+    )
   );
 
   const report = reportValidation.value;
@@ -362,7 +391,10 @@ function summarize(summary) {
     reports: summary.validated.filter((entry) => entry.schema === schemaFiles.conformanceReport).length,
     badges: summary.validated.filter((entry) => entry.schema === schemaFiles.badge).length,
     comparisons: summary.validated.filter((entry) => entry.schema === schemaFiles.reportComparison).length,
-    coverageClaims: summary.validated.filter((entry) => entry.schema === schemaFiles.coverageClaims).length
+    coverageClaims: summary.validated.filter((entry) => entry.schema === schemaFiles.coverageClaims).length,
+    rcExpectedDeltaPolicies: summary.validated.filter((entry) => {
+      return entry.schema === artifactSchemaFiles.rcExpectedDeltaPolicy;
+    }).length
   };
 
   return {
