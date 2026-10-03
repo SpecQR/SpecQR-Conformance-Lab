@@ -12,9 +12,19 @@
 | Published at | `2026-08-02T07:38:47.138Z` |
 | Tarball SHA-256 | `c96c324dcd99d72c385d3890156a6ae973ad8db57b840fd5a47f987ddcbb6298` |
 | Expanded SHA-256 | `f507de7da842b3bc5fce88eaa6a4d04388ce1d55541c58cbebf36d4b583ae306` |
-| Initial technical run | `30739905031` |
+| Historical technical run (revoked) | `30739905031` |
 
 Observation policy は [specqr-3.0.0-rc.2-observation-v1.json](../policies/specqr-3.0.0-rc.2-observation-v1.json) です。Policy schema は [rc-observation-policy-v1.schema.json](../schemas/rc-observation-policy-v1.schema.json)、report schema は [rc-observation-v1.schema.json](../schemas/rc-observation-v1.schema.json) です。Manual review、consumer confirmation、reported blocker は [specqr-3.0.0-rc.2-observation-manual-v1.json](../evidence/specqr-3.0.0-rc.2-observation-manual-v1.json) に記録し、[rc-observation-manual-evidence-v1.schema.json](../schemas/rc-observation-manual-evidence-v1.schema.json) で検証します。
+
+## Historical evidence revocation
+
+2026-10-03 の audit で、独立 adapter の subject generation が isolated RC ではなく pinned `specqr@2.4.0` を参照する defect を確認しました。Historical run [30739905031](https://github.com/SpecQR/SpecQR-Conformance-Lab/actions/runs/30739905031) と head `383399338481ed80acf9f596099bbeb9c79a59cb` は technical evidence として失効しています。元の policy / artifact hash は履歴を識別するために保存し、green の根拠には使いません。
+
+新しい technical evidence には各 target の shared subject routing revision、実際の subject package version / content SHA-256、および現在の source vectors / adapter scope の SHA-256 が必要です。Readiness assembler / validator は全 raw conformance report の schema と current target-normalized suite を検証し、source-backed coverage claims の required capability / check を確認します。Candidate subject digest は固定 expanded SHA-256 を満たす raw registry manifest に照合します。Observer もこの binding と `capabilityCoverage` を確認し、composite `conformanceEvidenceRevision` を current / historical snapshot に要求します。Routing evidence がない旧 report と、失効した run を参照する過去 snapshot は、保存済み status が `pass` でも observation timeline を満たしません。
+
+この修正は、観察済み期間や独立 consumer の確認を作りません。公開後 72 時間未満の initial snapshot は現在の実行で再作成できず、過去の timestamp に現在の evidence を当てはめることも認めません。現行 policy の publication date、168 時間、3 snapshot、48 時間 gap、consumer confirmation 条件は維持します。信頼できる initial evidence がなければ `sufficient` は到達できません。必要な policy 改訂や新しい observation window は maintainer が別途明示的に判断する事項です。
+
+Checked-in manual evidence の `consumerConfirmations` は空です。Fresh technical run と実際の独立 consumer evidence は未完了であり、software の検証完了だけでは stable readiness になりません。
 
 ## Observation policy
 
@@ -40,12 +50,12 @@ Observation policy は [specqr-3.0.0-rc.2-observation-v1.json](../policies/specq
 
 ## Commands
 
-Initial snapshot は次の順で生成、組立、検証します。
+Fresh snapshot は修正済み commit の technical readiness が green になってから、次の順で生成、組立、検証します。
 
 ```sh
 npm run observation:snapshot -- \
   --expected-commit <lab-commit> \
-  --technical-run-id 30739905031
+  --technical-run-id <fresh-readiness-run-id>
 npm run observation:assemble
 npm run observation:validate
 ```
@@ -59,7 +69,9 @@ npm run observation:assemble -- \
 
 `.github/workflows/rc-observation.yml` は `workflow_dispatch` と 1 日 1 回の schedule を持ちます。Schedule run は独立 snapshot を artifact 化します。72 時間と 168 時間の required timeline を組むときは、`previous_observation_run_id` に採用する直前の observation run を明示します。自動的に全 daily run を採用しないため、最終 2 snapshot の 48 時間条件を曖昧にしません。
 
-`technical_run_id` の default は initial technical evidence run です。公開後 168 時間以降の final snapshot では、新たに green になった `.github/workflows/rc-readiness.yml` の run ID を指定します。Final rerun は observation workflow と同じ Lab commit を検証する必要があります。
+`technical_run_id` に historical run の default はありません。Manual dispatch では、新たに green になった `.github/workflows/rc-readiness.yml` の run ID を明示します。Scheduled run は repository variable `SPECQR_RC_TECHNICAL_RUN_ID` を使用し、未設定なら失敗します。この variable は修正済み commit の fresh run が確認された後に設定します。Final rerun は observation workflow と同じ Lab commit を検証する必要があります。
+
+Live collector の `--observed-at` は取得時刻の直近 5 分以内だけを許可します。Historical snapshot の再検証には、その当時に取得した original artifact が必要です。
 
 ## Evidence sources
 
@@ -99,7 +111,7 @@ Validator は policy / schema の固定 SHA-256、manual evidence hash、raw reg
 - Future `observedAt` または生成時刻
 - Duplicate snapshot、clock rollback、non-increasing timestamp
 - Candidate、`specqr@next`、dist-tag、artifact hash、registry fingerprint の drift
-- Technical readiness failure または required Node / v3 contract evidence の欠落
+- Technical readiness failure、revoked run / head、subject routing / source scope、required Node / v3 contract evidence の欠落
 - Snapshot、manual evidence、policy、schema、manifest、listed evidence file の改変
 
 Pending criteria は正常な未成熟状態なので validator 自体は成功します。`blocked` report は validator failure です。Workflow は gate を緩和せず、失敗時も生成済み failure log と evidence を artifact として upload します。

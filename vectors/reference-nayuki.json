@@ -2,7 +2,7 @@
   "version": 1,
   "id": "reference-nayuki",
   "name": "Nayuki fixed matrix reference vectors",
-  "description": "Nayuki と固定 Version/ECC/mask 条件で matrix exact match を確認する代表 vector。",
+  "description": "固定 Version/ECC/mask と明示的 segmentation で live Nayuki 1.8.0 と matrix exact match を確認。全 ECC×mask、Version 7 geometry、9/10・26/27 count-width 境界、Version 40 byte capacity を含む。",
   "category": "reference-matrix",
   "vectors": [
     {
@@ -29,7 +29,8 @@
       "tags": [
         "nayuki",
         "reference-matrix",
-        "numeric"
+        "numeric",
+        "all-ecc-masks"
       ]
     },
     {
@@ -180,6 +181,1204 @@
         "nayuki",
         "reference-matrix",
         "binary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask1",
+      "title": "Numeric fixed Version 1-L mask 1",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 1,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask2",
+      "title": "Numeric fixed Version 1-L mask 2",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 2,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask3",
+      "title": "Numeric fixed Version 1-L mask 3",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 3,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask4",
+      "title": "Numeric fixed Version 1-L mask 4",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 4,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask5",
+      "title": "Numeric fixed Version 1-L mask 5",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 5,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask6",
+      "title": "Numeric fixed Version 1-L mask 6",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 6,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-l-mask7",
+      "title": "Numeric fixed Version 1-L mask 7",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 7,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask0",
+      "title": "Numeric fixed Version 1-M mask 0",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 0,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask1",
+      "title": "Numeric fixed Version 1-M mask 1",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 1,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask2",
+      "title": "Numeric fixed Version 1-M mask 2",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 2,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask3",
+      "title": "Numeric fixed Version 1-M mask 3",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 3,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask4",
+      "title": "Numeric fixed Version 1-M mask 4",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 4,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask5",
+      "title": "Numeric fixed Version 1-M mask 5",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 5,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask6",
+      "title": "Numeric fixed Version 1-M mask 6",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 6,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-m-mask7",
+      "title": "Numeric fixed Version 1-M mask 7",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "M",
+        "maskPattern": 7,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask0",
+      "title": "Numeric fixed Version 1-Q mask 0",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 0,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask1",
+      "title": "Numeric fixed Version 1-Q mask 1",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 1,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask2",
+      "title": "Numeric fixed Version 1-Q mask 2",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 2,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask3",
+      "title": "Numeric fixed Version 1-Q mask 3",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 3,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask4",
+      "title": "Numeric fixed Version 1-Q mask 4",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 4,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask5",
+      "title": "Numeric fixed Version 1-Q mask 5",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 5,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask6",
+      "title": "Numeric fixed Version 1-Q mask 6",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 6,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-q-mask7",
+      "title": "Numeric fixed Version 1-Q mask 7",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "Q",
+        "maskPattern": 7,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask0",
+      "title": "Numeric fixed Version 1-H mask 0",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 0,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask1",
+      "title": "Numeric fixed Version 1-H mask 1",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 1,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask2",
+      "title": "Numeric fixed Version 1-H mask 2",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 2,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask3",
+      "title": "Numeric fixed Version 1-H mask 3",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 3,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask4",
+      "title": "Numeric fixed Version 1-H mask 4",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 4,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask5",
+      "title": "Numeric fixed Version 1-H mask 5",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 5,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask6",
+      "title": "Numeric fixed Version 1-H mask 6",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 6,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.numeric.v1-h-mask7",
+      "title": "Numeric fixed Version 1-H mask 7",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "text": "01234567"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 7,
+        "mode": "numeric"
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "numeric",
+        "all-ecc-masks"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v6-h-mask3",
+      "title": "Manual mixed segments Version 6-H geometry boundary",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "01234567890123456789"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR 42"
+          },
+          {
+            "mode": "byte",
+            "text": "reference-世界"
+          }
+        ]
+      },
+      "options": {
+        "version": 6,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 3
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed",
+        "version-information-boundary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v7-h-mask3",
+      "title": "Manual mixed segments Version 7-H geometry boundary",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "01234567890123456789"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR 42"
+          },
+          {
+            "mode": "byte",
+            "text": "reference-世界"
+          }
+        ]
+      },
+      "options": {
+        "version": 7,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 3
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed",
+        "version-information-boundary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v9-h-mask4",
+      "title": "Manual mixed segments Version 9-H count-width boundary",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "01234567890123456789"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR 42"
+          },
+          {
+            "mode": "byte",
+            "text": "reference-世界"
+          }
+        ]
+      },
+      "options": {
+        "version": 9,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 4
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed",
+        "character-count-width-boundary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v10-h-mask4",
+      "title": "Manual mixed segments Version 10-H count-width boundary",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "01234567890123456789"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR 42"
+          },
+          {
+            "mode": "byte",
+            "text": "reference-世界"
+          }
+        ]
+      },
+      "options": {
+        "version": 10,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 4
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed",
+        "character-count-width-boundary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v26-h-mask5",
+      "title": "Manual mixed segments Version 26-H count-width boundary",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "01234567890123456789"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR 42"
+          },
+          {
+            "mode": "byte",
+            "text": "reference-世界"
+          }
+        ]
+      },
+      "options": {
+        "version": 26,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 5
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed",
+        "character-count-width-boundary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.manual-mixed.v27-h-mask5",
+      "title": "Manual mixed segments Version 27-H count-width boundary",
+      "category": "reference-matrix",
+      "operation": "generateSegments",
+      "input": {
+        "segments": [
+          {
+            "mode": "numeric",
+            "text": "01234567890123456789"
+          },
+          {
+            "mode": "alphanumeric",
+            "text": "SPECQR 42"
+          },
+          {
+            "mode": "byte",
+            "text": "reference-世界"
+          }
+        ]
+      },
+      "options": {
+        "version": 27,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 5
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "manual-segments",
+        "mixed",
+        "character-count-width-boundary"
+      ]
+    },
+    {
+      "id": "reference.nayuki.binary-capacity.v1-h-mask3",
+      "title": "Exact byte capacity 7 bytes at Version 1-H",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "135ca5ee3780c9"
+      },
+      "options": {
+        "version": 1,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 3
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "binary",
+        "byte-capacity",
+        "exact-capacity"
+      ]
+    },
+    {
+      "id": "reference.nayuki.binary-capacity.v40-l-mask4",
+      "title": "Exact byte capacity 2953 bytes at Version 40-L",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db"
+      },
+      "options": {
+        "version": 40,
+        "errorCorrectionLevel": "L",
+        "maskPattern": 4
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "binary",
+        "byte-capacity",
+        "exact-capacity"
+      ]
+    },
+    {
+      "id": "reference.nayuki.binary-capacity.v40-h-mask7",
+      "title": "Exact byte capacity 1273 bytes at Version 40-H",
+      "category": "reference-matrix",
+      "operation": "generate",
+      "input": {
+        "binaryHex": "135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb145da6ef3881ca135ca5ee3780c9125ba4ed367fc8115aa3ec357ec71059a2eb347dc60f58a1ea337cc50e57a0e9327bc40d569fe8317ac30c559ee73079c20b549de62f78c10a539ce52e77c009529be42d76bf08519ae32c75be075099e22b74bd064f98e12a73bc054e97e02972bb044d96df2871ba034c95de2770b9024b94dd266fb8014a93dc256eb7004992db246db6ff4891da236cb5fe4790d9226bb4fd468fd8216ab3fc458ed72069b2fb448dd61f68b1fa438cd51e67b0f9428bd41d66aff8418ad31c65aef74089d21b64adf63f88d11a63acf53e87d01962abf43d86cf1861aaf33c85ce1760a9f23b84cd165fa8f13a83cc155ea7f03982cb"
+      },
+      "options": {
+        "version": 40,
+        "errorCorrectionLevel": "H",
+        "maskPattern": 7
+      },
+      "expect": {
+        "referenceMatrix": {
+          "adapter": "nayuki",
+          "exact": true,
+          "scope": "fixed-version-ecc-mask"
+        }
+      },
+      "tags": [
+        "nayuki",
+        "reference-matrix",
+        "binary",
+        "byte-capacity",
+        "exact-capacity"
       ]
     }
   ]

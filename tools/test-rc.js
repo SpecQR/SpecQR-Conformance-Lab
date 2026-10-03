@@ -17,6 +17,7 @@ import { deepEqual, sha256, stableStringify } from "./rc-utils.js";
 import { validateSchemaValue } from "./validate-schemas.js";
 import { validateArtifactEvidence } from "./validate-rc-readiness.js";
 import { compareV3ContractEvidence } from "./verify-v3-contract.js";
+import { testRcEvidenceAdmission } from "./test-rc-evidence.js";
 import { verifyLinks } from "./verify-links.js";
 
 const requiredPaths = [
@@ -104,7 +105,15 @@ function syntheticReadiness() {
     observationStatus: "pending",
     toolchain: { full: {}, packageSurface: [] },
     registryIntegrity: { exact: {}, next: {}, selectorComparison: {} },
-    conformance: { baseline: {}, exact: {}, next: {}, common: {}, normalizations: [] },
+    conformance: {
+      ...Object.fromEntries(["baseline", "exact", "next"].map((id) => [id, {
+        scopeSha256: "a".repeat(64),
+        verifiedSubjectSha256: "b".repeat(64),
+        capabilityCoverage: { revision: 1, status: "pass", claimsSha256: "c".repeat(64) },
+        subjectRouting: { revision: 1, resolver: "shared-specqr-target", packageName: "specqr", packageVersion: id === "baseline" ? "2.4.0" : "3.0.0-rc.2", contentSha256: "b".repeat(64) }
+      }])),
+      common: {}, normalizations: []
+    },
     expectedDelta: {
       policy: {
         id: "specqr-3.0.0-rc.2-capacity-warning-removal",
@@ -156,6 +165,7 @@ try {
 
   const latest = JSON.parse(await readFile("reports/latest.json", "utf8"));
   assert.equal(latest.target.resolvedVersion, "2.4.0", "default report must remain on specqr@2.4.0");
+  const admissionControls = await testRcEvidenceAdmission(latest);
   const targetOnly = setCandidateTarget(clone(latest), "specqr@3.0.0-rc.2");
   const targetComparison = compareRcReports(latest, targetOnly);
   assert.equal(targetComparison.status, "pass", "target identity changes alone must not be regressions");
@@ -485,6 +495,7 @@ try {
   console.log(JSON.stringify({
     ok: true,
     checks: {
+      rcAdmissionNegativeControls: admissionControls,
       requiredPaths: requiredPaths.length,
       strictComparison: true,
       expectedDeltaNegativeTests: negativeCases.length,

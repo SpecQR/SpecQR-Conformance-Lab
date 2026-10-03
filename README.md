@@ -199,6 +199,14 @@ npm run conformance -- --vector core.generate.byte-text --output reports/vector.
 
 `npm run verify:report` は生成済み `reports/latest.json` の summary / adapter summary / suite count / result coverage を検査します。`npm run verify:claims` は `coverage/claims-v1.json` の scope reference と non-claim reference を検査します。`npm run verify` は vector validation、focused test、SpecQR/jsQR/Nayuki と optional CLI decoder の conformance、report generation、claims validation、schema validation、report integrity validation を順に実行します。optional CLI decoder command がない環境では、その lane は expected skip として記録されます。Pages artifact の生成は `npm run pages:build` で行います。
 
+## 検証基盤の acceptance
+
+- 全生成 lane は同じ published SpecQR target を参照し、独立 jsQR / Nayuki はその生成物を検査します。temporary RC を指定したときも baseline package へ戻りません。
+- report verifier は check と result の矛盾、missing / duplicate check、vector identity、target metadata、filter の不整合を拒否します。coverage verifier は各 capability の必須 check を source vector から検証します。
+- Nayuki lane は 46 fixed-condition vector、全 32 ECC / mask pair、version 境界と最大 version の代表例を実行します。詳細と package hash は [Reference provenance](docs/reference-provenance.md) を参照してください。
+- portable provenance、semantic fingerprint、再生成後の公開データ検査は [Report format](docs/report-format.md#evidence-integrity-and-portable-provenance) に定義します。`npm run verify:public` を単独で再実行できます。
+- 過去の RC evidence の扱いと今後必要な外部観察は [RC observation](docs/rc-observation.md) を参照してください。tooling の pass は公式認証や全面的な規格適合、stable publish 承認ではありません。
+
 ## 現在の状態
 
 この repository は schema v1、SpecQR baseline adapter、jsQR decoder lane、Nayuki fixed-condition matrix reference lane、optional zbarimg / ZXing CLI decoder lane、Kanji / ECI / binary vector suite、Rendering / Output vector suite、Package Surface vector suite を持つ conformance lab です。SpecQR adapter は published package を実行し、jsQR lane は生成 PNG の readability を確認し、Nayuki lane は固定 Version/ECC/mask の matrix exact match だけを確認します。optional CLI lane は command availability を検出し、missing tool を failure ではなく expected skip として記録します。

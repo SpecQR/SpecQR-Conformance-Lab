@@ -766,6 +766,7 @@ try {
   const validIntegrity = await verifyReportObject(fullReportForIntegrity.report);
   assert(validIntegrity.ok, "valid full report must pass integrity check");
   const legacyCompatibleReport = JSON.parse(JSON.stringify(fullReportForIntegrity.report));
+  delete legacyCompatibleReport.semanticSha256;
   delete legacyCompatibleReport.target.requested;
   delete legacyCompatibleReport.target.resolvedVersion;
   const legacyCompatibleIntegrity = await verifyReportObject(legacyCompatibleReport);
@@ -1213,7 +1214,11 @@ try {
       await writeFile(path.join(tmpRoot, "schemas", fileName), `${JSON.stringify({ $schema: "https://json-schema.org/draft/2020-12/schema" })}\n`, "utf8");
     }
 
+    await writeFile(path.join(tmpRoot, "badges/private.local.json"), "{}", "utf8");
+    await writeFile(path.join(tmpRoot, "coverage/private.local.json"), "{}", "utf8");
     const pagesResult = await buildPages({ cwd: tmpRoot });
+    assert(!pagesResult.files.some((file) => file.includes("private.local")), "Pages must not copy unlisted local JSON");
+    assert(!pagesResult.files.some((file) => file.includes("rc-observation")), "RC observation schemas stay artifact-only");
     assert(pagesResult.files.includes("index.html"), "Pages artifact must include index.html");
     assert(pagesResult.files.includes("reports/latest.json"), "Pages artifact must include reports/latest.json");
     assert(

@@ -50,3 +50,11 @@ filtered conformance artifact も investigation output です。full baseline �
 Published RC の dedicated evidence も stable release claim ではありません。[RC Validation](rc-validation.md) の `technicalStatus` が `pass` でも、独立した利用観察が十分になるまでは `observationStatus` を `pending` とし、public `specqr@2.4.0` report、badges、Pages、npm dist-tag を変更しません。
 
 利用観察の必要期間、snapshot milestone、issue / PR review、独立 consumer confirmation、final technical rerun は [RC Observation](rc-observation.md) に従います。`observationStatus: "sufficient"` は stable go / no-go goal の入力であり、publish command ではありません。
+
+Historical RC run `30739905031` は subject routing defect により失効しています。Fresh technical evidence、信頼できる observation timeline、独立 consumer confirmation が揃うまでは RC readiness の未完了条件を維持します。過去の window を現在の実行で補完しません。詳しくは [historical evidence revocation](rc-observation.md#historical-evidence-revocation) を参照してください。
+
+## Correctness completion boundary
+
+Lab の tooling 完成と、特定 RC の release 判断は別です。現在の acceptance は target routing の破損、偽の passed status、required check の欠落、matrix module / payload の変化を negative control で検出し、公開 baseline を再生成・検証できることです。[Reference provenance](reference-provenance.md) が独立 matrix 比較の具体的な範囲を定義します。
+
+過去の RC technical evidence に target routing の欠陥があったため、run `30739905031` と該当 commit の evidence は再利用できません。新しい source での technical rerun、独立 consumer confirmation、policy に適合した observation timeline は別途必要です。過去の観察時刻を作り直さず、stable publish を自動許可しません。[RC observation](rc-observation.md) の説明を確認してください。

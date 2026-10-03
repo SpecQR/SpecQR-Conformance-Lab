@@ -9,6 +9,7 @@ import zbarAdapter from "../adapters/zbar.js";
 import zxingCliAdapter from "../adapters/zxing-cli.js";
 import { readCoverageClaimsFile, summarizeCoverageClaims } from "./coverage-claims.js";
 import { createReportMetadata } from "./report-metadata.js";
+import { semanticReportSha256 } from "./report-provenance.js";
 
 export const defaultReportPath = "reports/latest.json";
 export const activeAdapters = [specqrAdapter, jsqrAdapter, nayukiAdapter, zbarAdapter, zxingCliAdapter];
@@ -51,7 +52,7 @@ export function isFullRun(filters = {}) {
 
 export function parseCliArgs(argv) {
   const options = {
-    filters: { ...defaultFilters },
+    filters: normalizeFilters(defaultFilters),
     outputPath: defaultReportPath,
     listSuites: false,
     listAdapters: false
@@ -418,6 +419,7 @@ export async function createConformanceReport(options = {}) {
     }),
     results
   };
+  report.semanticSha256 = semanticReportSha256(report);
 
   return {
     ok: true,

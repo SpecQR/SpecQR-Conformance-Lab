@@ -1,6 +1,9 @@
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
+import { createReportProvenance } from "./report-provenance.js";
+import { specqrTargetRoot } from "./specqr-target.js";
 
 export const reportPackageNames = ["specqr", "jsqr", "nayuki-qr-code-generator"];
 export const defaultSpecqrPackageName = "specqr";
@@ -23,7 +26,7 @@ export async function readInstalledPackageMetadata(packageName, options = {}) {
     throw new Error(`Unable to read installed package metadata for ${packageName} at ${metadataPath}: ${error.message}`);
   }
 
-  if (!packageJson.version || typeof packageJson.version !== "string") {
+  if (packageJson.name !== packageName || !packageJson.version || typeof packageJson.version !== "string") {
     throw new Error(`Installed package metadata for ${packageName} at ${metadataPath} does not include a string version`);
   }
 
@@ -69,11 +72,23 @@ export async function createReportMetadata(options = {}) {
   const cwd = options.cwd ?? process.cwd();
   const now = options.now ?? new Date();
   const packages = {};
+  const packageRoots = {};
+  const runtimeRoot = fileURLToPath(new URL("../", import.meta.url));
+  for (const packageName of reportPackageNames) {
+    const actualRoot = packageName === "specqr" && specqrTargetRoot
+      ? specqrTargetRoot : path.join(runtimeRoot, "node_modules", packageName);
+    const requestedRoot = options.packageRoots?.[packageName]
+      ?? (packageName === "specqr" ? options.env?.SPECQR_CONFORMANCE_PACKAGE_ROOT : null);
+    if (requestedRoot && await realpath(requestedRoot) !== await realpath(actualRoot)) {
+      throw new Error(`Metadata package root for ${packageName} differs from the executing adapter target`);
+    }
+    packageRoots[packageName] = actualRoot;
+  }
 
   for (const packageName of reportPackageNames) {
     packages[packageName] = await readInstalledPackageVersion(packageName, {
-      cwd,
-      packageRoot: options.packageRoots?.[packageName]
+      cwd: runtimeRoot,
+      packageRoot: packageRoots[packageName]
     });
   }
 
@@ -85,6 +100,7 @@ export async function createReportMetadata(options = {}) {
       arch: process.arch
     },
     packages,
-    target: await createSpecqrTargetMetadata(packages, { ...options, cwd })
+    target: await createSpecqrTargetMetadata(packages, { ...options, cwd }),
+    provenance: await createReportProvenance(packages, { ...options, cwd: runtimeRoot, packageRoots, isolatedPackageNames: specqrTargetRoot ? ["specqr"] : [] })
   };
 }

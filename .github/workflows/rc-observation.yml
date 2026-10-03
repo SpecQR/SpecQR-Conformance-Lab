@@ -8,9 +8,8 @@ on:
         required: true
         type: string
       technical_run_id:
-        description: RC readiness run to reference or revalidate
+        description: Fresh RC readiness run with verified subject routing (historical run 30739905031 is revoked)
         required: true
-        default: "30739905031"
         type: string
       previous_observation_run_id:
         description: Optional prior observation run selected for the evidence timeline
@@ -36,7 +35,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       SPECQR_EVIDENCE_COMMIT: ${{ inputs.expected_commit || github.sha }}
-      SPECQR_TECHNICAL_RUN_ID: ${{ inputs.technical_run_id || '30739905031' }}
+      SPECQR_TECHNICAL_RUN_ID: ${{ inputs.technical_run_id || vars.SPECQR_RC_TECHNICAL_RUN_ID }}
       SPECQR_PREVIOUS_OBSERVATION_RUN_ID: ${{ inputs.previous_observation_run_id }}
     steps:
       - name: Checkout exact commit

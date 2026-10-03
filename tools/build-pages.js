@@ -6,7 +6,10 @@ import { badgeFileNames } from "./report-utils.js";
 
 const artifactOnlySchemas = new Set([
   "rc-readiness-v1.schema.json",
-  "rc-expected-delta-policy-v1.schema.json"
+  "rc-expected-delta-policy-v1.schema.json",
+  "rc-observation-policy-v1.schema.json",
+  "rc-observation-manual-evidence-v1.schema.json",
+  "rc-observation-v1.schema.json"
 ]);
 
 export async function buildPages(options = {}) {
@@ -43,7 +46,7 @@ export async function buildPages(options = {}) {
   }
 
   const files = ["index.html", "reports/latest.html", "reports/latest.json"];
-  for (const fileName of badgeFiles) {
+  for (const fileName of [...badgeFileNames, ...(badgeFiles.includes("conformance.json") ? ["conformance.json"] : [])]) {
     await copyFile(path.join(badgesDir, fileName), path.join(publicBadgesDir, fileName));
     files.push(`badges/${fileName}`);
   }
@@ -73,7 +76,7 @@ export async function buildPages(options = {}) {
     throw new Error("missing required coverage file: claims-v1.json");
   }
 
-  for (const fileName of coverageFiles) {
+  for (const fileName of ["claims-v1.json"]) {
     await copyFile(path.join(coverageDir, fileName), path.join(publicCoverageDir, fileName));
     files.push(`coverage/${fileName}`);
   }

@@ -158,6 +158,7 @@ export async function validateRcObservation(options = {}) {
   ]);
   const rebuiltSnapshot = buildObservationSnapshot({
     policy: context.policy.value,
+    conformanceScope: context.conformanceScope,
     manualEvidence,
     registryExact,
     registryNext,

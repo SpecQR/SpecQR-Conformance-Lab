@@ -8,8 +8,12 @@ import {
   evaluateObservation,
   loadObservationContext,
   snapshotSummary,
+  summarizeTechnicalEvidence,
   summarizeRegistryEvidence
 } from "./rc-observation.js";
+import { conformanceSubjectRouting, registrySubjectSha256, validReadinessConformance } from "./rc-evidence-validity.js";
+import { rcRegistryTestEvidence } from "./test-rc-evidence.js";
+import { validateObservationCollectionTime } from "./run-rc-observation-snapshot.js";
 import { sha256, stableStringify } from "./rc-utils.js";
 import { validateObservationFileSet } from "./validate-rc-observation.js";
 
@@ -78,7 +82,7 @@ function snapshot(ageHours, overrides = {}) {
     technicalEvidence: {
       evidenceKind: "initial-reference",
       status: "pass",
-      runId: 30739905031,
+      runId: 40000000000,
       completedAt: "2026-08-02T08:31:32.000Z"
     },
     github: {
@@ -89,6 +93,12 @@ function snapshot(ageHours, overrides = {}) {
     manualEvidenceSha256: "4".repeat(64),
     technicalStatus: "pass",
     ...overrides
+  };
+  value.technicalEvidence = {
+    headSha: "a".repeat(40),
+    subjectRoutingRevision: 1,
+    conformanceEvidenceRevision: 1,
+    ...value.technicalEvidence
   };
   return { ...value, snapshotId: computeSnapshotId(value) };
 }
@@ -134,6 +144,72 @@ async function run() {
 
   const context = await loadObservationContext();
   const policy = context.policy.value;
+  // Synthetic evidence only: these clocks and run IDs do not create observation artifacts.
+  const scope = context.conformanceScope;
+  const registryFixture = await rcRegistryTestEvidence();
+  const candidateSubjectSha256 = registrySubjectSha256(registryFixture.exact, "specqr@3.0.0-rc.2");
+  const labCommit = "a".repeat(40);
+  const fixtureMetadata = {
+    repository: policy.technicalEvidence.repository,
+    run: { id: 40000000000, workflowId: policy.technicalEvidence.workflowId, status: "completed", conclusion: "success", headSha: labCommit, createdAt: observedAt(167), updatedAt: observedAt(168), url: "https://example.test/run" },
+    artifact: { expired: false, id: 1, name: `specqr-3.0.0-rc.2-readiness-${labCommit}`, url: "https://example.test/artifact", archiveSha256: "1".repeat(64), readinessSha256: "2".repeat(64) }
+  };
+  const fixtureReadiness = {
+    commit: labCommit, generatedAt: observedAt(168), technicalStatus: "pass", observationStatus: "pending", summary: { failed: 0 },
+    release: { version: policy.candidate.resolvedVersion, expectedTarballSha256: policy.candidate.tarballSha256, expectedExpandedSha256: policy.candidate.expandedSha256 },
+    targets: { exact: { requested: policy.candidate.exactRequested, resolvedVersion: policy.candidate.resolvedVersion }, next: { requested: policy.candidate.nextRequested, resolvedVersion: policy.candidate.resolvedVersion } },
+    registryIntegrity: Object.fromEntries(["exact", "next"].map((id) => [id, { status: "pass", hashes: { tarballSha256: policy.candidate.tarballSha256, expandedSha256: policy.candidate.expandedSha256, manifestSha256: policy.candidate.manifestSha256 }, fileCount: 121, runtimeDependencyCount: 0 }])),
+    conformance: Object.fromEntries(Object.entries(scope.targets).map(([id, expected]) => [id, {
+      vectors: expected.vectors, results: expected.results, failed: 0, error: 0, scopeSha256: expected.scopeSha256,
+      verifiedSubjectSha256: id === "baseline" ? scope.baselineSubjectSha256 : candidateSubjectSha256,
+      capabilityCoverage: { revision: 1, status: "pass", claimsSha256: scope.claimsSha256 },
+      subjectRouting: { revision: 1, resolver: "shared-specqr-target", packageName: "specqr", packageVersion: expected.version, contentSha256: id === "baseline" ? scope.baselineSubjectSha256 : candidateSubjectSha256 }
+    }])),
+    expectedDelta: Object.fromEntries(["exact", "next"].map((id) => [id, { status: "pass", rawDeltaCount: 3, matchedExpected: 3, missingExpected: 0, unexpected: 0 }])),
+    v3Contract: Object.fromEntries(["exact", "next"].map((id) => [id, { status: "pass", requiredCheckCount: 35, passed: 35, failed: 0 }])),
+    toolchain: { packageSurface: policy.technicalEvidence.requiredNodeMajors.map((nodeMajor) => ({ nodeMajor, status: "pass" })), full: { nodeMajor: "22", status: "pass" } },
+    artifacts: { artifactSetSha256: "3".repeat(64) }
+  };
+  for (const field of ["registryIntegrity", "expectedDelta", "v3Contract"]) fixtureReadiness[field].selectorComparison = { status: "pass" };
+  const admit = (readiness = fixtureReadiness, metadata = fixtureMetadata) => summarizeTechnicalEvidence(policy, metadata, readiness, labCommit, observedAt(168), scope, registryFixture);
+  assert.equal(admit().status, "pass");
+  assert.equal(admit().subjectRoutingRevision, 1);
+  assert.equal(admit().conformanceEvidenceRevision, 1);
+  for (const mutate of [
+    (report) => { delete report.conformance.exact.subjectRouting; },
+    (report) => { delete report.conformance.exact.capabilityCoverage; },
+    (report) => { report.conformance.next.capabilityCoverage.status = "blocked"; },
+    (report) => { report.conformance.exact.capabilityCoverage.claimsSha256 = "0".repeat(64); },
+    (report) => { for (const id of ["exact", "next"]) { report.conformance[id].subjectRouting.contentSha256 = scope.baselineSubjectSha256; report.conformance[id].verifiedSubjectSha256 = scope.baselineSubjectSha256; } },
+    (report) => { report.conformance.exact.subjectRouting.packageVersion = "2.4.0"; },
+    (report) => { report.conformance.next.subjectRouting.contentSha256 = "d".repeat(64); },
+    (report) => { report.conformance.exact.scopeSha256 = "0".repeat(64); },
+    (report) => { report.conformance.exact.vectors -= 1; },
+    (report) => { report.commit = "f".repeat(40); }
+  ]) {
+    const changed = structuredClone(fixtureReadiness);
+    mutate(changed);
+    assert.equal(admit(changed).status, "blocked");
+  }
+  const oldRun = structuredClone(fixtureMetadata);
+  oldRun.run.id = policy.technicalEvidence.initialRunId;
+  assert.equal(admit(fixtureReadiness, oldRun).status, "blocked", "revoked run cannot be rehabilitated by new markers");
+  assert.equal(admit(fixtureReadiness, oldRun).checks.find((entry) => entry.id === "technical-evidence-not-revoked").status, "blocked");
+  const oldHead = structuredClone(fixtureMetadata);
+  oldHead.run.headSha = policy.technicalEvidence.initialHeadSha;
+  assert.equal(admit(fixtureReadiness, oldHead).status, "blocked");
+  assert.equal(admit(fixtureReadiness, oldHead).checks.find((entry) => entry.id === "technical-evidence-not-revoked").status, "blocked");
+  assert.equal(validReadinessConformance(fixtureReadiness), false, "missing source scope must fail closed");
+  const rawRouting = fixtureReadiness.conformance.exact.subjectRouting;
+  const rawReport = { target: { resolvedVersion: "3.0.0-rc.2" }, metadata: { provenance: { subjectRouting: rawRouting, packages: { specqr: { version: "3.0.0-rc.2", contentSha256: rawRouting.contentSha256 } } } } };
+  assert.deepEqual(conformanceSubjectRouting(rawReport), rawRouting);
+  rawReport.metadata.provenance.packages.specqr.contentSha256 = "0".repeat(64);
+  assert.equal(conformanceSubjectRouting(rawReport), null);
+  const collectionTime = Date.parse(observedAt(168));
+  validateObservationCollectionTime(observedAt(168), collectionTime);
+  assert.throws(() => validateObservationCollectionTime(observedAt(0), collectionTime), /original evidence artifacts/u);
+  assert.throws(() => validateObservationCollectionTime(observedAt(169), collectionTime), /original evidence artifacts/u);
+
   const at0 = snapshot(0);
   const result0 = evaluateObservation(policy, at0, summaries([at0]), { now: observedAt(0) });
   assert.equal(result0.observationStatus, "pending");
@@ -220,6 +296,19 @@ async function run() {
   assert.equal(sufficient.observationStatus, "sufficient");
   assert.equal(sufficient.statusReasons.pending.length, 0);
   assert.equal(sufficient.statusReasons.blocked.length, 0);
+
+  for (const mutate of [
+    (entry) => { entry.technicalRunId = policy.technicalEvidence.initialRunId; },
+    (entry) => { entry.technicalHeadSha = policy.technicalEvidence.initialHeadSha; },
+    (entry) => { delete entry.subjectRoutingRevision; },
+    (entry) => { delete entry.conformanceEvidenceRevision; }
+  ]) {
+    const historical = snapshotSummary(at0);
+    mutate(historical);
+    const rejected = evaluateObservation(policy, final, [historical, snapshotSummary(at72), snapshotSummary(final)], { now: observedAt(168) });
+    assert.equal(rejected.observationStatus, "blocked", "old green history cannot count after evidence revocation");
+    assert(rejected.statusReasons.blocked.includes("snapshot-technical-integrity"));
+  }
 
   const driftedSummary = snapshotSummary(at72);
   driftedSummary.registryFingerprint = "9".repeat(64);
@@ -329,7 +418,7 @@ async function run() {
 
   console.log(JSON.stringify({
     ok: true,
-    checks: 55,
+    checks: 85,
     clocks: [0, 72, 168],
     sufficientStatus: sufficient.observationStatus
   }, null, 2));

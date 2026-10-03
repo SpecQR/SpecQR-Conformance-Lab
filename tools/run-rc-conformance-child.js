@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import { activeAdapters, readSuites, runConformance } from "./run-conformance.js";
 import { suitesForTarget } from "./rc-target-suites.js";
 import { writeJson } from "./rc-utils.js";
+import { verifyCoverageClaimsFile } from "./verify-coverage-claims.js";
 import { verifyReportObject } from "./verify-report.js";
 
 function parseArgs(argv) {
@@ -61,6 +62,7 @@ export async function runRcConformanceChild(options) {
     suites: targetSuites.suites,
     adapters: activeAdapters
   });
+  const coverageClaims = await verifyCoverageClaimsFile({ cwd, report: result.report, suites: targetSuites.suites });
   const failedOrError = result.report.summary.failed + result.report.summary.error;
   const evidence = {
     schemaVersion: 1,
@@ -70,11 +72,12 @@ export async function runRcConformanceChild(options) {
     report: path.relative(cwd, path.resolve(cwd, options.output)),
     normalizations: targetSuites.normalizations,
     reportIntegrity: integrity,
+    coverageClaims,
     requiredOutcome: {
       failed: result.report.summary.failed,
       error: result.report.summary.error
     },
-    status: integrity.ok && failedOrError === 0 ? "pass" : "blocked"
+    status: integrity.ok && coverageClaims.ok && failedOrError === 0 ? "pass" : "blocked"
   };
   await writeJson(path.resolve(cwd, options.integrityOutput), evidence);
   return evidence;

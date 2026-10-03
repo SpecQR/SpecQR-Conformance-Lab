@@ -99,21 +99,26 @@ function redactCredentials(value) {
   return result;
 }
 
+export function validateObservationCollectionTime(observedAt, now = Date.now()) {
+  const timestamp = Date.parse(observedAt);
+  if (!Number.isFinite(timestamp) || timestamp > now || now - timestamp > 300_000) {
+    throw new Error("observedAt must be within five minutes of current collection time; historical snapshots require their original evidence artifacts");
+  }
+}
+
 export async function runRcObservationSnapshot(options = {}) {
   const cwd = path.resolve(options.cwd ?? process.cwd());
   const outputDirectory = path.resolve(cwd, options.outputDirectory ?? observationOutputDirectory);
   const observedAt = options.observedAt ?? new Date().toISOString();
-  if (Date.parse(observedAt) > Date.now()) {
-    throw new Error("observedAt cannot be in the future");
-  }
+  validateObservationCollectionTime(observedAt);
   const context = await loadObservationContext({
     cwd,
     manualEvidencePath: options.manualEvidencePath ?? undefined
   });
   assertFixedObservationTarget(context.policy.value);
-  const technicalRunId = Number(options.technicalRunId ?? context.policy.value.technicalEvidence.initialRunId);
+  const technicalRunId = Number(options.technicalRunId ?? process.env.SPECQR_RC_TECHNICAL_RUN_ID);
   if (!Number.isSafeInteger(technicalRunId) || technicalRunId < 1) {
-    throw new Error("technical run ID must be a positive integer");
+    throw new Error("technical run ID must explicitly identify a fresh, non-revoked readiness run");
   }
   const labCommit = options.expectedCommit ?? process.env.SPECQR_EVIDENCE_COMMIT ?? process.env.GITHUB_SHA ?? gitHead(cwd);
   const workflow = workflowIdentity();
@@ -138,6 +143,7 @@ export async function runRcObservationSnapshot(options = {}) {
     ]);
     const snapshot = buildObservationSnapshot({
       policy: context.policy.value,
+    conformanceScope: context.conformanceScope,
       manualEvidence: context.manualEvidence.value,
       registryExact: exact.evidence,
       registryNext: next.evidence,

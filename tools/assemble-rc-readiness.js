@@ -19,6 +19,7 @@ import {
   rcTarballSha256,
   rcVersion
 } from "./rc-constants.js";
+import { assessRcConformanceReports } from "./rc-evidence-validity.js";
 import { createCheck, deepEqual, readJson, sha256, stableStringify, statusCounts, writeJson, writeText } from "./rc-utils.js";
 
 function parseArgs(argv) {
@@ -61,9 +62,13 @@ async function recursiveFiles(directory) {
   return files.sort((left, right) => left < right ? -1 : left > right ? 1 : 0);
 }
 
-function reportSummary(report) {
+function reportSummary(report, evidence = {}) {
   return {
     target: report.target,
+    subjectRouting: evidence.subjectRouting ?? null,
+    scopeSha256: evidence.scopeSha256 ?? null,
+    verifiedSubjectSha256: evidence.verifiedSubjectSha256 ?? null,
+    capabilityCoverage: evidence.capabilityCoverage ?? null,
     vectors: report.summary.totalVectors,
     results: report.summary.totalResults,
     passed: report.summary.passed,
@@ -232,6 +237,7 @@ export async function assembleRcReadiness(options = {}) {
   const v3Next = await readJson(path.join(fullDirectory, "v3-contract-next.json"));
   const v3Comparison = await readJson(path.join(fullDirectory, "v3-contract-comparison.json"));
 
+  const conformanceEvidence = await assessRcConformanceReports({ baseline: baselineReport, exact: exactReport, next: nextReport }, cwd, { exact: registryExact, next: registryNext });
   const expectedCommit = options.expectedCommit ?? process.env.SPECQR_EXPECTED_COMMIT ?? null;
   const commitEvidence = [full.commit, ...surfaces.map((surface) => surface.commit)].filter(Boolean);
   const checks = [
@@ -248,9 +254,7 @@ export async function assembleRcReadiness(options = {}) {
     createCheck("surface-status", surfaces.every((surface) => surface.status === "pass")),
     createCheck("registry-integrity", registryComparison.status === "pass" &&
       registryExact.manifest.length === rcFileCount && registryNext.manifest.length === rcFileCount),
-    createCheck("conformance-coverage", [baselineReport, exactReport, nextReport].every((report) => {
-      return report.summary.totalVectors === 91 && report.summary.totalResults === 455;
-    })),
+    createCheck("conformance-coverage-and-subject-routing", conformanceEvidence.valid, { targets: conformanceEvidence.targets }),
     createCheck("raw-strict-comparison", comparisonExact.status === "blocked" &&
       comparisonNext.status === "blocked" && selectorComparison.status === "pass" &&
       comparisonExact.changes.length === rcExpectedDeltaCount &&
@@ -326,9 +330,9 @@ export async function assembleRcReadiness(options = {}) {
       selectorComparison: registryComparison
     },
     conformance: {
-      baseline: reportSummary(baselineReport),
-      exact: reportSummary(exactReport),
-      next: reportSummary(nextReport),
+      baseline: reportSummary(baselineReport, conformanceEvidence.targets.baseline),
+      exact: reportSummary(exactReport, conformanceEvidence.targets.exact),
+      next: reportSummary(nextReport, conformanceEvidence.targets.next),
       common: {
         exact: comparisonSummary(comparisonExact),
         next: comparisonSummary(comparisonNext),

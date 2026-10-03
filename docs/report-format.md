@@ -83,3 +83,17 @@ v1 schema は既存 consumer が依存してよい stable required field と enu
 - `schemaVersion: 1` のまま別形式の payload にする。
 
 breaking change が必要な場合は、新しい schema file と `schemaVersion` を追加し、v1 consumer が v1 を読み続けられる期間を設けます。
+
+## Evidence integrity and portable provenance
+
+新しい report は optional な `semanticSha256` を持ちます。target、suite、adapter、summary、result/check を key 順に正規化した JSON の SHA-256 であり、生成時刻、runtime、出力先 path は対象外です。保存前後で同じ fingerprint になります。hash は改ざん検知の補助であり、署名や独立した認証ではありません。`verify:report` は hash だけでなく、vector identity、adapter inventory、check/result status、check 名の一意性、filter と run mode の整合性も検証します。
+
+`metadata.provenance` は Lab commit と dirty flag、実行 source / vector / lockfile fingerprint、実際に読み込んだ package の version / content SHA-256 / lock integrity を記録します。package content hash は相対 file path と各 file SHA-256 の sorted manifest から計算し、絶対 path は保存しません。temporary candidate package に baseline lock integrity は流用しません。`subjectRouting` revision 1 は全生成 lane が共有 target resolver を使う契約です。metadata だけ別 package に差し替える指定は拒否します。
+
+Coverage claim の `evidenceRequirements` は adapter ごとの versioned capability を列挙します（non-claim は空配列）。`verified` と `partial` の両方について、source vector から導く適用対象 check がすべて pass したことを必要とします。1 件の pass だけでは、別 vector や decoder の missing / failed / skipped check を埋め合わせられません。optional CLI の unavailable は別集計し、pass に数えません。
+
+native decoder の raw stdout / stderr と一時 path は公開しません。exit / signal、出力 byte 数、確認できる version、期待値と一致した payload を記録します。不一致または未検証 payload は SHA-256 と byte 数だけを残し、比較は redaction 前の生値で行います。version probe が version を返さない場合は `null` / `unknown` です。
+
+`npm run verify:public` は再生成後の full pinned baseline、report / coverage evidence、公開 file の machine path / credential 混入を検査します。Pages build は badge と coverage の明示した file だけをコピーし、無関係な local JSON や RC observation schema を公開しません。
+
+`vectorsSha256` は disk 上の全 vector corpus の fingerprint です。filtered run や RC の正規化後 suite そのものとは区別します。RC の `scopeSha256` は実行する正規化済み vector と adapter ID を対象にし、`semanticSha256` は実際に得た report result を対象にします。

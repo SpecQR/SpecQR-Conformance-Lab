@@ -17,7 +17,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node tools/test.js && node tools/test-rc.js && node tools/test-rc-observation.js",
+    "test": "node tools/test.js && node tools/test-rc.js && node tools/test-rc-observation.js && node tools/test-target-routing.js && node tools/test-cli-evidence.js && node tools/test-report-integrity.js && node tools/test-coverage-integrity.js && node tools/test-reference-coverage.js && node tools/test-provenance.js",
     "validate:vectors": "node tools/validate-vectors.js",
     "conformance": "node tools/run-conformance.js",
     "report": "node tools/report.js",
@@ -35,8 +35,9 @@
     "observation:snapshot": "node tools/run-rc-observation-snapshot.js",
     "observation:assemble": "node tools/assemble-rc-observation.js",
     "observation:validate": "node tools/validate-rc-observation.js",
-    "pages:build": "npm run conformance && npm run report && node tools/build-pages.js",
-    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:claims && npm run validate:schemas && npm run verify:report && npm run verify:links"
+    "pages:build": "npm run conformance && npm run report && npm run verify:public && node tools/build-pages.js",
+    "verify": "npm run validate:vectors && npm test && npm run conformance && npm run report && npm run verify:claims && npm run validate:schemas && npm run verify:report && npm run verify:links && npm run verify:public",
+    "verify:public": "node tools/verify-public-output.js"
   },
   "keywords": [
     "specqr",

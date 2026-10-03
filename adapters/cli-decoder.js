@@ -1,8 +1,9 @@
 import { execFile } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import path from "node:path";
-import { generate, generateSegments } from "specqr";
+import { generate, generateSegments } from "../tools/specqr-target.js";
 import { binaryHexToBytes, summarizeChecks } from "./specqr.js";
 
 const supportedOperations = new Set(["generate", "generateSegments"]);
@@ -92,7 +93,21 @@ export function generateDecodePng(vector) {
   return generateSegments(normalizeSegments(vector.input.segments), pngOptions(vector.options));
 }
 
-function errorObject(error) {
+function portableDiagnostic(value, temporaryDirectory) {
+  let text = String(value ?? "");
+  for (const [source, replacement] of [
+    [temporaryDirectory, "[temporary-input]"],
+    [process.cwd(), "[workspace]"],
+    [homedir(), "[home]"]
+  ]) {
+    if (source && source !== path.parse(source).root) {
+      text = text.replaceAll(source, replacement);
+    }
+  }
+  return text.length > 4000 ? `${text.slice(0, 4000)}...` : text;
+}
+
+function errorObject(error, temporaryDirectory) {
   if (!error) {
     return null;
   }
@@ -100,7 +115,7 @@ function errorObject(error) {
   return {
     name: error.name ?? "Error",
     code: error.code ?? null,
-    message: error.message ?? String(error),
+    message: portableDiagnostic(error.message ?? String(error), temporaryDirectory),
     signal: error.signal ?? null
   };
 }
@@ -161,20 +176,60 @@ export async function discoverCommand(candidates, options = {}) {
   return null;
 }
 
-function trimOutput(value) {
-  const text = String(value ?? "");
-  return text.length > 4000 ? `${text.slice(0, 4000)}...` : text;
+function commandDisplayName(command) {
+  return path.win32.basename(path.basename(command));
 }
 
-function commandDetails(command, args, result = {}) {
+function commandVersion(candidate) {
+  // Do not infer a decoder version from arbitrary --help output. A successful
+  // explicit version probe must contain only a version (optionally prefixed by
+  // this executable's name), so probe logs never enter public evidence.
+  const unknown = { version: null, versionSource: "unknown" };
+  if (!candidate.discoveryArgs?.includes("--version") || !candidate.probe?.ok) {
+    return unknown;
+  }
+  const command = commandDisplayName(candidate.command);
+  let output = String(candidate.probe.stdout ?? "").trim();
+  if (output.startsWith(`${command} `)) {
+    output = output.slice(command.length + 1).trim();
+  }
+  const match = output.match(/^v?(\d+(?:\.\d+){1,3}(?:[-+][0-9A-Za-z.-]+)?)$/u);
+  return match ? { version: match[1], versionSource: "--version" } : unknown;
+}
+
+function commandDetails(candidate, args, result = {}, pngPath) {
   return {
-    command,
-    args,
+    command: commandDisplayName(candidate.command),
+    ...commandVersion(candidate),
+    args: args.map((arg) => arg === pngPath ? "input.png" : portableDiagnostic(arg)),
     exitCode: result.exitCode ?? null,
     signal: result.signal ?? null,
-    stdout: trimOutput(result.stdout),
-    stderr: trimOutput(result.stderr)
+    // The parsed payload is evidence; raw process logs can contain private
+    // machine paths or unrelated diagnostics and do not belong in a report.
+    stdoutBytes: Buffer.byteLength(String(result.stdout ?? ""), "utf8"),
+    stderrBytes: Buffer.byteLength(String(result.stderr ?? ""), "utf8")
   };
+}
+
+function decodedTextFingerprint(decodedText) {
+  const text = String(decodedText);
+  return {
+    textRedacted: true,
+    byteLength: Buffer.byteLength(text, "utf8"),
+    sha256: createHash("sha256").update(text, "utf8").digest("hex")
+  };
+}
+
+function decodedEvidence(expectDecode, decodedText) {
+  if (decodedText === null || decodedText === undefined) {
+    return null;
+  }
+  // Preserve raw equality for the verdict. Only a payload matching an explicit
+  // public expectation is safe to echo; parsers can mistake diagnostics for QR
+  // content even when the native command exits successfully.
+  return Object.hasOwn(expectDecode, "text") && decodedText === expectDecode.text
+    ? { text: decodedText }
+    : decodedTextFingerprint(decodedText);
 }
 
 export function evaluateCliDecodeExpectation(expectDecode, decodedText, options = {}) {
@@ -190,7 +245,7 @@ export function evaluateCliDecodeExpectation(expectDecode, decodedText, options 
     } else {
       checks.push(createFailedCheck("decode.text", "decoded text differs", {
         expected: expectDecode.text,
-        actual: decodedText
+        actual: decodedTextFingerprint(decodedText)
       }));
     }
   }
@@ -217,7 +272,7 @@ function noDecodeExpectationResult(adapterConfig, vector) {
 }
 
 function unavailableResult(adapterConfig, vector) {
-  const commands = adapterConfig.commands.map((candidate) => normalizeCommandCandidate(candidate).command);
+  const commands = adapterConfig.commands.map((candidate) => commandDisplayName(normalizeCommandCandidate(candidate).command));
   const reason = `${adapterConfig.name} command is not available; install one of ${commands.join(", ")} to enable this optional lane.`;
   return {
     vectorId: vector.id,
@@ -243,7 +298,7 @@ export function createOptionalCliDecodeAdapter(adapterConfig) {
     status: "optional",
     required: false,
     lane: "optional-decode-readability",
-    commandCandidates: adapterConfig.commands.map((candidate) => normalizeCommandCandidate(candidate).command),
+    commandCandidates: adapterConfig.commands.map((candidate) => commandDisplayName(normalizeCommandCandidate(candidate).command)),
     supportsOperation: supportsDecodeOperation,
     async run(vector, options = {}) {
       if (isStructuredAppendOperation(vector.operation)) {
@@ -310,8 +365,8 @@ export function createOptionalCliDecodeAdapter(adapterConfig) {
           checks,
           ...(status === "failed" ? { reason: "one or more optional CLI decode checks failed" } : {}),
           details: {
-            command: commandDetails(command.command, args, result),
-            decoded: decodedText === null || decodedText === undefined ? null : { text: decodedText }
+            command: commandDetails(command, args, result, pngPath),
+            decoded: decodedEvidence(vector.expect.decode, decodedText)
           }
         };
       } catch (error) {
@@ -323,7 +378,7 @@ export function createOptionalCliDecodeAdapter(adapterConfig) {
             name: "decode",
             status: "error",
             reason: `${adapterConfig.name} optional lane failed while generating or decoding PNG`,
-            error: errorObject(error)
+            error: errorObject(error, tempDir)
           }],
           reason: `${adapterConfig.name} optional lane failed while generating or decoding PNG`
         };

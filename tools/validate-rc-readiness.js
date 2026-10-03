@@ -19,6 +19,7 @@ import {
   compareExpectedDeltaAdjudications,
   loadExpectedDeltaPolicy
 } from "./rc-expected-delta.js";
+import { assessRcConformanceReports } from "./rc-evidence-validity.js";
 import { createCheck, deepEqual, readJson, sha256, stableStringify, statusCounts } from "./rc-utils.js";
 import { validateSchemaValue } from "./validate-schemas.js";
 
@@ -185,6 +186,7 @@ export async function validateRcReadiness(options = {}) {
   ];
   const artifactPaths = new Set(report.artifacts?.files?.map((file) => file.path));
   const reportExpectedDelta = report.expectedDelta;
+  const conformanceEvidence = await assessRcConformanceReports({ baseline: baselineReport, exact: exactReport, next: nextReport }, cwd, { exact: registryExact, next: registryNext });
   const checks = [
     createCheck("schema", schemaResult.ok, { errors: schemaResult.errors }),
     createCheck("technical-status", report.technicalStatus === "pass", { actual: report.technicalStatus }),
@@ -206,10 +208,16 @@ export async function validateRcReadiness(options = {}) {
       deepEqual(report.registryIntegrity?.exact?.hashes, report.registryIntegrity?.next?.hashes)),
     createCheck("selector-runtime", registryComparison.status === "pass" &&
       report.registryIntegrity?.selectorComparison?.status === "pass"),
-    createCheck("conformance-coverage", [baselineReport, exactReport, nextReport].every((candidate) => {
-      return candidate.summary?.totalVectors === 91 && candidate.summary?.totalResults === 455 &&
-        candidate.summary?.failed === 0 && candidate.summary?.error === 0;
-    })),
+    createCheck("conformance-coverage-and-subject-routing", conformanceEvidence.valid &&
+      Object.entries(conformanceEvidence.targets).every(([id, evidence]) => {
+        return deepEqual(report.conformance?.[id]?.subjectRouting, evidence.subjectRouting) &&
+          report.conformance?.[id]?.scopeSha256 === evidence.scopeSha256 &&
+          report.conformance?.[id]?.verifiedSubjectSha256 === evidence.verifiedSubjectSha256 &&
+          deepEqual(report.conformance?.[id]?.capabilityCoverage, evidence.capabilityCoverage) &&
+          report.conformance?.[id]?.vectors === ({ baseline: baselineReport, exact: exactReport, next: nextReport })[id].summary.totalVectors &&
+          report.conformance?.[id]?.results === ({ baseline: baselineReport, exact: exactReport, next: nextReport })[id].summary.totalResults &&
+          report.conformance?.[id]?.failed === 0 && report.conformance?.[id]?.error === 0;
+      }), { targets: conformanceEvidence.targets }),
     createCheck("raw-strict-comparison", rawExact.status === "blocked" && rawNext.status === "blocked" &&
       rawSelector.status === "pass" && rawExact.changes.length === rcExpectedDeltaCount &&
       rawNext.changes.length === rcExpectedDeltaCount &&

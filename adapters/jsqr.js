@@ -1,5 +1,5 @@
 import jsQR from "jsqr";
-import { generate, generateSegments } from "specqr";
+import { generate, generateSegments } from "../tools/specqr-target.js";
 import { binaryHexToBytes, summarizeChecks } from "./specqr.js";
 import { pngToRgba } from "../tools/png-rgba.js";
 

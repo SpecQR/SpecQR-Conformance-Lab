@@ -16,6 +16,7 @@ import {
   observationReportSchemaSha256,
   observationRepository
 } from "./rc-observation-constants.js";
+import { isRevokedRcEvidence, loadRcConformanceScope, revokedRcTechnicalEvidence, validReadinessConformance } from "./rc-evidence-validity.js";
 import { deepEqual, sha256, stableStringify } from "./rc-utils.js";
 import { validateSchemaValue } from "./validate-schemas.js";
 
@@ -96,7 +97,8 @@ export async function loadObservationContext(options = {}) {
     policySchema,
     manualEvidence,
     manualEvidenceSchema,
-    reportSchema
+    reportSchema,
+    conformanceScope: await loadRcConformanceScope(cwd)
   };
 }
 
@@ -175,13 +177,15 @@ export function summarizeRegistryEvidence(policy, exactEvidence, nextEvidence, c
   };
 }
 
-function technicalReadinessChecks(policy, metadata, readiness, labCommit, observedAt) {
+function technicalReadinessChecks(policy, metadata, readiness, labCommit, observedAt, conformanceScope, registryEvidence) {
   const requiredMajors = policy.technicalEvidence.requiredNodeMajors;
   const nodeMajors = readiness.toolchain?.packageSurface?.map((entry) => entry.nodeMajor) ?? [];
-  const conformanceTargets = [readiness.conformance?.baseline, readiness.conformance?.exact, readiness.conformance?.next];
   const runId = metadata.run.id;
   const initial = runId === policy.technicalEvidence.initialRunId;
   const checks = [
+    check("technical-evidence-not-revoked", !isRevokedRcEvidence(runId, metadata.run.headSha), { reason: revokedRcTechnicalEvidence.reason }),
+    check("readiness-subject-routing-and-source-scope", validReadinessConformance(readiness, conformanceScope, registryEvidence)),
+    check("readiness-run-identity", metadata.repository === policy.technicalEvidence.repository && readiness.commit === metadata.run.headSha),
     check("workflow", metadata.run.workflowId === policy.technicalEvidence.workflowId),
     check("run-success", metadata.run.status === "completed" && metadata.run.conclusion === "success"),
     check("run-not-after-observation", parseDate(metadata.run.updatedAt, "technical run updatedAt") <= observedAt),
@@ -204,9 +208,6 @@ function technicalReadinessChecks(policy, metadata, readiness, labCommit, observ
         target?.fileCount === policy.candidate.fileCount &&
         target?.runtimeDependencyCount === policy.candidate.runtimeDependencyCount;
     }) && readiness.registryIntegrity?.selectorComparison?.status === "pass"),
-    check("readiness-conformance", conformanceTargets.every((target) => {
-      return target?.vectors === 91 && target?.results === 455 && target?.failed === 0 && target?.error === 0;
-    })),
     check("readiness-expected-delta", [readiness.expectedDelta?.exact, readiness.expectedDelta?.next].every((target) => {
       return target?.status === "pass" && target?.rawDeltaCount === 3 && target?.matchedExpected === 3 &&
         target?.missingExpected === 0 && target?.unexpected === 0;
@@ -245,12 +246,14 @@ function technicalReadinessChecks(policy, metadata, readiness, labCommit, observ
   };
 }
 
-export function summarizeTechnicalEvidence(policy, metadata, readiness, labCommit, observedAtValue) {
+export function summarizeTechnicalEvidence(policy, metadata, readiness, labCommit, observedAtValue, conformanceScope, registryEvidence) {
   const observedAt = parseDate(observedAtValue, "observedAt");
-  const evaluation = technicalReadinessChecks(policy, metadata, readiness, labCommit, observedAt);
+  const evaluation = technicalReadinessChecks(policy, metadata, readiness, labCommit, observedAt, conformanceScope, registryEvidence);
   const nodeMajors = readiness.toolchain?.packageSurface?.map((entry) => entry.nodeMajor) ?? [];
   const summary = {
     evidenceKind: evaluation.kind,
+    subjectRoutingRevision: validReadinessConformance(readiness, conformanceScope, registryEvidence) ? 1 : null,
+    conformanceEvidenceRevision: validReadinessConformance(readiness, conformanceScope, registryEvidence) ? 1 : null,
     repository: metadata.repository,
     runId: metadata.run.id,
     workflowId: metadata.run.workflowId,
@@ -284,7 +287,9 @@ export function summarizeTechnicalEvidence(policy, metadata, readiness, labCommi
       artifactSha256: summary.artifactSha256,
       readinessSha256: summary.readinessSha256,
       readinessArtifactSetSha256: summary.readinessArtifactSetSha256,
-      status: summary.status
+      status: summary.status,
+      subjectRoutingRevision: summary.subjectRoutingRevision,
+      conformanceEvidenceRevision: summary.conformanceEvidenceRevision
     }))
   };
 }
@@ -407,6 +412,7 @@ export function buildObservationSnapshot(options) {
     rawGitHub,
     technicalMetadata,
     technicalReadiness,
+    conformanceScope,
     observedAt,
     labCommit,
     workflowRunId = null,
@@ -435,7 +441,9 @@ export function buildObservationSnapshot(options) {
     technicalMetadata,
     technicalReadiness,
     labCommit,
-    observedAt
+    observedAt,
+    conformanceScope,
+    { exact: registryExact, next: registryNext }
   );
   const github = classifyGitHubSnapshot(rawGitHub, manualEvidence, observedAt);
   const blockers = buildBlockers(github, manualEvidence);
@@ -481,6 +489,9 @@ export function snapshotSummary(snapshot) {
     technicalStatus: snapshot.technicalStatus,
     technicalEvidenceKind: snapshot.technicalEvidence.evidenceKind,
     technicalRunId: snapshot.technicalEvidence.runId,
+    technicalHeadSha: snapshot.technicalEvidence.headSha ?? null,
+    subjectRoutingRevision: snapshot.technicalEvidence.subjectRoutingRevision ?? null,
+    conformanceEvidenceRevision: snapshot.technicalEvidence.conformanceEvidenceRevision ?? null,
     technicalCompletedAt: snapshot.technicalEvidence.completedAt,
     githubUnreviewed: snapshot.github.summary.unreviewed,
     githubBlocking: snapshot.github.summary.blocking,
@@ -540,11 +551,18 @@ export function evaluateObservation(policy, currentSnapshot, snapshots, options 
   const registryFingerprints = new Set(snapshots.map((snapshot) => snapshot.registryFingerprint));
   const registryInvariantPass = snapshots.every((snapshot) => snapshot.registryStatus === "pass") &&
     registryFingerprints.size === 1;
-  const snapshotTechnicalPass = snapshots.every((snapshot) => snapshot.technicalStatus === "pass");
+  const admissibleTechnicalSnapshot = (snapshot) => snapshot.technicalStatus === "pass" &&
+    snapshot.subjectRoutingRevision === 1 && snapshot.conformanceEvidenceRevision === 1 && /^[0-9a-f]{40}$/u.test(snapshot.technicalHeadSha ?? "") &&
+    !isRevokedRcEvidence(snapshot.technicalRunId, snapshot.technicalHeadSha);
+  const snapshotTechnicalPass = snapshots.every(admissibleTechnicalSnapshot);
+  const currentTechnicalPass = currentSnapshot.technicalEvidence.status === "pass" &&
+    currentSnapshot.technicalEvidence.subjectRoutingRevision === 1 &&
+    currentSnapshot.technicalEvidence.conformanceEvidenceRevision === 1 &&
+    !isRevokedRcEvidence(currentSnapshot.technicalEvidence.runId, currentSnapshot.technicalEvidence.headSha);
   const finalRerunEarliest = parseDate(policy.candidate.publishedAt, "candidate publishedAt") +
     timeline.minimumAgeHours * 3_600_000;
   const finalTechnicalPass = currentSnapshot.technicalEvidence.evidenceKind === "final-rerun" &&
-    currentSnapshot.technicalEvidence.status === "pass" &&
+    currentTechnicalPass &&
     parseDate(currentSnapshot.technicalEvidence.completedAt, "technical completedAt") >= finalRerunEarliest &&
     currentSnapshot.ageHours >= timeline.minimumAgeHours;
   const confirmations = currentSnapshot.consumerConfirmations.length;
@@ -558,8 +576,8 @@ export function evaluateObservation(policy, currentSnapshot, snapshots, options 
     ),
     criterion(
       "technical-evidence",
-      currentSnapshot.technicalEvidence.status === "pass" ? "pass" : "blocked",
-      currentSnapshot.technicalEvidence.status === "pass" ? "参照した RC readiness evidence は green。" : "RC readiness evidence が required technical gate を満たさない。",
+      currentTechnicalPass ? "pass" : "blocked",
+      currentTechnicalPass ? "参照した RC readiness evidence は green。" : "RC readiness evidence が required technical gate を満たさない。",
       currentSnapshot.technicalEvidence.status,
       "pass"
     ),
@@ -575,7 +593,7 @@ export function evaluateObservation(policy, currentSnapshot, snapshots, options 
       snapshotTechnicalPass ? "pass" : "blocked",
       snapshotTechnicalPass ? "全 selected snapshot の technical evidence は green。" :
         "Technical failure を含む snapshot は timeline evidence に採用できない。",
-      snapshots.filter((snapshot) => snapshot.technicalStatus !== "pass").length,
+      snapshots.filter((snapshot) => !admissibleTechnicalSnapshot(snapshot)).length,
       0
     ),
     criterion(
@@ -658,7 +676,7 @@ export function evaluateObservation(policy, currentSnapshot, snapshots, options 
   const observationStatus = blocked.length > 0 ? "blocked" : pending.length > 0 ? "pending" : "sufficient";
   return {
     criteria,
-    technicalStatus: currentSnapshot.technicalStatus,
+    technicalStatus: currentTechnicalPass && currentSnapshot.technicalStatus === "pass" ? "pass" : "blocked",
     observationStatus,
     statusReasons: {
       pending: pending.map((entry) => entry.id),

@@ -1,0 +1,613 @@
+{
+  "source": "https://registry.npmjs.org/specqr/-/specqr-3.0.0-rc.2.tgz",
+  "resolvedVersion": "3.0.0-rc.2",
+  "tarballSha256": "c96c324dcd99d72c385d3890156a6ae973ad8db57b840fd5a47f987ddcbb6298",
+  "expandedSha256": "f507de7da842b3bc5fce88eaa6a4d04388ce1d55541c58cbebf36d4b583ae306",
+  "manifest": [
+    {
+      "path": "CHANGELOG.md",
+      "size": 28269,
+      "sha256": "6b4dcc83689ae8ed7432f6e83dddbd8b3ef0ec74023856af4886c610b7b17e65"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "size": 3939,
+      "sha256": "ba24642793b9e219a739bff0352b5ed7650fe89eb1e02a712af5772f91356fc0"
+    },
+    {
+      "path": "LICENSE",
+      "size": 1076,
+      "sha256": "1157df45638ac01cda5a925b546618c19a45835e4a9494e711d8047f5e5f39c9"
+    },
+    {
+      "path": "README.md",
+      "size": 30669,
+      "sha256": "fbede216bb208f3c353e0202c67f97ae2ce2fb1b96a6f552fe22dc69c2f6b1eb"
+    },
+    {
+      "path": "SECURITY.md",
+      "size": 4091,
+      "sha256": "30d9ca313a3102edb719c56764744a2d0406d27f3c8fe7f304173b2985d93a47"
+    },
+    {
+      "path": "docs/api.md",
+      "size": 49266,
+      "sha256": "32c261629ed09c2180b75e772684bbeb1ca67730634347312a6a99f971c85838"
+    },
+    {
+      "path": "docs/browser-e2e.md",
+      "size": 4931,
+      "sha256": "86ea08d8c7c8cf966a6a15e3ba2d7b85b5cc641cd3df39db3ef988124a64c748"
+    },
+    {
+      "path": "docs/conformance-fuzzing.md",
+      "size": 8872,
+      "sha256": "7cbd049e6c522be83054d0cfcd5a66f26290eab773e5940fcfedccab1ef74c98"
+    },
+    {
+      "path": "docs/conformance.md",
+      "size": 25626,
+      "sha256": "e000f877a73b0f2266ad80793dfea79f53fd8001ac383fc7ae5eca3d85230bf4"
+    },
+    {
+      "path": "docs/correctness-contract-audit.md",
+      "size": 62010,
+      "sha256": "bcb309c66bab2fd7491637ffe53d89fd2fed5f9fb4ebb23435e18682becd476a"
+    },
+    {
+      "path": "docs/gs1-digital-link-v2.md",
+      "size": 27629,
+      "sha256": "d6f047f94fb95dadd71a44c6e1e565e3612fb49e45c8c99bc4e561d5b6f5c1e9"
+    },
+    {
+      "path": "docs/gs1-digital-link-validation-v2.2.md",
+      "size": 16588,
+      "sha256": "fb98c2013d4f020223ee14e04c8c0f6a607738c0a9dd1970074cb723cafb14ce"
+    },
+    {
+      "path": "docs/gs1-supported-ai.md",
+      "size": 8245,
+      "sha256": "59bf528a6ebe8dec94feca926a9f712a9ff5efd3d2a8ae469b7f6a35cf29abe9"
+    },
+    {
+      "path": "docs/gs1-v2-api.md",
+      "size": 8686,
+      "sha256": "77701f9a295e3a1f2619b9cd527bd15e5b10a38f84accedd6cb2be9d5b1e481d"
+    },
+    {
+      "path": "docs/gs1-validation-v2.1.md",
+      "size": 17015,
+      "sha256": "06244d7bb52f3c1ac9104d46c9f4cd33839f81b66da2a83186a8b89af3b83f91"
+    },
+    {
+      "path": "docs/internal-architecture.md",
+      "size": 8301,
+      "sha256": "23592e576f52efc2247a297a51bec20304761eaf35128e45a8d49939e8ebb671"
+    },
+    {
+      "path": "docs/planning-diagnostics-v2.4.md",
+      "size": 21215,
+      "sha256": "c577c3a0a7c4d21cc2ea874f5cd8095ee7b17a18a400270b85bc0aed7db1be79"
+    },
+    {
+      "path": "docs/project-language.md",
+      "size": 9339,
+      "sha256": "d9ea609430d45142ffdd45a77619e15bb79cf2e199bd9f692d8cdc97c955b39b"
+    },
+    {
+      "path": "docs/public-api-contract.md",
+      "size": 10573,
+      "sha256": "32cccd60eebc167902effa190bc7e7bb8a5ecd4e830341ab7ec001707f0b1f8f"
+    },
+    {
+      "path": "docs/reference-comparison.md",
+      "size": 5174,
+      "sha256": "7a712f5d1286c96cffb2d6726cb72fc0535da1518a6a99a97de48c31df35545e"
+    },
+    {
+      "path": "docs/release-artifact.md",
+      "size": 6849,
+      "sha256": "12bd207d101c5e8e0ad1a4dafba90512a607606a4bda9ac5a439a4d41bbc5b85"
+    },
+    {
+      "path": "docs/release-notes-3.0.0-rc.1.md",
+      "size": 3975,
+      "sha256": "2e6ed66f21a37e445140fe2196877461457d8ec8cec75041211e449b8b087d9a"
+    },
+    {
+      "path": "docs/release-notes-3.0.0-rc.2.md",
+      "size": 4809,
+      "sha256": "4df48f943abf3358fa37668344a430a55bad191e5b513facf5ce815662eab940"
+    },
+    {
+      "path": "docs/release.md",
+      "size": 26522,
+      "sha256": "32972c5ff1f23dae22502fc98762a7abbbc5f1853ffca70343093fc3777a49ef"
+    },
+    {
+      "path": "docs/resource-safety.md",
+      "size": 8485,
+      "sha256": "ab7d34d5cc997e499a0b3b240e800662a5a85577b56ee703e65c4ffb5608217e"
+    },
+    {
+      "path": "docs/spec-scope.md",
+      "size": 18720,
+      "sha256": "68c6e3526ffb5dc1f11d742c65c71f7ef5d02711662d45c5faa77a00efee8352"
+    },
+    {
+      "path": "docs/structured-append-decoder-validation-v2.md",
+      "size": 4506,
+      "sha256": "eb24035d425a3f9bf2594c2af37368bd041ad749768bfcc41a4eac47808d7671"
+    },
+    {
+      "path": "docs/structured-append-memory.md",
+      "size": 8924,
+      "sha256": "86ed1e04e233d82ec451dbe20d028855442d3916a877d2c1578822ddb29cfb94"
+    },
+    {
+      "path": "docs/structured-append-parity-v2.3.md",
+      "size": 12759,
+      "sha256": "6167c4146de7e5b49f0660e672879119ef6132a7debe4656711bf5e929f45852"
+    },
+    {
+      "path": "docs/structured-append-scanning-v2.md",
+      "size": 14417,
+      "sha256": "483fa690cd82ee2b591c274d82e86a5c46df493bf43266b39c03a7dadd95825c"
+    },
+    {
+      "path": "docs/structured-append-segments-parity-v2.3.md",
+      "size": 13993,
+      "sha256": "acbff251da63cc6b69cda426ab5af912364e3cd125c61f0845b1eeac22ccc0c9"
+    },
+    {
+      "path": "docs/structured-append-segments-v2.md",
+      "size": 19706,
+      "sha256": "9477f606d0891b08821f7c5231508c63c2b151a52a7e65c409a5ee6a596b8a42"
+    },
+    {
+      "path": "docs/structured-append-v2.md",
+      "size": 16837,
+      "sha256": "082676611368d679864feef41f9837db90de348de3c7f175f0f69359326b5661"
+    },
+    {
+      "path": "docs/structured-append-zxing-java.md",
+      "size": 8349,
+      "sha256": "d0869c1342cdf86c7d2cb1d9847205987a10a0fbc7b2c7b84a8cc3097807d2b8"
+    },
+    {
+      "path": "docs/test-plan.md",
+      "size": 42141,
+      "sha256": "77ecebaedf74d4f883763de221769dd2ac109fb96da1590bb69254226da27e13"
+    },
+    {
+      "path": "docs/v2-roadmap.md",
+      "size": 42003,
+      "sha256": "61e9399f69804b32a8dea254e3fc13457ba449b5b4f79d2f408ce15aa13817c1"
+    },
+    {
+      "path": "docs/v3-migration.md",
+      "size": 7105,
+      "sha256": "845f8578fe83e6c8eb83d0e7e022a4dfba1e08ab48638a25c05e7bf5d323d39d"
+    },
+    {
+      "path": "docs/v3-roadmap.md",
+      "size": 2010,
+      "sha256": "de70f19985f87d717e0ddb59fb9b984a94724f108862a026fc1a6e80c383794f"
+    },
+    {
+      "path": "docs/v3-structured-append-diagnostics.md",
+      "size": 27818,
+      "sha256": "bed13f41223dc57921407437d4c0a8166e9527601a44402651666b1eedd35e78"
+    },
+    {
+      "path": "examples/README.md",
+      "size": 2415,
+      "sha256": "a7306923ea800e2f0f6241faa0d788c80b9ca56d9ee36c7dafed0b2dbdee05a9"
+    },
+    {
+      "path": "examples/browser-blob-object-url.html",
+      "size": 1223,
+      "sha256": "c8cca38ddb366d42726de2c4da259babaecfa325bfb0302e5f88dd12181ef7a5"
+    },
+    {
+      "path": "examples/gs1-digital-link.mjs",
+      "size": 1955,
+      "sha256": "36e33ef51c7ef6fd0449a2e586debf0c86ea901e0e8e100a2672979f8f38fecf"
+    },
+    {
+      "path": "examples/gs1-qr.mjs",
+      "size": 1043,
+      "sha256": "cfb4955e0e0bc4a75cd1982a6c4e201ce514828734c4b3202a8738f73974e2de"
+    },
+    {
+      "path": "examples/node-save-png.mjs",
+      "size": 464,
+      "sha256": "6adc6ab1c2758c3b2c65495d752ce4db13f4e878053143620e5946d1c5d2cb4c"
+    },
+    {
+      "path": "examples/planning-api.mjs",
+      "size": 2203,
+      "sha256": "b02b46deb78db46c1e723c7e33e10e34042e4e41d6828e12e88fbeda3319ba1c"
+    },
+    {
+      "path": "examples/structured-append-merge.mjs",
+      "size": 5787,
+      "sha256": "68d1861d9e578ba586139529cc2ff2d305e9ff8374a9020182dd21eedfce0237"
+    },
+    {
+      "path": "examples/structured-append.mjs",
+      "size": 2839,
+      "sha256": "461189c98b6855f57207938d335e151df277f6cebab3847a322a35d3ac17dc85"
+    },
+    {
+      "path": "examples/typescript-usage.ts",
+      "size": 2449,
+      "sha256": "1916e6f102271ec11439503e7aa1d47429d22460c8e09eb1aa71703ec98f0518"
+    },
+    {
+      "path": "fixtures/decode-cases.json",
+      "size": 2106,
+      "sha256": "74c8cc258aaf8835cca1c552a58ff491337528a63907c86b302500b9a0e01a38"
+    },
+    {
+      "path": "fixtures/golden-cases.json",
+      "size": 122337,
+      "sha256": "6be136579930a7200d70e22c1ebd46fdd1bba89a7e1fc918da39306dd1edd011"
+    },
+    {
+      "path": "fixtures/structured-append-high-level.json",
+      "size": 1702,
+      "sha256": "3d85e4d6c66140c6220b5fe87e8c337b422f95fb7363e789ad8e2ad52b9a68f3"
+    },
+    {
+      "path": "fixtures/structured-append-segments.json",
+      "size": 14853,
+      "sha256": "ff7802313413650afd486da4dffb2687ff9d6f27c8770a4c63f2934abce34fa1"
+    },
+    {
+      "path": "package.json",
+      "size": 3352,
+      "sha256": "c4210abea5de1a7e3e15fb4737e2c05d20f689ce7297376730ed5524f9cd7494"
+    },
+    {
+      "path": "playground/index.html",
+      "size": 3932,
+      "sha256": "3532bf6a8878fbad95e1f6753a0eaa568b6d0ee92d602582d025a8ea61dc955b"
+    },
+    {
+      "path": "playground/playground.js",
+      "size": 14326,
+      "sha256": "da3b9c318362780c914793c026a9c1149ee7f9d913b57b97913ed1b1c6e4c1e9"
+    },
+    {
+      "path": "playground/styles.css",
+      "size": 3551,
+      "sha256": "a19666ec031b5138010796299a89ab9866ccb68c85a401449e5997acc1bc264d"
+    },
+    {
+      "path": "src/browser.d.ts",
+      "size": 607,
+      "sha256": "8e3f6e297863ff72839a6ee0a2d66ed24a3a2842418197c2da47e031934d2271"
+    },
+    {
+      "path": "src/browser.js",
+      "size": 3104,
+      "sha256": "c7f1609850d0f614bb6b06c844805327c31064f4c8cc6a899a248a54751b200e"
+    },
+    {
+      "path": "src/core/codewords.js",
+      "size": 1823,
+      "sha256": "e06d096eb1ade1f118a9627c419503f289027d2044428309204600d2bd74ed19"
+    },
+    {
+      "path": "src/core/galois-field.js",
+      "size": 856,
+      "sha256": "2928b5520268b0a795c1a4e14fac460f0dd37ef89a4366e10b1ac49aa3494631"
+    },
+    {
+      "path": "src/core/mask.js",
+      "size": 2984,
+      "sha256": "5df22969324cfc45bf6be7a768b09fae91e741582abfafd021422cc0eaa4fb34"
+    },
+    {
+      "path": "src/core/matrix.js",
+      "size": 6730,
+      "sha256": "afdf61b811f10041df6cbb4e6a9bb9f55b4a70c66152564131545457cb84ba50"
+    },
+    {
+      "path": "src/core/reed-solomon.js",
+      "size": 1060,
+      "sha256": "65dccf4baa39df55d4eb828418bb3bd0b00d3e7fb3520bff27b569c5010657b2"
+    },
+    {
+      "path": "src/core/tables.js",
+      "size": 4162,
+      "sha256": "3c53e40f238cb2db2fd5eba20dc70dbcb0d327925123f81dddbde7981785fb37"
+    },
+    {
+      "path": "src/diagnostics.js",
+      "size": 11748,
+      "sha256": "49fd8316e888be37050ca37ab01ae595428e73db3c3acb0bd85e1270cb364f02"
+    },
+    {
+      "path": "src/encoding/bit-buffer.js",
+      "size": 1435,
+      "sha256": "7acc219a39d44ff62082996ba94268a5bb2cf1e65cd2ff53d157e169e920a111"
+    },
+    {
+      "path": "src/encoding/control-segments.js",
+      "size": 16510,
+      "sha256": "fa3de4161e4d3ce44ea00f98070b424b6d0a03e76c34f87ec8fd057abcab5993"
+    },
+    {
+      "path": "src/encoding/modes.js",
+      "size": 19093,
+      "sha256": "204a3a4df0a81b1e8decc63299cd099812ee4708882feb4ccb47f97ae68333e4"
+    },
+    {
+      "path": "src/encoding/shift-jis.js",
+      "size": 2505,
+      "sha256": "beb66ee39a3ac7a8890ea7a1e256b2e0552b2d7e821153ad68d4b40c6daa7def"
+    },
+    {
+      "path": "src/errors.js",
+      "size": 1261,
+      "sha256": "96d8a46d1e0da904847dcc9e32bd3498dcfc7b72924fd1d1dd528a64c6b57c70"
+    },
+    {
+      "path": "src/gs1.js",
+      "size": 500,
+      "sha256": "8caa34a2eb6acfb24d5c46f8559fbd0a96dc0109d69a1789fbe74203a2290833"
+    },
+    {
+      "path": "src/gs1/ai-dictionary.js",
+      "size": 8939,
+      "sha256": "c483742e13e98f08bc461b4223502be9542e7043bc02031af3bb31a3def93099"
+    },
+    {
+      "path": "src/gs1/ai.js",
+      "size": 2498,
+      "sha256": "482f443c5b485173038ebea945a5c7d524efce87e2cd9c5595361494ceccea95"
+    },
+    {
+      "path": "src/gs1/check-digit.js",
+      "size": 2890,
+      "sha256": "5a3fafa1ef032d5a2603c094f34563026d577b6b926b7ffefaef36fc00ec93ce"
+    },
+    {
+      "path": "src/gs1/digital-link.js",
+      "size": 17801,
+      "sha256": "3e85843bdbe09206136d04ce9046dfca8e9fdf77fc0db4ec882570da87a5da9f"
+    },
+    {
+      "path": "src/gs1/element-string.js",
+      "size": 711,
+      "sha256": "441beb66197dd872186314a619b3cf8a04ad9956fef70e618a03d0b7bfe835cd"
+    },
+    {
+      "path": "src/gs1/index.js",
+      "size": 690,
+      "sha256": "0b3d54b9dc1d1dd0343ba77b8e6c7e7e07bca96353fd42a5c98c8e0052947c8d"
+    },
+    {
+      "path": "src/gs1/parser.js",
+      "size": 1270,
+      "sha256": "5572e92815a5f3c3bb7aad67fabcfd0b2aa34085d12c7baef0a1cee123bcf9ef"
+    },
+    {
+      "path": "src/gs1/validation.js",
+      "size": 9097,
+      "sha256": "44e1321ab549f4d050816305b0a201e6d4396418dfe1c9d0de6675d6d6fc1368"
+    },
+    {
+      "path": "src/gs1/validator.js",
+      "size": 3819,
+      "sha256": "3482cab601f09d9b7dde94198c0f886c843c7d7f4018541388cc388fc993d64a"
+    },
+    {
+      "path": "src/index.d.ts",
+      "size": 35419,
+      "sha256": "418c434c76c08cbad5433fc9966819613887d4dceaa2acdec51dee5390f7df7c"
+    },
+    {
+      "path": "src/index.js",
+      "size": 5083,
+      "sha256": "a5d4e05df7aed06e780aec2e7ca4ce7d43753d7a8126df86d9c2252d995d8700"
+    },
+    {
+      "path": "src/internal/build.js",
+      "size": 732,
+      "sha256": "441ba0487937f7ed08a35af504ce5a656f2fff9598c4273ff44c783d1650b7c5"
+    },
+    {
+      "path": "src/internal/bytes.js",
+      "size": 1142,
+      "sha256": "21638be346eb2a892b8e49989826fd00ef78ba9ac9fb5b88f946005aec92eb52"
+    },
+    {
+      "path": "src/internal/diagnostics-adapter.js",
+      "size": 3905,
+      "sha256": "f9878949f37b4d879d9e7231ddc1bab1c25204237a84fc5618de5ef4b0c715c8"
+    },
+    {
+      "path": "src/internal/generation.js",
+      "size": 2501,
+      "sha256": "47ba84f45479c967aa0cc79c3a2fee028823306490e26d1541f822ccaadf4a06"
+    },
+    {
+      "path": "src/internal/planning.js",
+      "size": 16053,
+      "sha256": "98ca8fcc6f503bf222e1ef896ba52ae5f9fbbad20fdcb344df668f895f7e0f05"
+    },
+    {
+      "path": "src/internal/render-result.js",
+      "size": 1275,
+      "sha256": "0b46ff36777d61bea9dc3ad40d57ab6f14ea16c80839f9ce1ca10cdaea65a5cb"
+    },
+    {
+      "path": "src/internal/structured-append.js",
+      "size": 51970,
+      "sha256": "ba124109b357396c4ef527d972d26ad6b0a46f144498e52a4c7e36dede431ec3"
+    },
+    {
+      "path": "src/node.d.ts",
+      "size": 530,
+      "sha256": "449fc5f716a41df882b0bf90784377120dfb47b19bb1bff8265745915718e201"
+    },
+    {
+      "path": "src/node.js",
+      "size": 733,
+      "sha256": "091c94d0e17f520d203c34db9b728107fdc70874113fd8827cf8a0a393e91719"
+    },
+    {
+      "path": "src/options.js",
+      "size": 5412,
+      "sha256": "220c75825d441aebf0a341b49b477511a8ff5c1be5f69da1abc9d8bbc95e0d3d"
+    },
+    {
+      "path": "src/render/base64.js",
+      "size": 902,
+      "sha256": "4667a73ceb0aeed9dc098be49bedfb5b9e6ff143ebb3da98b766bc78ffba5baf"
+    },
+    {
+      "path": "src/render/canvas.js",
+      "size": 1491,
+      "sha256": "08a1df715ca48040fc3ba1215a8e6d0c2c4da36367b283ce3f73b015cda9c39c"
+    },
+    {
+      "path": "src/render/color.js",
+      "size": 1980,
+      "sha256": "bbe42c3a7e98c17bff21970cb57065a1ba75820f394e2debea91f1018800a1f1"
+    },
+    {
+      "path": "src/render/geometry.js",
+      "size": 5508,
+      "sha256": "5441d2c4c0af385ffee8d1db709666aecde5343e5f25a84de6c149122444b88a"
+    },
+    {
+      "path": "src/render/png.js",
+      "size": 4547,
+      "sha256": "d94d469f5911aad56be7d5d6152acc2a2d5366017cd7d1385fd19bec53fb6959"
+    },
+    {
+      "path": "src/render/svg.js",
+      "size": 1448,
+      "sha256": "2b8043f641e78e9172f8b8ea52e40764026f8347f5d9d0481380517ccc272649"
+    },
+    {
+      "path": "src/structured-append.js",
+      "size": 5885,
+      "sha256": "6e29f677321ba8875acf3da557a5976a856fc1760e2d46038af7fbb23a9163ff"
+    },
+    {
+      "path": "tools/build-pages.js",
+      "size": 1006,
+      "sha256": "31d01071ab8504395e97ccc661ddb77f9e06156395db8a26937c5af60798ec98"
+    },
+    {
+      "path": "tools/decode-vision.swift",
+      "size": 605,
+      "sha256": "76e4a7313178f5fd4756e07cbad1f14f5cafdbbb9c10da237cdc6cef18199e59"
+    },
+    {
+      "path": "tools/lib/deterministic-conformance.js",
+      "size": 11032,
+      "sha256": "97254138447457455c82c71e3477905ee20385eb4cc586e37c78e0a314e4121e"
+    },
+    {
+      "path": "tools/lib/metamorphic-properties.js",
+      "size": 25959,
+      "sha256": "f5aaf2ab5da255387abec05f7c1f31b3d46d5bb58e1d69fca1270deebdffcf82"
+    },
+    {
+      "path": "tools/lib/nayuki-differential.js",
+      "size": 9051,
+      "sha256": "a6d1aed5bf1cd51c4782a4530c7c5c6bdd1dde6a881c4ed039a85d634a7bc222"
+    },
+    {
+      "path": "tools/lib/release-artifact.js",
+      "size": 19044,
+      "sha256": "7f679423412841c000d3fc79eef519a82e6f5df753decbb129a1824c090e2e6e"
+    },
+    {
+      "path": "tools/prepare-release-artifact.js",
+      "size": 5522,
+      "sha256": "5eb7256fe7093c509d16fbc50fb84567600549e33bfe8266f7fece00a7c7ba85"
+    },
+    {
+      "path": "tools/serve-playground.js",
+      "size": 2243,
+      "sha256": "920040bbdbe746ed587f27e6157cacb049072bedecab32ddf5c9554e898b9b16"
+    },
+    {
+      "path": "tools/update-golden-fixtures.js",
+      "size": 14177,
+      "sha256": "28d19fdbeec902ac33bf0d3d2b993d108f324bbf66f4329cbe36684cd696fc31"
+    },
+    {
+      "path": "tools/verify-conformance-fuzz.js",
+      "size": 1589,
+      "sha256": "d98223b3a39196275a2200320e27f2425ac5f14192a68fe9114a285ca309a39b"
+    },
+    {
+      "path": "tools/verify-decode-optional.js",
+      "size": 11072,
+      "sha256": "f870a6eda6aed725a38dbc891c7755516bae6e87359779644eec790bd0ff8de1"
+    },
+    {
+      "path": "tools/verify-decode.js",
+      "size": 3060,
+      "sha256": "9af26948c7e6dee1783193456daea6f66a14daf4746bfd6022ba4f6b36dd0f37"
+    },
+    {
+      "path": "tools/verify-doc-links.js",
+      "size": 2765,
+      "sha256": "14604c09c0c1b2b9e418addcda5b11aadc6143b88d1c6146f93b7dfe5d854bca"
+    },
+    {
+      "path": "tools/verify-examples.js",
+      "size": 6994,
+      "sha256": "472825c730a39ad458add10223dad9a18caf48cb0f5b23595690c35e587585ac"
+    },
+    {
+      "path": "tools/verify-packed-package.js",
+      "size": 37111,
+      "sha256": "fba0c195b0005dea4e7ed08b1a4dcc29f2e68034ee5b5fcc690b16208fc31111"
+    },
+    {
+      "path": "tools/verify-published-package.js",
+      "size": 13577,
+      "sha256": "3cb5915d63ba8acefbb0dde76e16ab1759cd8e0a86244d3a18220a104dd62b22"
+    },
+    {
+      "path": "tools/verify-reference-nayuki.js",
+      "size": 1090,
+      "sha256": "970225abc3a64d15035580e647848ca77063be7926d6b6c96c8e25eb8a12c477"
+    },
+    {
+      "path": "tools/verify-release-artifact.js",
+      "size": 1018,
+      "sha256": "b5201e4b6edb7980ebe79892e3c9055a5326d2365611cc1d412dba6ed0261ca3"
+    },
+    {
+      "path": "tools/verify-release-workflow.js",
+      "size": 4155,
+      "sha256": "e5972712a1c82e7b7485ee9bbb387d83983b6c98c8cb2d5f150d5460ef3cd1cb"
+    },
+    {
+      "path": "tools/verify-resource-safety.js",
+      "size": 2697,
+      "sha256": "5fa2f77e35c68f76e21a943376b14ac7c64646b4dc9b00ea82d82863b88a28d2"
+    },
+    {
+      "path": "tools/verify-structured-append-memory.js",
+      "size": 10353,
+      "sha256": "de174258e3e3986f03926e94b0330cf3c29e92a40f37f573572f45c6a7f226e3"
+    },
+    {
+      "path": "tools/verify-structured-append-zxing-java.js",
+      "size": 14263,
+      "sha256": "6ee6a6fcfe1b1b81363b56b6d3fb9566dd1110f51d3312537c7c3a584072019a"
+    }
+  ]
+}

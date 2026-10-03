@@ -43,8 +43,25 @@
     },
     "stringArray": {
       "type": "array",
+      "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/nonEmptyString"
+      }
+    },
+    "evidenceRequirement": {
+      "type": "object",
+      "description": "Versioned evidence contract evaluated against every applicable source vector in the claim's suites. Required checks must exist and pass; report-declared status or optionality cannot reduce these requirements.",
+      "required": ["adapterId", "capability"],
+      "additionalProperties": false,
+      "properties": {
+        "adapterId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "capability": {
+          "type": "string",
+          "enum": ["specqr-expectations-v1", "jsqr-text-binary-v1", "nayuki-fixed-matrix-v1", "optional-cli-text-v1"],
+          "description": "specqr-expectations-v1 requires all SpecQR-owned expect fields (rejects, matrixHash, diagnostics.subset, planning, gs1, structuredAppend, validation, render and package checks). jsqr-text-binary-v1 requires each decode.text/binaryHex check on generate/generateSegments. nayuki-fixed-matrix-v1 requires referenceMatrix.exact for every Nayuki expectation. optional-cli-text-v1 requires decode.text on generate/generateSegments unless the optional CLI command is explicitly unavailable; raw-byte and metadata coverage are outside this capability."
+        }
       }
     },
     "target": {
@@ -72,6 +89,7 @@
         "summary",
         "suites",
         "adapters",
+        "evidenceRequirements",
         "badges",
         "reportSummaryKey",
         "limits"
@@ -96,6 +114,13 @@
         },
         "adapters": {
           "$ref": "#/$defs/stringArray"
+        },
+        "evidenceRequirements": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/evidenceRequirement"
+          }
         },
         "badges": {
           "$ref": "#/$defs/stringArray"

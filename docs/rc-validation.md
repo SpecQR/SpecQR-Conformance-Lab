@@ -2,6 +2,10 @@
 
 この文書は、公開済み `specqr@3.0.0-rc.2` を SpecQR Conformance Lab から外部 black-box 検証し、stable readiness の技術的 evidence を作る専用手順を定義します。通常の public baseline は `specqr@2.4.0` のままです。RC validation は `reports/latest.json`、`reports/latest.html`、badges、GitHub Pages、npm dist-tag を変更しません。
 
+## Historical evidence boundary
+
+Historical readiness run [30739905031](https://github.com/SpecQR/SpecQR-Conformance-Lab/actions/runs/30739905031) は、独立 adapter が isolated RC ではなく pinned baseline から symbol を生成していたため、RC technical readiness evidence として失効しています。修正前の pass count は candidate の独立検証成功とはみなしません。Fresh evidence は全 subject generator の共通 target resolver と package content provenance を必要とします。既存 observation の timestamp、consumer evidence、policy はこの修正で補完しません。詳細は [RC Observation](rc-observation.md#historical-evidence-revocation) を参照してください。
+
 ## Fixed targets
 
 | Role | Package spec | Expected resolved version |
@@ -60,7 +64,11 @@ Local tarball、SpecQR core checkout、direct source import への fallback は�
 
 ## Raw strict common comparison
 
-Baseline、exact candidate、dist-tag candidate は、同じ vector と adapter で full conformance report を生成します。Candidate report integrity は required gate であり、失敗を許容して comparison だけ続行する経路はありません。
+Baseline、exact candidate、dist-tag candidate は、同じ vector と adapter で full conformance report を生成します。Report の `metadata.provenance.subjectRouting` は shared resolver revision、実際の package version、content SHA-256 を記録します。各 target の source vectors（期待値を含む）、adapter ID、coverage claims contract の scope SHA-256 も readiness に記録します。Assembler / validator は全 raw report の schema と current repository の target-normalized suite を再検証し、coverage claims verifier で各 required capability / expected check の実行成功を要求します。Required lane の一括 skip や check の削除は、summary と semantic hash を再計算しても pass になりません。Readiness の `capabilityCoverage` は検証結果と current claims SHA-256 を記録します。
+
+Exact と `next` の subject content identity は、互いの一致だけでなく、それぞれ独立に取得した registry manifest に一致する必要があります。Manifest 全体の expanded SHA-256 を固定値に照合した後、同じ canonical `manifestContentSha256()` で relative path と file SHA-256 を global path order に整列して package digest を算出します。Baseline は pinned `2.4.0` install の同じ digest に照合します。`verifiedSubjectSha256` を readiness に記録し、observer も raw registry evidence から再計算します。Tarball / expanded digest は異なる形式なので直接比較しません。
+
+Candidate report integrity は required gate であり、失敗を許容して comparison だけ続行する経路はありません。
 
 Raw strict comparison は次を blocking regression とします。Expected delta policy はこの report を変更せず、3 件の raw delta と 3 件の blocking regression を残したまま別 report で判定します。
 
@@ -159,7 +167,7 @@ Intermediate conformance report、raw strict comparison、expected-delta JSON / 
 
 ## Stable boundary
 
-`technicalStatus: "pass"` は、registry integrity、91 vectors / 455 results、raw strict 3 件、expected delta 3 / 3 matched・0 missing・0 unexpected、v3 contract 35 / 35、Node 18 / 20 / 22 / 24 matrix がすべて green であることだけを示します。
+`technicalStatus: "pass"` は、registry integrity、current source vectors × 全 adapter の完全な coverage と subject routing provenance、raw strict 3 件、expected delta 3 / 3 matched・0 missing・0 unexpected、v3 contract 35 / 35、Node 18 / 20 / 22 / 24 matrix がすべて green であることだけを示します。
 
 `observationStatus` は利用観察の独立 status です。この検証だけでは `"sufficient"` にしません。RC readiness workflow は常に `"pending"` を出し、stable 公開判断には別途、公開後の利用期間、consumer feedback、issue / regression observation、必要な compatibility confirmation を要求します。
 

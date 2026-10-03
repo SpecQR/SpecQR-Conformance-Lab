@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { generate, generateSegments } from "specqr";
+import { generate, generateSegments } from "../tools/specqr-target.js";
 import { binaryHexToBytes } from "./specqr.js";
 
 const supportedOperations = new Set(["generate", "generateSegments"]);

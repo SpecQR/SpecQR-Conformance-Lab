@@ -16,6 +16,10 @@
       "summary": "Core vectors verify published SpecQR generation behavior for representative QR Code Model 2 payloads and options.",
       "suites": ["core"],
       "adapters": ["specqr", "jsqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"},
+        {"adapterId": "jsqr", "capability": "jsqr-text-binary-v1"}
+      ],
       "badges": ["badges/specqr.json", "badges/jsqr.json"],
       "reportSummaryKey": null,
       "limits": [
@@ -31,6 +35,10 @@
       "summary": "The Lab covers representative numeric, alphanumeric, byte, Kanji, ECI UTF-8, and raw binary payload vectors.",
       "suites": ["core", "kanji-eci-binary"],
       "adapters": ["specqr", "jsqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"},
+        {"adapterId": "jsqr", "capability": "jsqr-text-binary-v1"}
+      ],
       "badges": ["badges/kanji-eci-binary.json"],
       "reportSummaryKey": "kanjiEciBinary",
       "limits": [
@@ -46,6 +54,9 @@
       "summary": "GS1 vectors verify the AI subset and Digital Link helper behavior supported by published SpecQR.",
       "suites": ["gs1-digital-link"],
       "adapters": ["specqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"}
+      ],
       "badges": ["badges/gs1-digital-link.json"],
       "reportSummaryKey": "gs1DigitalLink",
       "limits": [
@@ -61,6 +72,9 @@
       "summary": "Structured Append vectors verify published SpecQR generation, manual segment splitting, parity, and merge helper behavior.",
       "suites": ["structured-append"],
       "adapters": ["specqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"}
+      ],
       "badges": ["badges/structured-append.json"],
       "reportSummaryKey": "structuredAppend",
       "limits": [
@@ -76,6 +90,9 @@
       "summary": "Planning vectors verify estimate, analyzeSegments, getCapacity, warning code, and diagnostics subset behavior.",
       "suites": ["planning-diagnostics"],
       "adapters": ["specqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"}
+      ],
       "badges": ["badges/planning-diagnostics.json"],
       "reportSummaryKey": "planningDiagnostics",
       "limits": [
@@ -90,6 +107,10 @@
       "summary": "Rendering vectors verify matrix, SVG, PNG, SVG Data URL, and PNG Data URL output surfaces in Node.",
       "suites": ["rendering-output"],
       "adapters": ["specqr", "jsqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"},
+        {"adapterId": "jsqr", "capability": "jsqr-text-binary-v1"}
+      ],
       "badges": ["badges/rendering-output.json"],
       "reportSummaryKey": "renderingOutput",
       "limits": [
@@ -105,6 +126,9 @@
       "summary": "Package Surface vectors verify package metadata, root exports, browser and node subpath helpers, PNG Buffer output, and TypeScript consumer compile.",
       "suites": ["package-surface"],
       "adapters": ["specqr"],
+      "evidenceRequirements": [
+        {"adapterId": "specqr", "capability": "specqr-expectations-v1"}
+      ],
       "badges": ["badges/package-surface.json"],
       "reportSummaryKey": "packageSurface",
       "limits": [
@@ -120,6 +144,9 @@
       "summary": "The jsQR lane checks whether selected SpecQR-generated PNGs are readable as expected text or raw bytes when jsQR exposes them.",
       "suites": ["core", "kanji-eci-binary", "rendering-output"],
       "adapters": ["jsqr"],
+      "evidenceRequirements": [
+        {"adapterId": "jsqr", "capability": "jsqr-text-binary-v1"}
+      ],
       "badges": ["badges/jsqr.json"],
       "reportSummaryKey": null,
       "limits": [
@@ -135,6 +162,9 @@
       "summary": "Nayuki vectors verify exact matrix equality for fixed Version/ECC/mask reference cases.",
       "suites": ["reference-nayuki"],
       "adapters": ["nayuki"],
+      "evidenceRequirements": [
+        {"adapterId": "nayuki", "capability": "nayuki-fixed-matrix-v1"}
+      ],
       "badges": ["badges/nayuki.json"],
       "reportSummaryKey": null,
       "limits": [
@@ -150,6 +180,10 @@
       "summary": "Optional zbarimg and ZXing CLI lanes provide local decode readability checks when the commands are available.",
       "suites": ["core", "kanji-eci-binary", "rendering-output"],
       "adapters": ["zbarimg", "zxing-cli"],
+      "evidenceRequirements": [
+        {"adapterId": "zbarimg", "capability": "optional-cli-text-v1"},
+        {"adapterId": "zxing-cli", "capability": "optional-cli-text-v1"}
+      ],
       "badges": ["badges/zbarimg.json", "badges/zxing-cli.json"],
       "reportSummaryKey": null,
       "limits": [
@@ -167,6 +201,7 @@
       "summary": "The Lab does not claim Micro QR coverage.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["No Micro QR vector suite or adapter lane is present."],
@@ -181,6 +216,7 @@
       "summary": "The Lab does not claim rMQR coverage.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["No rMQR vector suite or adapter lane is present."],
@@ -195,6 +231,7 @@
       "summary": "The Lab does not claim full GS1 AI catalog conformance.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["Existing GS1 vectors cover a supported representative subset only."],
@@ -209,6 +246,7 @@
       "summary": "The Lab does not claim full QR reader conformance.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["Reader lanes are decode readability checks, not full scanner conformance tests."],
@@ -223,6 +261,7 @@
       "summary": "The Lab does not claim scanner metadata merge support.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["Structured Append merge helper inputs are tested, but scanner-emitted metadata merge is not."],
@@ -237,6 +276,7 @@
       "summary": "The Lab does not claim logo or styled QR conformance.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["Rendering vectors cover standard output surfaces, not visual styling overlays or logo placement."],
@@ -251,6 +291,7 @@
       "summary": "The Lab does not claim browser Canvas automation coverage.",
       "suites": [],
       "adapters": [],
+      "evidenceRequirements": [],
       "badges": [],
       "reportSummaryKey": null,
       "limits": ["Package Surface imports and type-checks browser helpers in Node, but does not automate a real browser Canvas or DOM lifecycle."],

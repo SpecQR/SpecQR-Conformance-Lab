@@ -53,7 +53,12 @@
     },
     "conformance": {
       "type": "object",
-      "required": ["baseline", "exact", "next", "common", "normalizations"]
+      "required": ["baseline", "exact", "next", "common", "normalizations"],
+      "properties": {
+        "baseline": { "$ref": "#/$defs/conformanceEvidence" },
+        "exact": { "$ref": "#/$defs/conformanceEvidence" },
+        "next": { "$ref": "#/$defs/conformanceEvidence" }
+      }
     },
     "expectedDelta": {
       "type": "object",
@@ -140,6 +145,34 @@
     }
   },
   "$defs": {
+    "conformanceEvidence": {
+      "type": "object",
+      "required": ["subjectRouting", "scopeSha256", "verifiedSubjectSha256", "capabilityCoverage"],
+      "properties": {
+        "scopeSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "verifiedSubjectSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "capabilityCoverage": {
+          "type": "object",
+          "required": ["revision", "status", "claimsSha256"],
+          "properties": {
+            "revision": { "const": 1 },
+            "status": { "const": "pass" },
+            "claimsSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          }
+        },
+        "subjectRouting": {
+          "type": "object",
+          "required": ["revision", "resolver", "packageName", "packageVersion", "contentSha256"],
+          "properties": {
+            "revision": { "const": 1 },
+            "resolver": { "const": "shared-specqr-target" },
+            "packageName": { "const": "specqr" },
+            "packageVersion": { "enum": ["2.4.0", "3.0.0-rc.2"] },
+            "contentSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          }
+        }
+      }
+    },
     "adjudicationSummary": {
       "type": "object",
       "additionalProperties": false,
