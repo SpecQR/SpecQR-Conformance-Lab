@@ -93,7 +93,7 @@ Token と credential は report、Markdown、collector log に保存しません
 独立 consumer confirmation は automated Lab fixture と別の実 project または独立 sample でなければなりません。Manual evidence entry には次をすべて記録します。
 
 - Public project または独立 sample の URL
-- Exact 40-character commit SHA
+- 40 文字の完全な commit SHA
 - Public npm registry の `specqr@3.0.0-rc.2` を使ったこと
 - `independent: true`、`automatedFixture: false` と独立性の理由
 - 実行 log URL

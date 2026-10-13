@@ -94,7 +94,7 @@ v1 で許可する `operation` は次の値です。
 | `gs1.validateDigitalLink` | `{ "url": "..." }` | Digital Link validation。 |
 | `gs1.normalizeDigitalLink` | `{ "url": "..." }` | Digital Link normalization。 |
 | `structuredAppend.generate` | `{ "text": "..." }` または `{ "binaryHex": "..." }` | Structured Append generation。 |
-| `structuredAppend.generateSegments` | `{ "segments": [...] }` | Structured Append with manual segments。 |
+| `structuredAppend.generateSegments` | `{ "segments": [...] }` | manual segments を指定した Structured Append。 |
 | `structuredAppend.mergeParts` | `{ "parts": [...] }` | Structured Append merge helper。 |
 | `package.metadata` | `{}` | published package metadata の subset。 |
 | `package.importRoot` | `{}` | root import `specqr` の public export smoke。 |
