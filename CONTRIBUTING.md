@@ -65,7 +65,7 @@ npm run compare:reports -- --base reports/latest.json --candidate reports/latest
 
 maintainer が main branch に直接 commit / push する場合は、Author と Committer を SpecQR identity にそろえます。
 
-Expected Git identity: `SpecQR <285361393+SpecQR@users.noreply.github.com>`
+想定する Git identity: `SpecQR <285361393+SpecQR@users.noreply.github.com>`
 
 ```sh
 git config user.name "SpecQR"

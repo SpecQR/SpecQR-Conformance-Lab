@@ -11,11 +11,11 @@
 | Badge v1 | [../schemas/badge-v1.schema.json](../schemas/badge-v1.schema.json) | `badges/*.json` |
 | Report comparison v1 | [../schemas/report-comparison-v1.schema.json](../schemas/report-comparison-v1.schema.json) | `reports/comparison.json` |
 | Coverage claims v1 | [../schemas/coverage-claims-v1.schema.json](../schemas/coverage-claims-v1.schema.json) | `coverage/claims-v1.json` |
-| RC readiness v1 | [../schemas/rc-readiness-v1.schema.json](../schemas/rc-readiness-v1.schema.json) | `reports/rc/readiness.json` in Actions artifacts |
+| RC readiness v1 | [../schemas/rc-readiness-v1.schema.json](../schemas/rc-readiness-v1.schema.json) | Actions artifact 内の `reports/rc/readiness.json` |
 | RC expected delta policy v1 | [../schemas/rc-expected-delta-policy-v1.schema.json](../schemas/rc-expected-delta-policy-v1.schema.json) | `policies/specqr-3.0.0-rc.2-expected-deltas-v1.json` |
 | RC observation policy v1 | [../schemas/rc-observation-policy-v1.schema.json](../schemas/rc-observation-policy-v1.schema.json) | `policies/specqr-3.0.0-rc.2-observation-v1.json` |
 | RC observation manual evidence v1 | [../schemas/rc-observation-manual-evidence-v1.schema.json](../schemas/rc-observation-manual-evidence-v1.schema.json) | `evidence/specqr-3.0.0-rc.2-observation-manual-v1.json` |
-| RC observation report v1 | [../schemas/rc-observation-v1.schema.json](../schemas/rc-observation-v1.schema.json) | `reports/observation/current/observation.json` in Actions artifacts |
+| RC observation report v1 | [../schemas/rc-observation-v1.schema.json](../schemas/rc-observation-v1.schema.json) | Actions artifact 内の `reports/observation/current/observation.json` |
 
 `npm run validate:schemas` は現行の vector suite、latest report、badge file、coverage claims、RC expected delta policy、RC observation policy / manual evidence、report self-comparison を schema validation します。`reports/comparison.json` が存在する場合は、その comparison output も検査します。
 

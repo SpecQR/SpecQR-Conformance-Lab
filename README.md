@@ -1,5 +1,7 @@
 # SpecQR Conformance Lab
 
+SpecQR Conformance Lab is an external, black-box validation and comparison lab for published SpecQR packages. It records bounded generation checks, decoder readability, and fixed-condition reference comparisons in machine-readable reports. Detailed documentation is primarily in Japanese.
+
 SpecQR Conformance Lab は、SpecQR を外部から検証するための conformance / comparison / report 基盤です。この lab は npm に公開された `specqr@2.4.0` を外部からブラックボックス検証します。
 
 SpecQR core repository の source tree や local checkout には依存しません。検証対象の SpecQR 実装を変更せず、生成結果、decoder 結果、reference comparison、helper API の結果を外部から記録します。
